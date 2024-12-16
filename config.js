@@ -9,9 +9,7 @@ import axios from 'axios'
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.owner = [
-  ['50557865603', 'WillZek', true],
   ['584246582666', 'BarbozaBot-Ai', true],
-  ['50498409019', 'Soporte', true]
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
@@ -42,8 +40,8 @@ global.miniurl = fs.readFileSync('./storage/img/miniurl.jpg')
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.group = 'https://chat.whatsapp.com/IO3kjd9ovw1Dm8pVUE2MgN'
-global.canal = 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d'
-global.insta = 'https://www.instagram.com/pina_dzn?igsh=MWhkc25peXV3djNuag=='
+global.canal = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQalSy18'
+
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
