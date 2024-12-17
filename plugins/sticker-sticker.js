@@ -144,4 +144,4 @@ async function createSticker(img, url, packName, authorName, quality) {
     quality
   }
   return (new Sticker(img ? img : url, stickerMetadata)).toBuffer()
-} *
+} */
