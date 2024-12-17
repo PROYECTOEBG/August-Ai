@@ -10,7 +10,6 @@ import axios from 'axios'
 
 global.owner = [
   ['584246582666', 'BarbozaBot-Ai',
-  ['584146277368', 'BarbozaBot-Ai',
  true],
 ]
 
