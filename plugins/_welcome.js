@@ -24,7 +24,7 @@ export async function before(m, {conn, participants, groupMetadata}) {
       let bye = chat.sBye.replace('@user', () => user);
       await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal)
     } else {
-      let bye = `┌─★ Barbozabot - Ai \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      let bye = `┌─★ Barbozabot - Ai \n│「 ADIOS 😂 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
       await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal)
     }
   }
@@ -35,7 +35,7 @@ export async function before(m, {conn, participants, groupMetadata}) {
       let bye = chat.sBye.replace('@user', () => user);
       await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal)
     } else {
-      let kick = `┌─★ Barbozabot - Ai \n│「 ADIOS 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      let kick = `┌─★ Barbozabot - Ai \n│「 ADIOS 😂 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
       await conn.sendAi(m.chat, botname, textbot, kick, img, img, canal)
     }
 }}
