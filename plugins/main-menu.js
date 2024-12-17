@@ -44,23 +44,23 @@ const defaultMenu = {
 › *╭━❍🎄BARBOZA-BOT-AI⛄❍━╮*
 ›    ╚──────¤◎¤──────╝
 ╭━─━─━─≪𖣘≫─━─━─━╮
-┃❄️ ➬ *Cliente:* %name
-┃❄️ ➬ *Estrellas:* %limit
-┃❄️ ➬ *Nivel:* %level [ %xp4levelup Xp Para Subir De Nivel]
-┃❄️ ➬ *Xp:* %exp / %maxexp
-┃❄️ ➬ *TotalXp:* %totalexp
+┃☃️ ➬ *Cliente:* %name
+┃☃️ ➬ *Estrellas:* %limit
+┃☃️ ➬ *Nivel:* %level [ %xp4levelup Xp Para Subir De Nivel]
+┃☃️ ➬ *Xp:* %exp / %maxexp
+┃☃️ ➬ *TotalXp:* %totalexp
  ╰━─━─━─≪𖣘≫─━─━─━╯
 ╔──────¤◎¤──────╗
 ┋#    ✦   *𝐈 N F O  ‹‹❑ౄ*
 ╚──────¤◎¤──────╝
 ╭━─━─━─≪𖣘≫─━─━─━╮
-┃❄️ ➬ *Modo:* %mode
-┃❄️ ➬ *Prefijo:* [ *%_p* ]
-┃❄️ ➬ *Rutina:* %muptime 
-┃❄️ ➬ *Database:*  %totalreg
+┃☃️ ➬ *Modo:* %mode
+┃☃️ ➬ *Prefijo:* [ *%_p* ]
+┃☃️ ➬ *Rutina:* %muptime 
+┃☃️ ➬ *Database:*  %totalreg
 ╰━─━─━─≪𖣘≫─━─━─━╯
      
-   ⏤͟͟͞͞★BarbozaBot-Aiꗄ➺
+   ☃️⏤͟͟͞͞★BarbozaBot-Aiꗄ➺☃️
 ◆━━━━━━━▣✦▣━━━━━━━━◆ 
  %readmore
 \t\t\t_*Lista De Comandos*_ ﭢ
