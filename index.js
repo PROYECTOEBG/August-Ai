@@ -23,7 +23,7 @@ font: 'chrome',
 align: 'center',
 colors: ['red']
 });
-say(`Developed By • Niño Piña`, {
+say(`Developed By • Barboza Ai`, {
 font: 'console',
 align: 'center',
 colors: ['magenta']
