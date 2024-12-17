@@ -9,7 +9,7 @@ const LimitVid = 425 * 1024 * 1024; //425MB
 const handler = async (m, {conn, command, args, text, usedPrefix}) => {
 
 if (command == 'playvid2' || command == 'mp3') {
-if (!text) return conn.reply(m.chat, `🌸 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, !${command} Enemy Tommoee Profitt`,  m, rcanal, ); 
+if (!text) return conn.reply(m.chat, `☃️ *Ingrese el nombre de un video de YouTube*\n\nEjemplo, !${command} Enemy Tommoee Profitt`,  m, rcanal, ); 
 await m.react(rwait);
 const yt_play = await search(args.join(' '));
 const ytplay2 = await yts(text);
