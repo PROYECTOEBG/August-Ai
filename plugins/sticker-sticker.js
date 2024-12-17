@@ -1,100 +1,20 @@
-import { sticker } from '../lib/sticker.js'
+ import { sticker } from '../lib/sticker.js'
 import uploadFile from '../lib/uploadFile.js'
-import { addExif } from '../lib/sticker.js'
-import { Sticker } from 'wa-sticker-formatter'
-
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-  try {
-    let q = m.quoted ? m.quoted : m
-    let mime = (q.msg || q).mimetype || q.mediaType || ''
-
-    if (/video/g.test(mime)) {
-      // Jalankan kode untuk video di sini
-      if ((q.msg || q).seconds > 10) return m.reply('✧ Máximo 10 segundos.')
-      let img = await q.download?.()
-      if (!img) throw m.reply(` `✧ Responde a un Vídeo con el comando*${usedPrefix + command}*` `)
-      let stiker = false
-      try {
-        stiker = await sticker(img, false, global.stickpack, global.stickauth)
-      } catch (e) {
-        console.error(e)
-      } finally {
-        if (!stiker) {
-          let out = await uploadFile(img)
-          stiker = await sticker(false, out, global.stickpack, global.stickauth)
-        }
-      }
-      conn.sendFile(m.chat, stiker, 'sticker.webp', '', m, null)
-    } else if (/image/g.test(mime)) {
-      // Jalankan kode untuk gambar di sini
-      let [packname, ...author] = args.join` `.split`|`
-      author = (author || []).join`|`
-      let img = await q.download?.()
-      let stiker = false
-      try {
-        let pack = global.stickpack
-        let author = global.stickauth
-        stiker = await addExif(img, pack, author)
-      } catch (e) {
-        console.error(e)
-      } finally {
-        if (!stiker) {
-          stiker = await createSticker(img, false, packname, author)
-        }
-      }
-      m.reply(stiker)
-    } else {
-      conn.reply(m.chat, `✧ `Responde a una Imagen o Video *${usedPrefix + command}`*`, m, rcanal)
-    }
-  } catch (e) {
-    console.error(e)
-    m.reply('Error')
-  }
-}
-
-handler.help = ['sticker']
-handler.tags = ['sticker']
-
-handler.command = /^s(tic?ker)?(gif)?$/i
-handler.register = true
-
-export default handler
-
-async function createSticker(img, url, packName, authorName, quality) {
-  let stickerMetadata = {
-    type: 'full',
-    pack: stickpack,
-    author: stickauth,
-    quality
-  }
-  return (new Sticker(img ? img : url, stickerMetadata)).toBuffer()
-}
-
-
-
-
-
-/* import { sticker } from '../lib/sticker.js'
-import uploadFile from '../lib/uploadFile.js'
-import { addExif } from '../lib/sticker.js'
-import { Sticker } from 'wa-sticker-formatter'
-
+import uploadImage from '../lib/uploadImage.js'
+import { webp2png } from '../lib/webp2mp4.js'
 let handler = async (m, { conn, args, usedPrefix, command }) => {
   let stiker = false
-       let stick = args.join(" ").split("|");
-       let f = stick[0] !== "" ? stick[0] : packname;
-       let g = typeof stick[1] !== "undefined" ? stick[1] : author;
-  try {         
+  let username = conn.getName(m.sender)
+  try {
+  	
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || q.mediaType || ''
     if (/webp|image|video/g.test(mime)) {
-      if (/video/g.test(mime)) if ((q.msg || q).seconds > 11) return m.reply('Máximo 10 segundos')
       let img = await q.download?.()
-      if (!img) throw `✳️ Responde a una imagen o video con*${usedPrefix + command}*`
-m.react('🐈‍⬛') 
+      if (!img) return m.reply(`☁️ Responde a una *Imagen* o *Vídeo.*`)
       let out
       try {
-        stiker = await sticker(img, false, f, g)
+        stiker = await sticker(img, false, global.packname, global.author)
       } catch (e) {
         console.error(e)
       } finally {
@@ -103,45 +23,27 @@ m.react('🐈‍⬛')
           else if (/image/g.test(mime)) out = await uploadImage(img)
           else if (/video/g.test(mime)) out = await uploadFile(img)
           if (typeof out !== 'string') out = await uploadImage(img)
-          stiker = await sticker(false, out, f, g)
+          stiker = await sticker(false, out, global.packname, global.author)
         }
       }
     } else if (args[0]) {
       if (isUrl(args[0])) stiker = await sticker(false, args[0], global.packname, global.author)
-      else return m.reply('URL invalido')
+      else return m.reply('La *Url* es invalida')
     }
   } catch (e) {
     console.error(e)
     if (!stiker) stiker = e
   } finally {
-    if (stiker) conn.sendFile(m.chat, stiker, 'sticker.webp', '', m, null, rpl)
-    else throw '➤ `𝗔𝗩𝗜𝗦𝗢` 🐈‍⬛\n\n*RESPONDE UNA IMG/VIDEO*';
+    if (stiker) conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
+    else return m.reply('𝙀𝙧𝙧𝙤𝙧 🚫\n𝙍𝙚𝙨𝙥𝙤𝙣𝙙𝙚 𝙖 𝙪𝙣𝙖 𝙄𝙢𝙖𝙜𝙚𝙣 𝙤 𝙑𝙞𝙙𝙚𝙤')
   }
 }
 handler.help = ['sticker']
 handler.tags = ['sticker']
-handler.command = /^s(tic?ker)?(gif)?$/i
+handler.command = ['s', 'sticker', 'stiker'] 
 
 export default handler
 
 const isUrl = (text) => {
   return text.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)(jpe?g|gif|png)/, 'gi'))
 }
-
-handler.help = ['sticker']
-handler.tags = ['sticker']
-
-handler.command = /^s(tic?ker)?(gif)?$/i
-handler.register = true
-
-export default handler
-
-async function createSticker(img, url, packName, authorName, quality) {
-  let stickerMetadata = {
-    type: 'full',
-    pack: stickpack,
-    author: stickauth,
-    quality
-  }
-  return (new Sticker(img ? img : url, stickerMetadata)).toBuffer()
-} */
