@@ -41,7 +41,7 @@ global.miniurl = fs.readFileSync('./storage/img/miniurl.jpg')
 
 global.group = 'https://chat.whatsapp.com/IO3kjd9ovw1Dm8pVUE2MgN'
 global.canal = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQalSy18'
-
+.global.instagram = 'https://www.insta.com/sebastian_barboza13?igsh=ZGsyNm9lNTBhcGp1'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
