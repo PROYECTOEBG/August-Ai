@@ -24,4 +24,4 @@ handler.help = ['google <búsqueda>']
 handler.tags = ['buscador']
 handler.command = ['google']
 handler.register = true 
-export default handle
+export default handler
