@@ -1,4 +1,4 @@
-cons {
+const {
     useMultiFileAuthState,
     DisconnectReason,
     fetchLatestBaileysVersion, 
