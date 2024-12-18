@@ -180,5 +180,5 @@ handler.rowner = false
 export default handler
 
 function sleep(ms) {
-    return new Promise(resolv => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
