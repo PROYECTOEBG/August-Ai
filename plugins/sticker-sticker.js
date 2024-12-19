@@ -13,7 +13,7 @@ if (/webp|image|video/g.test(mime)) {
 if (/video/g.test(mime)) if ((q.msg || q).seconds > 8) return m.reply(`☁️ *¡El video no puede durar mas de 8 segundos!*`)
 let img = await q.download?.()
 
-if (!img) return conn.reply(m.chat, `🍁 *_Y el video ?, intenta enviar primero imagen/video/gif y luego responde con el comando._*`, m, rcanal)
+if (!img) return conn.reply(m.chat, `☃️ *_Y el video ?, intenta enviar primero imagen/video/gif y luego responde con el comando._*`, m, rcanal)
 
 let out
 try {
@@ -38,9 +38,9 @@ else return m.reply(`💫 El url es incorrecto`)
 console.error(e)
 if (!stiker) stiker = e
 } finally {
-if (stiker) conn.sendFile(m.chat, stiker, 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: packname, body: `Sisked Bot - MD 🌟`, mediaType: 2, sourceUrl: redes, thumbnail: icons}}}, { quoted: m })
+if (stiker) conn.sendFile(m.chat, stiker, 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: packname, body: `botbarboza - Ai ☃️`, mediaType: 2, sourceUrl: redes, thumbnail: icons}}}, { quoted: m })
 
-else return conn.reply(m.chat, '🍁 *_Y el video ?, intenta enviar primero imagen/video/gif y luego responde con el comando._*', m, rcanal)
+else return conn.reply(m.chat, '☃️ *_Y el video ?, intenta enviar primero imagen/video/gif y luego responde con el comando._*', m, rcanal)
 
 
 }}
