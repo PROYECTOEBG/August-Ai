@@ -13,7 +13,7 @@ if (/webp|image|video/g.test(mime)) {
 if (/video/g.test(mime)) if ((q.msg || q).seconds > 8) return m.reply(`☁️ *¡El video no puede durar mas de 8 segundos!*`)
 let img = await q.download?.()
 
-if (!img) return conn.reply(m.chat, `🐉 *_Oops! La conversión no pudo completarse. Por favor, envía primero una imagen, video o gif, y luego utiliza el comando nuevamente._*`, m, rcanal)
+if (!img) return conn.reply(m.chat, `☃️ *_Oops! La conversión no pudo completarse. Por favor, envía primero una imagen, video o gif, y luego utiliza el comando nuevamente._*`, m, rcanal)
 
 let out
 try {
