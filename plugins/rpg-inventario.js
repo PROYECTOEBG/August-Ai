@@ -17,7 +17,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     // Crear el mensaje de inventario
     let text = `╭━〔 Inventario de ${name} 〕⬣\n` +
                `┋ 🗻 *☃️Nieve  en Cartera:* ${user.Nieve || 0} \n` +  
-               `┋ 🏦 *☃️Nieve en Banco:* ${user.bank || 0} \n` + 
+               `┋ 🎅🏻 *☃️Nieve en Banco:* ${user.bank || 0} \n` + 
                `┋ ♦️ *Esmeraldas:* ${user.emerald || 0}\n` + 
                `┋ 🔩 *Hierro:* ${user.iron || 0}\n` +  
                `┋ 🏅 *Oro:* ${user.gold || 0}\n` + 
