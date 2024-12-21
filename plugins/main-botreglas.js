@@ -8,9 +8,9 @@ let yaemori = `☃️ *Respeta las reglas de BotBarboza-Ai-Bot*\n
 ✰ Contacta al creador si es necesario
 ✰ Pedir permiso para añadir al bot a un grupo
 
-✨ 𝗡𝗼𝘁𝗮: *Si no cumples con las reglas del bot, seras bloqueado.*
+☃️ 𝗡𝗼𝘁𝗮: *Si no cumples con las reglas del bot, seras bloqueado.*
 
-⚠️ 𝗔𝘃𝗶𝘀𝗼: *Puedes apoyarnos dejando una estrellita ☃️ al repositorio oficial de BotBarboza-Ai.*
+☃️ 𝗔𝘃𝗶𝘀𝗼: *Puedes apoyarnos dejando una estrellita ☃️ al repositorio oficial de BotBarboza-Ai.*
 
 ${global.md}`.trim()
 await conn.reply(m.chat, yaemori, m, fake)
