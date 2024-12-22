@@ -1,4 +1,4 @@
-/** By @MoonContentCreator || https://github.com/MoonContentCreator/BixbyBot-Md **/
+./** By @MoonContentCreator || https://github.com/MoonContentCreator/BixbyBot-Md **/
 
 import fetch from 'node-fetch';
 
