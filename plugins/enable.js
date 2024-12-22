@@ -114,7 +114,8 @@ break
 
      case 'antiarabes':
      case 'antinegros':
-       if (m.isGroup) {
+     case 'antifakes':
+      if (m.isGroup) {
          if (!(isAdmin || isOwner)) {
            global.dfail('admin', m, conn)
            throw false
