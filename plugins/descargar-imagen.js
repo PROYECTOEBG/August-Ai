@@ -19,4 +19,4 @@ handler.tags = ['buscador','descargas'];
 handler.command = ['image','imagen', 'wimage'];
 handler.group = true;
 handler.register = true
-export default handler
+export default handler;
