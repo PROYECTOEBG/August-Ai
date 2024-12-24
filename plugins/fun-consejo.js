@@ -2,9 +2,9 @@
   m.reply(`*┏━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┓*
   *"${pickRandom(global.consejo)}"*\n\n*┗━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┛*`);
 };
-handler.help = ['consejos']
+handler.help = ['consejo']
 handler.tags = ['fun'];
-handler.command = ['consejos'];
+handler.command = ['consejos', 'consejo'];
 export default handler;
 
 function pickRandom(list) {
