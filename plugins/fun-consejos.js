@@ -15,9 +15,6 @@ conn.reply(m.chat, `*┏━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡
 handler.help = ['consejo']
 handler.tags = ['fun']
 handler.command = ['consejo']
-handler.fail = null
-handler.exp = 0
-
 export default handler
 
 let hasil = Math.floor(Math.random() * 5000)
