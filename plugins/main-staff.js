@@ -1,22 +1,30 @@
 let handler = async (m, { conn, command, usedPrefix }) => {
-let staff = `🍁 *EQUIPO DE AYUDANTES*
-🌟 *Bot:* ${global.botname}
-✨️  *Versión:* ${global.vs}
+let staff = `✨ *EQUIPO DE AYUDANTES*
+🤖 *Bot:* ${global.botname}
+🌟 *Versión:* ${global.vs}
 
 👑 *Propietario:*
 
-• Anuar
-⭐ *Rol:* Propietario 👑
-🌟 *Número:* ${creador}
+• Destroy
+🤴 *Rol:* Propietario
+📱 *Número:* wa.me/584120346669
+✨️ *GitHub:* https://github.com/The-King-Destroy
 
-🌸COLABORADORES
+🚀  *Colaboradores:*
 
-• Ian
-⭐ *Rol:* Desarrollador ☁
-🌟 *Número:* 584123989549
-🌟 *Número:* 543876631319 
+• Emma-Violets-Versión 
+🦁 *Rol:* Developer
+📱 *Número:* Wa.me/522441357601
 
-await conn.sendFile(m.chat, icons, 'nino.jpg', staff.trim(), fkontak, true, {
+• Niño Piña
+🐯 *Rol:* Contribuidor
+📱 *Número:* Wa.me/50557865603
+
+• Legna
+💻 *Rol:* Soporte 
+📱 *Número:* Wa.me/526671548329
+`
+await conn.sendFile(m.chat, icons, 'yaemori.jpg', staff.trim(), fkontak, true, {
 contextInfo: {
 'forwardingScore': 200,
 'isForwarded': false,
@@ -24,7 +32,7 @@ externalAdReply: {
 showAdAttribution: true,
 renderLargerThumbnail: false,
 title: `🥷 Developers 👑`,
-body: `🚩 Staff Oficial`,
+body: `✨ Staff Oficial`,
 mediaType: 1,
 sourceUrl: redes,
 thumbnailUrl: icono
