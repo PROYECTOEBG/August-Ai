@@ -1,136 +1,189 @@
 import { 
-    useMultiFileAuthState, 
-    DisconnectReason, 
-    fetchLatestBaileysVersion, 
-    MessageRetryMap, 
-    makeCacheableSignalKeyStore, 
-    jidNormalizedUser 
-} from '@whiskeysockets/baileys';
+  useMultiFileAuthState,
+  DisconnectReason,
+  fetchLatestBaileysVersion,
+  MessageRetryMap,
+  makeCacheableSignalKeyStore,
+  jidNormalizedUser
+} from '@whiskeysockets/baileys'
+import { makeWASocket } from '../lib/simple.js'
+import { Boom } from '@hapi/boom'
+import pino from 'pino'
+import * as ws from 'ws'
+import NodeCache from 'node-cache'
+import moment from 'moment-timezone'
+import readline from 'readline'
+import qrcode from "qrcode"
+import fs from "fs"
+import { fileURLToPath } from 'url'
+import path from 'path'
 
-import moment from 'moment-timezone';
-import NodeCache from 'node-cache';
-import readline from 'readline';
-import qrcode from 'qrcode';
-import crypto from 'crypto';
-import fs from 'fs';
-import pino from 'pino';
-import * as ws from 'ws';
-const { CONNECTING } = ws;
-import { Boom } from '@hapi/boom';
-import { makeWASocket } from '../lib/simple.js';
-
-if (!Array.isArray(global.conns)) global.conns = []; // Asegura que `global.conns` sea un array
+// Inicializar arreglo de conexiones si no existe
+if (!global.conns) global.conns = [];
 
 let handler = async (m, { conn: _conn, args, usedPrefix, command, isOwner }) => {
-    // Valida si el comando puede ser ejecutado
-    let parent = args[0] && args[0] === 'plz' ? _conn : await global.conn;
-    if (!(args[0] === 'plz' || (await global.conn).user.jid === _conn.user.jid)) {
-        return m.reply(
-            `Este comando solo puede ser usado en el bot principal. Link: wa.me/${global.conn.user.jid.split`@`[0]}?text=${usedPrefix}code`
-        );
-    }
+  // Verificar que sea el bot principal
+  let parent = args[0] && args[0] == 'plz' ? _conn : await global.conn;
+  if (!((args[0] && args[0] == 'plz') || (await global.conn).user.jid == _conn.user.jid)) {
+    return m.reply(`*⚠️ Este comando solo puede ser usado en el bot principal*\nwa.me/${global.conn.user.jid.split`@`[0]}?text=${usedPrefix}code`);
+  }
 
-    let isProcessing = false;
+  async function serbot() {
+    try {
+      // Crear directorio para la sesión
+      const authFolder = `./Sesion Subbots/${m.sender.split('@')[0]}`;
+      if (!fs.existsSync(authFolder)) {
+        fs.mkdirSync(authFolder, { recursive: true });
+      }
 
-    async function serbot() {
-        if (isProcessing) {
-            return parent.reply(m.chat, 'Por favor espera, ya se está procesando una solicitud.', m);
-        }
-
-        isProcessing = true;
-
+      // Guardar credenciales si se proporcionan en args[0]
+      if (args[0]) {
         try {
-            let authFolderB = m.sender.split('@')[0];
-            let sessionPath = `./Sesion Subbots/${authFolderB}`;
-
-            // Crea la carpeta de sesión si no existe
-            if (!fs.existsSync(sessionPath)) {
-                fs.mkdirSync(sessionPath, { recursive: true });
-            }
-
-            // Escribe credenciales si están en los argumentos
-            if (args[0]) {
-                fs.writeFileSync(
-                    `${sessionPath}/creds.json`,
-                    JSON.stringify(JSON.parse(Buffer.from(args[0], 'base64').toString('utf-8')), null, '\t')
-                );
-            }
-
-            const { state, saveState, saveCreds } = await useMultiFileAuthState(sessionPath);
-            const msgRetryCounterMap = (MessageRetryMap) => {};
-            const msgRetryCounterCache = new NodeCache();
-            const { version } = await fetchLatestBaileysVersion();
-            const phoneNumber = m.sender.split('@')[0];
-
-            const connectionOptions = {
-                logger: pino({ level: 'silent' }),
-                auth: {
-                    creds: state.creds,
-                    keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'fatal' })),
-                },
-                markOnlineOnConnect: true,
-                version,
-                msgRetryCounterCache,
-                msgRetryCounterMap,
-                getMessage: async (key) => {
-                    let jid = jidNormalizedUser(key.remoteJid);
-                    let msg = await store.loadMessage(jid, key.id);
-                    return msg?.message || '';
-                },
-            };
-
-            let conn = makeWASocket(connectionOptions);
-
-            // Generación de código de vinculación si es necesario
-            if (phoneNumber && !conn.authState.creds.registered) {
-                try {
-                    let codeBot = await conn.requestPairingCode(phoneNumber);
-                    codeBot = codeBot?.match(/.{1,4}/g)?.join('-') || codeBot;
-                    let instructions = `*\`「🔱」 Serbot - Code 「🔱」\`*\n\n*\`[ Pasos : ]\`*\n\`1 ❥\` _Click en los 3 puntos_\n\`2 ❥\` _Toca en dispositivos vinculados_\n\`3 ❥\` _Selecciona Vincular con código_\n\`4 ❥\` _Escribe el código_\n\n> *Nota:* Este código solo funciona con quien lo solicitó.`;
-
-                    await parent.reply(m.chat, instructions, m);
-                    await parent.reply(m.chat, codeBot, m);
-                } catch (error) {
-                    console.error('Error al generar el código:', error);
-                    await parent.reply(m.chat, 'Hubo un error al generar el código. Intenta nuevamente.', m);
-                }
-            }
-
-            // Manejo de eventos de conexión
-            conn.ev.on('connection.update', async (update) => {
-                const { connection, lastDisconnect } = update;
-
-                if (connection === 'open') {
-                    global.conns.push(conn);
-                    await parent.reply(m.chat, 'Conectado exitosamente. Se intentará reconectar si la sesión se desconecta.', m);
-                } else if (connection === 'close') {
-                    const reason = lastDisconnect?.error?.output?.statusCode;
-                    if (reason !== DisconnectReason.loggedOut) {
-                        console.log('Intentando reconectar...');
-                    } else {
-                        console.log('Sesión cerrada.');
-                    }
-                }
-            });
-
-        } catch (error) {
-            console.error('Error en serbot:', error);
-            parent.reply(m.chat, 'Ocurrió un error. Por favor, revisa los logs para más detalles.', m);
-        } finally {
-            isProcessing = false;
+          const decodedCreds = Buffer.from(args[0], "base64").toString("utf-8");
+          fs.writeFileSync(
+            path.join(authFolder, "creds.json"), 
+            JSON.stringify(JSON.parse(decodedCreds), null, 2)
+          );
+        } catch (e) {
+          console.error("Error al guardar credenciales:", e);
+          return m.reply("*⚠️ Error al procesar las credenciales proporcionadas*");
         }
-    }
+      }
 
-    await serbot();
+      // Configurar estado y autenticación
+      const { state, saveState, saveCreds } = await useMultiFileAuthState(authFolder);
+      const msgRetryCounterCache = new NodeCache();
+      const { version } = await fetchLatestBaileysVersion();
+
+      // Opciones de conexión
+      const connectionOptions = {
+        logger: pino({ level: 'silent' }),
+        printQRInTerminal: false,
+        browser: ["Ubuntu", "Chrome", "20.0.04"],
+        auth: {
+          creds: state.creds,
+          keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
+        },
+        markOnlineOnConnect: true,
+        generateHighQualityLinkPreview: true,
+        getMessage: async (key) => {
+          let jid = jidNormalizedUser(key.remoteJid);
+          let msg = await store.loadMessage(jid, key.id);
+          return msg?.message || "";
+        },
+        msgRetryCounterCache,
+        defaultQueryTimeoutMs: undefined,
+        version
+      };
+
+      // Crear conexión
+      let conn = makeWASocket(connectionOptions);
+
+      // Solicitar código de vinculación
+      if (!conn.authState.creds.registered) {
+        try {
+          let phoneNumber = m.sender.split('@')[0];
+          let cleanNumber = phoneNumber.replace(/[^0-9]/g, '');
+          
+          setTimeout(async () => {
+            try {
+              const codeBot = await conn.requestPairingCode(cleanNumber);
+              const formattedCode = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot;
+              
+              const instructions = `*╭━━━[ CÓDIGO DE VINCULACIÓN ]━━━━⬣*
+*┃*
+*┃* 📲 *PASOS PARA VINCULAR:*
+*┃*
+*┃* \`1\` Abre WhatsApp
+*┃* \`2\` Toca los 3 puntos ⋮
+*┃* \`3\` Selecciona Dispositivos Vinculados
+*┃* \`4\` Toca Vincular un Dispositivo
+*┃* \`5\` Ingresa el siguiente código:
+*┃*
+*┃* \`\`\`${formattedCode}\`\`\`
+*┃*
+*┃* ⚠️ *CÓDIGO VÁLIDO POR 45 SEGUNDOS*
+*┃* 
+*╰━━━━━━━━━━━━━━━━━━━━━⬣*`;
+
+              await parent.sendMessage(m.chat, { text: instructions }, { quoted: m });
+            } catch (e) {
+              console.error("Error al generar código:", e);
+              return m.reply("*⚠️ Error al generar el código de vinculación*");
+            }
+          }, 3000);
+        } catch (e) {
+          console.error("Error en proceso de vinculación:", e);
+          return m.reply("*⚠️ Error en el proceso de vinculación*");
+        }
+      }
+
+      // Manejar actualizaciones de conexión
+      async function connectionUpdate(update) {
+        const { connection, lastDisconnect, isNewLogin } = update;
+        
+        if (isNewLogin) conn.isInit = true;
+        
+        const shouldReconnect = (lastDisconnect?.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
+        
+        if (connection === 'close' && shouldReconnect) {
+          let idx = global.conns.indexOf(conn);
+          if (idx !== -1) {
+            global.conns.splice(idx, 1);
+            await parent.sendMessage(m.chat, { text: "*⚠️ Conexión perdida, reintentando...*" }, { quoted: m });
+          }
+        }
+        
+        if (connection === 'open') {
+          global.conns.push(conn);
+          await parent.sendMessage(m.chat, { 
+            text: "*✅ CONEXIÓN EXITOSA*\n\n" +
+                  "• El bot se reconectará automáticamente\n" +
+                  "• Para desvincularlo, elimine la sesión desde WhatsApp\n" +
+                  "• Puede guardar su código de acceso para futuras conexiones"
+          }, { quoted: m });
+          
+          // Guardar código de acceso
+          if (!args[0]) {
+            const credentialData = fs.readFileSync(path.join(authFolder, "creds.json"), "utf-8");
+            const base64Creds = Buffer.from(credentialData).toString("base64");
+            await parent.sendMessage(conn.user.jid, { 
+              text: `*🔐 GUARDA ESTE CÓDIGO PARA RECONECTAR:*\n\n${usedPrefix}${command} ${base64Creds}`
+            });
+          }
+        }
+      }
+
+      // Configurar handlers
+      conn.connectionUpdate = connectionUpdate.bind(conn);
+      conn.credsUpdate = saveCreds.bind(conn);
+      
+      // Registrar eventos
+      conn.ev.on('connection.update', conn.connectionUpdate);
+      conn.ev.on('creds.update', conn.credsUpdate);
+      
+      // Limpiar conexiones inactivas
+      setInterval(() => {
+        let i = global.conns.indexOf(conn);
+        if (conn.user == null && i !== -1) {
+          global.conns.splice(i, 1);
+          conn.ev.removeAllListeners();
+          conn.ws.close();
+        }
+      }, 60000);
+
+    } catch (e) {
+      console.error("Error general en serbot:", e);
+      return m.reply("*⚠️ Ocurrió un error al iniciar el bot*");
+    }
+  }
+
+  await serbot();
 };
 
 handler.help = ['code'];
-handler.tags = ['serbot'];
-handler.command = ['code', 'serbotcode'];
-handler.rowner = false;
+handler.tags = ['jadibot'];
+handler.command = ['serbot', 'jadibot', 'code'];
+handler.private = true;
 
 export default handler;
-
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
