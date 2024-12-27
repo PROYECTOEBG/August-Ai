@@ -56,4 +56,4 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.command = /^ytv$/i;
 
-export default handler
+export default handler;
