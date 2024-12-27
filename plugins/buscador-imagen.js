@@ -1,34 +1,33 @@
-import { googleImage } from '@bochilteam/scraper';
+import fetch from 'node-fetch';
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `*🚩 Uso Correcto: ${usedPrefix + command} Inosuke*`;
+  if (!text) throw `*🚩 Uso Correcto: ${usedPrefix + command} gatos*`;
 
-  // Define otras variables necesarias
-  const packname = 'Nombre del paquete'; // Define tu packname
-  const wm = 'Watermark'; // Define tu marca de agua
-  const channel = 'https://example.com/your-channel'; // Define el enlace del canal
-  const textbot = 'Texto del bot'; // Define el texto que quieras usar
-  const rcanal = null; // Ajusta según lo que esperes usar
+  // API ofuscada con Base64
+  const encodedApiUrl = 'aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS9naW1hZ2U/cXVlcnk9';
+  const decodeApiUrl = (base64) => Buffer.from(base64, 'base64').toString('utf-8');
 
-  conn.reply(m.chat, '🚩 *Descargando su imagen...*', m, {
-    contextInfo: {
-      externalAdReply: {
-        mediaUrl: null,
-        mediaType: 1,
-        showAdAttribution: true,
-        title: packname,
-        body: wm,
-        previewType: 0,
-        sourceUrl: channel,
-      },
-    },
-  });
+  const apiUrl = decodeApiUrl(encodedApiUrl) + encodeURIComponent(text);
 
-  const res = await googleImage(text);
-  const image = await res.getRandom();
-  const link = image;
+  conn.reply(m.chat, '🚩 *Buscando imágenes, espere un momento...*', m);
 
-  conn.sendFile(m.chat, link, 'error.jpg', `*🔎 Resultado De: ${text}*\n> ${textbot}`, m, null, rcanal);
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (data.status !== 200 || !data.result || data.result.length === 0) {
+      throw '🚩 *No se encontraron imágenes para tu búsqueda.*';
+    }
+
+    // Obtener una URL aleatoria de la lista de resultados
+    const imageUrl = data.result[Math.floor(Math.random() * data.result.length)];
+
+    // Enviar la imagen al chat
+    conn.sendFile(m.chat, imageUrl, 'image.jpg', `*🔎 Resultado para: ${text}*`, m);
+  } catch (error) {
+    console.error(error);
+    conn.reply(m.chat, '🚩 *Hubo un problema al obtener las imágenes.*', m);
+  }
 };
 
 handler.help = ['imagen <query>'];
