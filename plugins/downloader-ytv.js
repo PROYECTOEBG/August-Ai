@@ -1,1 +1,59 @@
-const 𝒜=atob,ꓸ=btoa;const ᛖ='bm9kZS1mZXRjaA==';const ꘖ=Buffer.from('aW1wb3J0','base64').toString()+' '+Buffer.from('ZmV0Y2g=','base64').toString()+' '+Buffer.from('ZnJvbQ==','base64').toString()+' '+'\''+𝒜(ᛖ)+'\''+';';eval(ꘖ);const ⵘ=(ᨘ,ꨴ)=>ꨴ[𝒜('Y2hhdA==')];const ꭍ=(ꨕ,ꨖ)=>parseInt(ꨕ)/(1024*1024);const ꬺ=(ᨗ,ᨙ)=>ᨗ>70;const ᨈ=(ꨆ,ᨚ)=>ꨆ===𝒜('cGFzYXZpZA==');const ꭎ=async(_,{conn:ꨄ,text:މ,usedPrefix:ᨆ,command:ଈ})=>{if(!މ){let ꩜=ᨈ(ଈ)?`${ᨆ}${𝒜('cGFzYXZpZA==')} ${𝒜('TmV2ZXIgR29ubmEgR2l2ZSBZb3UgVXA=')}`:`${ᨆ}${𝒜('cGxheTI=')} ${𝒜('TmV2ZXIgR29ubmEgR2l2ZSBZb3UgVXA=')}`;return ꨄ[𝒜('c2VuZE1lc3NhZ2U=')](ⵘ(_,{chat:_.chat}),{text:𝒜('4p2X ICpQb3IgZmF2b3IgaW5ncmVzYSB1biB0w6lybWlubyBkZSBiw7pzcXVlZGEgcGFyYSBlbmNvbnRyYXIgZWwgdmlkZW8uKgoKKkVqZW1wbG8gcGFyYSA=')+`${ᨆ}${ଈ}:* ${꩜}`})}try{await ꨄ[𝒜('c2VuZE1lc3NhZ2U=')](_.chat,{text:𝒜('4p2XIOS8mCAqTWVkaWFIdWIqIGVzdMOhIHRyYWJhamFuZG8gZW4gdHUgdmlkZW8uLi4KCvCfk6UgUG9yIGZhdm9yLCBlc3BlcmEgbWllbnRyYXMgcHJlcGFyYW1vcyB0dSBkZXNjYXJnYS4g8J+agA==')});const ꨆ=𝒜('aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS95dHBsYXltcDQ/cXVlcnk9')+encodeURIComponent(މ),ଓ=await fetch(ꨆ),꩖=await ଓ[𝒜('anNvbg==')]();if(!꩖||꩖[𝒜('c3RhdHVz')]!==200||!꩖[𝒜('cmVzdWx0')]||!꩖[𝒜('cmVzdWx0')][𝒜('ZG93bmxvYWQ=')])throw new Error(𝒜('TGEgQVBJIG5vIGRldm9sdmnDsyBkYXRvcyB2w6FsaWRvcy4='));const{result:{metadata:{title:ꨅ,author:Ꮭ,timestamp:ꨣ,image:Ꭾ,views:ଽ,url:ଡ଼},download:{url:ꖦ}}}=꩖,ꕥ=ꖦ[𝒜('cmVwbGFjZQ==')](/\s+/g,𝒜('JTIw')),Ꮺ=await fetch(ꕥ,{method:𝒜('SEVBRA==')}),ꗃ=parseInt(Ꮺ[𝒜('aGVhZGVycw==')][𝒜('Z2V0')]('content-length')||0),ꕤ=ꭍ(ꗃ);await ꨄ[𝒜('c2VuZE1lc3NhZ2U=')](_.chat,{image:{url:Ꭾ},caption:𝒜('8J+UlSAqVmlkZW8gRW5jb250cmFkbzoqCgrvuI8gKlTDrXR1bG86KiA=')+`${ꨅ}\n`+𝒜('8J+RjiAqQXV0b3I6KiA=')+`${Ꮭ.name}\n`+𝒜('4oC174uWICpEdXJhY2nDs246KiA=')+`${ꨣ}\n`+𝒜('8J+RjiAqVmlzdGFzOiog')+`${ଽ}\n`+𝒜('8J+TtiAqVGFtYcOxbzoqIA==')+`${ꕤ.toFixed(2)} MB\n\n`+𝒜('8J+ThyAqRW5sYWNlIGRlbCBWaWRlbzoqIA==')+`${ଡ଼}\n\n`+𝒜('8J+TpSAqUHJlcGFyYW5kbyB0dSBkZXNjYXJnYS4uLio=')});if(ᨈ(ଈ))await ꨄ[𝒜('c2VuZE1lc3NhZ2U=')](_.chat,{video:{url:ꕥ},mimetype:𝒜('dmlkZW8vbXA0'),fileName:`${ꨅ}.mp4`,caption:𝒜('8J+UlSAqVmlkZW8gUmVwcm9kdWNpYmxlOiogCipUw610dWxvOiog')+`${ꨅ}\n`+𝒜('KkF1dG9yOiog')+`${Ꮭ.name}\n`+𝒜('KkR1cmFjacOzbjoqIA==')+`${ꨣ}`},{quoted:_});if(ଈ===𝒜('cGxheTI='))if(ꬺ(ꕤ))await ꨄ[𝒜('c2VuZE1lc3NhZ2U=')](_.chat,{document:{url:ꕥ},mimetype:𝒜('dmlkZW8vbXA0'),fileName:`${ꨅ}.mp4`,caption:𝒜('8J+TgiAqVmlkZW8gZW4gRm9ybWF0byBEb2N1bWVudG86KiAKKlTDrXR1bG86KiA=')+`${ꨅ}\n`+𝒜('KkF1dG9yOiog')+`${Ꮭ.name}\n`+𝒜('KkR1cmFjacOzbjoqIA==')+`${ꨣ}\n`+𝒜('KlRhbWHDsW86KiA=')+`${ꕤ.toFixed(2)} MB`},{quoted:_});else await ꨄ[𝒜('c2VuZE1lc3NhZ2U=')](_.chat,{video:{url:ꕥ},mimetype:𝒜('dmlkZW8vbXA0'),fileName:`${ꨅ}.mp4`,caption:𝒜('8J+UlSAqVmlkZW8gUmVwcm9kdWNpYmxlOiogCipUw610dWxvOiog')+`${ꨅ}\n`+𝒜('KkF1dG9yOiog')+`${Ꮭ.name}\n`+𝒜('KkR1cmFjacOzbjoqIA==')+`${ꨣ}\n`+𝒜('KlRhbWHDsW86KiA=')+`${ꕤ.toFixed(2)} MB`},{quoted:_})}catch(ꨳ){console.error(𝒜('RXJyb3IgYWwgZGVzY2FyZ2FyIGVsIHZpZGVvOg=='),ꨳ);await ꨄ[𝒜('c2VuZE1lc3NhZ2U=')](_.chat,{text:𝒜('4p2XICpPY3VycmnDsyB1biBlcnJvciBhbCBpbnRlbnRhciBwcm9jZXNhciB0dSBzb2xpY2l0dWQ6KgoK')+`${ꨳ.message||𝒜('RXJyb3IgZGVzY29ub2NpZG8=')}`})}};ꭎ.command=/^pasavid|play2$/i;export default ꭎ;
+import fetch from "node-fetch";
+
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return conn.sendMessage(m.chat, {
+      text: `❗ *Por favor ingresa una URL de YouTube para descargar el video.*\n\n📌 *Ejemplo de uso:*\n\`${usedPrefix}${command} https://www.youtube.com/watch?v=dQw4w9WgXcQ\``,
+    });
+  }
+
+  try {
+    // Mensaje mientras se procesa la solicitud
+    await conn.sendMessage(m.chat, {
+      text: `⏳ *Procesando tu solicitud...*\n\nPor favor, espera mientras preparamos tu descarga. 🚀`,
+    });
+
+    // Decodificar la URL de la API (Base64)
+    const base64Api = "aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS95dG1wNA==";
+    const apiUrl = `${Buffer.from(base64Api, "base64").toString("utf-8")}?url=${encodeURIComponent(text)}`;
+
+    // Llamar a la API y parsear los datos
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    // Comprobar si los datos son válidos
+    if (!data || data.status !== 200 || !data.result || !data.result.download || !data.result.download.url) {
+      throw new Error("No se encontraron datos válidos para tu solicitud.");
+    }
+
+    const {
+      result: {
+        download: { url: rawDownloadUrl, filename },
+      },
+    } = data;
+
+    // Corregir la URL de descarga (reemplazar espacios con %20)
+    const downloadUrl = rawDownloadUrl.replace(/\s+/g, "%20");
+
+    // Enviar el video como documento (MP4)
+    await conn.sendMessage(
+      m.chat,
+      {
+        document: { url: downloadUrl },  // Enviar la URL del video como documento
+        mimetype: "video/mp4",            // Especificar que es un video en formato MP4
+        fileName: filename || "video.mp4",  // El nombre del archivo
+        caption: `🎥 *Tu video está listo para descargar.*`,  // Caption del archivo
+      },
+      { quoted: m }  // Responder a la solicitud inicial
+    );
+  } catch (error) {
+    console.error("Error al procesar el video:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+handler.command = /^ytv$/i;
+
+export default handler;
