@@ -26,4 +26,4 @@ await conn.sendMessage(m.chat, { document: { url: URL }, mimetype: 'application/
 handler.command = ['apk', 'apkdl', 'modapk']
 handler.help = ['apkdl']
 handler.tags = ['downloader']
-export default handler
+export default handle
