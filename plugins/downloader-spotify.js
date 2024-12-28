@@ -1,93 +1,112 @@
-// TheMystic-Bot-MD@BrunoSobrino - descargas-spotifypro.js
-// Creditos de los tags a @darlyn1234 y diseño a @ALBERTO9883
-// Este plugins descarga por texto, album, track o playlist de spotify.
-import pkg from 'sanzy-spotifydl'; 
-const { downloadTrack, downloadAlbum, search } = pkg; 
-import fetch from 'node-fetch';
-import pkg2 from 'fluid-spotify.js';
-const { Spotify } = pkg2;
-
-
-const handler = async (m, { conn, text }) => {
-  const datas = global
-  const idioma = datas.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
-  const tradutor = _translate.plugins.descargas_spotifypro
-
- if (!text) throw `${tradutor.texto1}`; 
- const isSpotifyUrl = text.match(/^(https:\/\/open\.spotify\.com\/(album|track|playlist)\/[a-zA-Z0-9]+)/i);
- if (!isSpotifyUrl && !text) throw `${tradutor.texto2}`;
-  try {
-     if (isSpotifyUrl) {
-      if (isSpotifyUrl[2] === 'album') {
-        const album = await downloadAlbum(isSpotifyUrl[0]);
-        const img = await (await fetch(`${album.metadata.cover}`)).buffer()  
-        let spotifyi = `${tradutor.texto3[0]}\n\n`
-          spotifyi += `        ${tradutor.texto3[1]} ${album.metadata.title}\n`
-          spotifyi += `        ${tradutor.texto3[2]} ${album.metadata.artists}\n`
-          spotifyi += `        ${tradutor.texto3[3]} ${album.metadata.releaseDate}\n`   
-          spotifyi += `        ${tradutor.texto3[4]} ${album.trackList.length}\n\n`   
-          spotifyi += `${tradutor.texto3[5]}`
-        await conn.sendMessage(m.chat, {text: spotifyi.trim(), contextInfo: {forwardingScore: 9999999, isForwarded: true, "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.titulowm2, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "thumbnailUrl": img, "mediaUrl": isSpotifyUrl[0], "sourceUrl": isSpotifyUrl[0]}}}, {quoted: m});
-        for (let i = 0; i < album.trackList.length; i++) {
-            await conn.sendMessage(m.chat, {audio: album.trackList[i].audioBuffer, fileName: `${album.trackList[i].metadata.name}.mp3`, mimetype: 'audio/mpeg'}, {quoted: m});
+import axios from 'axios'
+import fetch from 'node-fetch'
+import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
+import search from 'yt-search'
+async function spotifyxv(query) {
+let token = await tokens();
+let response = await axios({
+method: 'get',
+url: 'https://api.spotify.com/v1/search?q=' + encodeURIComponent(query) + '&type=track',
+headers: {
+Authorization: 'Bearer ' + token,
+},
+})
+const tracks = response.data.tracks.items
+const results = tracks.map((track) => ({
+name: track.name,
+artista: track.artists.map((artist) => artist.name),
+album: track.album.name,
+duracion: timestamp(track.duration_ms),
+url: track.external_urls.spotify,
+imagen: track.album.images.length ? track.album.images[0].url : '',
+}))
+return results
 }
-
-      } else if (isSpotifyUrl[2] === 'track') {
-        const track = await downloadTrack(isSpotifyUrl[0]);
-        const dlspoty = track.audioBuffer;
-        const img = await (await fetch(`${track.imageUrl}`)).buffer()  
-        let spotifyi = `${tradutor.texto4[0]}\n\n`
-          spotifyi += `        ${tradutor.texto4[1]} ${track.title}\n`
-          spotifyi += `        ${tradutor.texto4[2]} ${track.artists}\n`
-          spotifyi += `        ${tradutor.texto4[3]} ${track.duration}\n`
-          spotifyi += `        ${tradutor.texto4[4]} ${track.album.name}\n`                 
-          spotifyi += `        ${tradutor.texto4[5]} ${track.album.releasedDate}\n\n`   
-          spotifyi += `${tradutor.texto4[6]}`
-        await conn.sendMessage(m.chat, {text: spotifyi.trim(), contextInfo: {forwardingScore: 9999999, isForwarded: true, "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.titulowm2, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "thumbnailUrl": img, "mediaUrl": track.url, "sourceUrl": track.url}}}, {quoted: m});
-        await conn.sendMessage(m.chat, {audio: dlspoty, fileName: `${track.title}.mp3`, mimetype: 'audio/mpeg'}, {quoted: m});
-
-      } else if (isSpotifyUrl[2] === 'playlist') {
-          const infos = new Spotify({
-              clientID: "7fb26a02133d463da465671222b9f19b",
-              clientSecret: "d4e6f8668f414bb6a668cc5c94079ca1",
-          });      
-          const playlistId = isSpotifyUrl[0].split('/').pop();
-          const playlistInfoByID = await infos.getPlaylist(playlistId);
-          const tracks = playlistInfoByID.tracks.items;
-          const img = await (await fetch(`${playlistInfoByID.images[0].url}`)).buffer()  
-        let spotifyi = `${tradutor.texto5[0]}\n\n`
-          spotifyi += `        ${tradutor.texto5[1]} ${playlistInfoByID.name}\n`
-          spotifyi += `        ${tradutor.texto5[2]} ${tracks.length}\n\n`
-          spotifyi += `${tradutor.texto5[3]}`
-        await conn.sendMessage(m.chat, {text: spotifyi.trim(), contextInfo: {forwardingScore: 9999999, isForwarded: true, "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.titulowm2, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "thumbnailUrl": img, "mediaUrl": playlistInfoByID.external_urls.spotify, "sourceUrl": playlistInfoByID.external_urls.spotify}}}, {quoted: m});
-          let target = m.chat;
-          if (m.isGroup && tracks.length > 20) {
-              target = m.sender;
-          }
-for (let i = 0; i < tracks.length; i++) {
-    const track = await downloadTrack(tracks[i].track.external_urls.spotify);
-    await conn.sendMessage(target, { audio: track.audioBuffer, fileName: `${tracks[i].track.name}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m });
-    }
+async function tokens() {
+const response = await axios({
+method: 'post',
+url:
+'https://accounts.spotify.com/api/token',
+headers: {
+'Content-Type': 'application/x-www-form-urlencoded',
+Authorization: 'Basic ' + Buffer.from('acc6302297e040aeb6e4ac1fbdfd62c3:0e8439a1280a43aba9a5bc0a16f3f009').toString('base64'),
+},
+data: 'grant_type=client_credentials',
+})
+return response.data.access_token
 }
-     } else {
-        const searchTrack = await downloadTrack(text);
-        const dlspoty = searchTrack.audioBuffer;
-        const img = await (await fetch(`${searchTrack.imageUrl}`)).buffer()  
-        let spotifyi = `${tradutor.texto6[0]}n\n`
-          spotifyi += `        ${tradutor.texto6[1]} ${searchTrack.title}\n`
-          spotifyi += `        ${tradutor.texto6[2]} ${searchTrack.artists}\n`
-          spotifyi += `        ${tradutor.texto6[3]} ${searchTrack.duration}\n`
-          spotifyi += `        ${tradutor.texto6[4]} ${searchTrack.album.name}\n`                 
-          spotifyi += `        ${tradutor.texto6[5]} ${searchTrack.album.releasedDate}\n\n`   
-          spotifyi += `${tradutor.texto6[6]}`
-        await conn.sendMessage(m.chat, {text: spotifyi.trim(), contextInfo: {forwardingScore: 9999999, isForwarded: true, "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.titulowm2, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "thumbnailUrl": img, "mediaUrl": searchTrack.url, "sourceUrl": searchTrack.url}}}, {quoted: m});
-        await conn.sendMessage(m.chat, {audio: dlspoty, fileName: `${searchTrack.title}.mp3`, mimetype: 'audio/mpeg'}, {quoted: m});
-}  
-  } catch (error) {
-    console.error(error);
-    throw tradutor.texto7;
-  }
-};
-handler.command = /^(spotifydl|spotifypro)$/i;
-export default handler;
+function timestamp(time) {
+const minutes = Math.floor(time / 60000);
+const seconds = Math.floor((time % 60000) / 1000);
+return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+}
+async function getBuffer(url, options) {
+try {
+options = options || {};
+const res = await axios({
+method: 'get',
+url,
+headers: {
+DNT: 1,
+'Upgrade-Insecure-Request': 1,
+},
+...options,
+responseType: 'arraybuffer',
+});
+return res.data;
+} catch (err) {
+return err;
+}}
+async function getTinyURL(text) {
+try {
+let response = await axios.get(`https://tinyurl.com/api-create.php?url=${text}`);
+return response.data;
+} catch (error) {
+return text;
+}}
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+if (!text) throw `╰⊱❗️⊱ *ACCIÓN MAL USADA* ⊱❗️⊱╮\n\n💛 *DEBE DE USAR EL COMANDO COMO EN ESTE EJEMPLO:*\n${usedPrefix + command} *tu foto*`
+try {
+conn.reply(m.chat, '🚩 *Enviando su música de Spotify*', m, {
+contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
+title: packname,
+body: wm,
+previewType: 0, thumbnail: icons,
+sourceUrl: channel }}})
+m.react(rwait)
+let songInfo = await spotifyxv(text)
+if (!songInfo.length) throw `*No se encontró la canción*`
+let res = songInfo[0]
+let fileSizeInMB = (await getBuffer(res.url)).length / (1024 * 1024)
+let shortURL = await getTinyURL(res.url)
+const info = `🌸 *TITULO:*
+_${res.name}_
+
+💛 *ARTISTA:*
+» ${res.artista.join(', ')}
+
+🔗 *LINK:*
+» ${shortURL}
+
+✨️ *Enviando Canción....*
+${global.wm}`
+
+let resImg = await fetch(res.imagen)
+let thumbb = await resImg.buffer()
+let { videos } = await search(res.name)
+let q = '128kbps'
+let v = videos[0].url
+let yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v))
+let dl_url = await yt.audio[q].download()
+let ttl = await yt.title
+let size = await yt.audio[q].fileSizeH
+let img = await getBuffer(res.imagen)
+conn.sendMessage(m.chat, { audio: { url: dl_url }, fileName: `${ttl}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m })
+await conn.sendMessage(m.chat, {text: info, contextInfo: {forwardingScore: 9999999, isForwarded: true, "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.wm, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "thumbnailUrl": img, "mediaUrl": shortURL, "sourceUrl": shortURL}}}, {quoted: fkontak});
+m.react(done)
+} catch (error) {
+}}
+handler.tags = ['descargas']
+handler.help = ['spotify']
+handler.command = /^(spotify|music)$/i
+export default handler
