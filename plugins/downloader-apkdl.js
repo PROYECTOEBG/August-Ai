@@ -13,7 +13,7 @@ let texto = ` \`\`\`
     ✦ 𝐀𝐜𝐭𝐮𝐚𝐥𝐢𝐳𝐚𝐝𝐨 : ⇢ ${lastUpdate} 🗓️
     ✦ 𝐂𝐫𝐞𝐚𝐝𝐨𝐫 :⇢  BotBarboza-Ai 
 \`\`\`
-> https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d
+> https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
 
 ## Su aplicación se enviará en un momento . . .
 
