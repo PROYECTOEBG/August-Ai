@@ -1,4 +1,4 @@
-import Scraper from "@SumiFX/Scraper"
+7import Scraper from "@SumiFX/Scraper"
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
 if (!text) return m.reply('🥷🏼 Ingresa el nombre de algún Track de Spotify.\n\n`Ejemplo:`\n' + `> *${usedPrefix + command}* Gemini Aaliyah - If Only`)
