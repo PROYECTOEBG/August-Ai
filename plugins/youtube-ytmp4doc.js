@@ -1,76 +1,66 @@
-import fg from 'api-dylux'
-import yts from 'yt-search'
-import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
-import fetch from 'node-fetch' 
-let limit = 5000
+import fetch from "node-fetch";
 
-let handler = async (m, { conn: star, args, text, isPrems, isOwner, usedPrefix, command }) => {
-if (!args || !args[0]) return star.reply(m.chat, '🌸 _*Ingresa el enlace del audio de YouTube junto al comando.*_\n\n`Ejemplo:`\n' + `> *${usedPrefix + command}* https://youtube.com/watch?v=e-xToC9wNl0`, m, rcanal)
-if (!args[0].match(/youtu/gi)) return star.reply(m.chat, `Verifica que el enlace sea de YouTube.`, m, rcanal).then(_ => m.react('✖️'))
-let q = args[1] || '360p'
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return conn.sendMessage(m.chat, {
+      text: `❗ *Por favor ingresa un término de búsqueda para encontrar el video.*\n\n*Ejemplo:* ${usedPrefix}${command} Never Gonna Give You Up`,
+    });
+  }
 
-await m.react('🕓')
-try {
-let v = args[0]
-let yt = await youtubedl(v).catch(async () => await youtubedlv2(v))
-let dl_url = await yt.video[q].download()
-let title = await yt.title
-let size = await yt.video[q].fileSizeH 
-let thumbnail = await yt.thumbnail
+  try {
+    await conn.sendMessage(m.chat, {
+      text: `⏳✨ trabajando en tu video...\n\n📥 Por favor, espera mientras preparamos tu descarga. 🚀`,
+    });
 
-let img = await (await fetch(`${thumbnail}`)).buffer()  
-if (size.split('MB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
-if (size.split('GB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
-        let txt = '`𔓕꯭  ꯭ ꯭ ꯭ 𓏲꯭֟፝੭ ꯭⌑𝐘𝐮𝐤𝐢 𝐒𝐮𝐨𝐮⌑꯭ 𓏲꯭֟፝੭ ꯭  ꯭ ꯭ ꯭𔓕`\n\n'
-       txt += `        » 📚   *Titulo* : ${title}\n`
-       txt += `        » 🎞️   *Calidad* : ${q}\n`
-       txt += `        » ☁️  *Tamaño* : ${size}\n\n`
-       txt += `> 📽️ *Su video en documento se está enviando, espere un momento...*`
-await star.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
-await star.sendMessage(m.chat, { document: { url: dl_url }, caption: '', mimetype: 'video/mp4', fileName: `${title}` + `.mp4`}, {quoted: m })
-await m.react('✅')
-} catch {
-try {
-let yt = await fg.ytv(args[0], q)
-let { title, dl_url, size } = yt 
-let vid = (await yts(text)).all[0]
-let { thumbnail, url } = vid
+    // Decodificar la URL de la API
+    const encodedApiUrl = "aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS95dHBsYXltcDQ="; // Codificado en Base64
+    const apiUrl = `${Buffer.from(encodedApiUrl, "base64").toString("utf-8")}?query=${encodeURIComponent(text)}`;
 
-let img = await (await fetch(`${vid.thumbnail}`)).buffer()  
-if (size.split('MB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
-if (size.split('GB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
-        let txt = '`𔓕꯭  ꯭ ꯭ ꯭ 𓏲꯭֟፝੭ ꯭⌑𝐘𝐮𝐤𝐢 𝐒𝐮𝐨𝐮⌑꯭ 𓏲꯭֟፝੭ ꯭  ꯭ ꯭ ꯭𔓕`\n\n'
-       txt += `        » 📚   *Titulo* : ${title}\n`
-       txt += `        » 🎞️   *Calidad* : ${q}\n`
-       txt += `        » ☁️  *Tamaño* : ${size}\n\n`
-       txt += `> 📽️ *Su video en documento se está enviando, espere un momento...*`
-await star.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
-await star.sendMessage(m.chat, { document: { url: dl_url }, caption: '', mimetype: 'video/mp4', fileName: `${title}` + `.mp4`}, {quoted: m })
-await m.react('✅')
-} catch {
-try {
-let yt = await fg.ytmp4(args[0], q)
-let { title, size, dl_url, thumb } = yt
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-let img = await (await fetch(`${thumb}`)).buffer()
-if (size.split('MB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
-if (size.split('GB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
-        let txt = '`𔓕꯭  ꯭ ꯭ ꯭ 𓏲꯭֟፝੭ ꯭⌑𝐘𝐮𝐤𝐢 𝐒𝐮𝐨𝐮⌑꯭ 𓏲꯭֟፝੭ ꯭  ꯭ ꯭ ꯭𔓕`\n\n'
-       txt += `        » 📚   *Titulo* : ${title}\n`
-       txt += `        » 🎞️   *Calidad* : ${q}\n`
-       txt += `        » ☁️  *Tamaño* : ${size}\n\n`
-       txt += `> 📽️ *Su video en documento se está enviando, espere un momento...*`
-await star.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
-await star.sendMessage(m.chat, { document: { url: dl_url }, caption: '', mimetype: 'video/mp4', fileName: `${title}` + `.mp4`}, {quoted: m })
-await m.react('✅')
-} catch {
-await m.react('✖️')
-}}}}
-handler.help = ['ytmp4doc *<link yt>*']
-handler.tags = ['descargas']
-handler.command = ['ytmp4doc', 'ytvdoc', 'ytdoc']
-//handler.limit = 1
-handler.register = true 
-handler.group = true
+    if (!data || data.status !== 200 || !data.result || !data.result.download) {
+      throw new Error("La API no devolvió datos válidos.");
+    }
 
-export default handler
+    const {
+      result: {
+        metadata: { title, author, timestamp, image, views, url: videoUrl },
+        download: { url: rawDownloadUrl },
+      },
+    } = data;
+
+    const downloadUrl = rawDownloadUrl.replace(/\s+/g, "%20");
+
+    // Obtener el tamaño del archivo
+    const fileResponse = await fetch(downloadUrl, { method: "HEAD" });
+    const fileSize = parseInt(fileResponse.headers.get("content-length") || 0);
+    const fileSizeInMB = fileSize / (1024 * 1024); // Convertir bytes a MB
+
+    await conn.sendMessage(m.chat, {
+      image: { url: image },
+      caption: `🎥 *Video Encontrado:*\n\n📌 *Título:* ${title}\n👤 *Autor:* ${author.name}\n⏱️ *Duración:* ${timestamp}\n👁️ *Vistas:* ${views}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB\n\n🔗 *Enlace del Video:* ${videoUrl}\n\n📥 *Preparando tu descarga...*`,
+    });
+
+    // Enviar siempre el video en formato documento
+    await conn.sendMessage(
+      m.chat,
+      {
+        document: { url: downloadUrl },
+        mimetype: "video/mp4",
+        fileName: `${title}.mp4`,
+        caption: `📂 *Video en Formato Documento:* \n📌 *Título:* ${title}\n👤 *Autor:* ${author.name}\n⏱️ *Duración:* ${timestamp}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
+      },
+      { quoted: m }
+    );
+  } catch (error) {
+    console.error("Error al descargar el video:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+handler.command = /^ytmp4doc$/i;
+
+export default handler;
