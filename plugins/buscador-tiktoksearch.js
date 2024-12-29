@@ -36,10 +36,10 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
           mediaType: 1, 
           showAdAttribution: true,
           title: '♡  ͜ ۬︵࣪᷼⏜݊᷼𝘿𝙚𝙨𝙘𝙖𝙧𝙜𝙖𝙨⏜࣪᷼︵۬ ͜ ',
-          body: '<(✿◠‿◠)> 𝐊𝐚𝐤𝐚𝐫𝐨𝐭𝐨-𝐁𝐨𝐭-𝐌𝐃 🐉',
+          body: '<(✿◠‿◠)> 𝐂𝐫𝐨𝐰𝐁𝐨𝐭-𝐒𝐓 ✨',
           previewType: 0, 
-          thumbnail: logo5,
-          sourceUrl: cn 
+          thumbnail: catalogo,
+          sourceUrl: channel 
         }
       }
     });
@@ -53,7 +53,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
     for (let result of topResults) {
       results.push({
         body: proto.Message.InteractiveMessage.Body.fromObject({ text: null }),
-        footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: titulowm }),
+        footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: wm }),
         header: proto.Message.InteractiveMessage.Header.fromObject({
           title: '' + result.title,
           hasMediaAttachment: true,
@@ -72,10 +72,10 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
           },
           interactiveMessage: proto.Message.InteractiveMessage.fromObject({
             body: proto.Message.InteractiveMessage.Body.create({
-              text: "☁️ RESULTADO DE: " + text
+              text: "✨️ RESULTADO DE: " + text
             }),
             footer: proto.Message.InteractiveMessage.Footer.create({
-              text: "☆꧁༒ĹєǤ𝒆𝐧𝐃༒꧂☆"
+              text: "ᥫᩣWillZek"
             }),
             header: proto.Message.InteractiveMessage.Header.create({
               hasMediaAttachment: false
@@ -100,10 +100,9 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
 };
 
 handler.help = ["tiktoksearch <txt>"];
-//handler.yenes = 1;
-handler.group = true;
+handler.estrellas = 10;
 handler.register = true
 handler.tags = ["buscador"];
-handler.command = ["tiktoksearch", "tts", "tiktoks"];
+handler.command = ["tiktoksearch", "ttss", "tiktoks"];
 
 export default handler;
