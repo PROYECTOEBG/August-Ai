@@ -105,4 +105,4 @@ handler.register = true
 handler.tags = ["search"];
 handler.command = ["tiktoksearch", "ttss", "tiktoks"];
 
-export default handler;
+export default handler
