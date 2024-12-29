@@ -6,7 +6,7 @@ import {youtubedl, youtubedlv2} from '@bochilteam/scraper'
 
 const handler = async (m, {conn, command, args, text, usedPrefix}) => {
 
-if (!text) return conn.reply(m.chat, `💥 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, !${command} Nino - Nakano`,  m, rcanal, )
+if (!text) return conn.reply(m.chat, `💥 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, !${command} Huellas - Maiye Torrex`,  m, rcanal, )
 m.react(rwait)
 
 try {
@@ -14,7 +14,7 @@ try {
 conn.reply(m.chat, wait, m, {
 contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
 title: packname,
-body: wm,
+body: dev,
 previewType: 0, thumbnail: icons,
 sourceUrl: channel }}})
 
@@ -25,26 +25,27 @@ additionalText = 'audio'
 } else if (command === 'play4' || command == 'playdoc2') {
 additionalText = 'video'}
 
-let texto1 = `
-> 🌸 *Titulo*
+let texto1 = `﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
+> 🌸 Tιƚυʅσ:
 > • ${yt_play[0].title}
-> ────────────────────────────>
-> 🌸 *Publicado en:* 
+> ﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
+> 🌸 PυႦʅιƈαԃσ ҽɳ: 
 > • ${yt_play[0].ago}
-> ────────────────────────────>
-> 🌸 *Enlace:*
+> ﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
+> 🌸 Eɳʅαƈҽ:
 > • ${yt_play[0].url}
-> ────────────────────────────>
-> 🌸 *Autor:*
+> ﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
+> 🌸 Aυƚσɾ:
 > • ${yt_play[0].author.name}
-> ────────────────────────────>
-> 🌸 *Canal:*
+> ﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
+> 🌸 Cαɳαʅ:
 > • ${yt_play[0].author.url}
-> ────────────────────────────>
-> 🌸 *Duracion:*:
+>﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
+> 🌸 Dυɾαƈισɳ:
 > • ${secondString(yt_play[0].duration.seconds)}
+・﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌
 
-> _*🍁 Enviando su ${additionalText}, aguarde un momento ☁...*_`.trim()
+> *Eɳʋιαɳԃσ ʂυ ${additionalText}, αɠυαɾԃҽ υɳ ɱσɱҽɳƚσ 🌸...*`.trim()
 await conn.sendMessage(m.chat, { text: texto1, contextInfo: { externalAdReply: { title: yt_play[0].title, body: dev, thumbnailUrl: yt_play[0].thumbnail, mediaType: 1, showAdAttribution: true, renderLargerThumbnail: true }}} , { quoted: fkontak })
 
 if (command == 'play3' || command == 'playdoc') {
@@ -118,10 +119,10 @@ return conn.reply(m.chat, '🌟 *Inténtelo de nuevo*', m, rcanal, )}
 }
 handler.help = ['play3', 'play4']
 handler.tags = ['descargas']
-handler.command = /^(playdoc|playdoc2|play3|play4)$/i
+handler.command = ['playdoc', 'playdoc2', 'play3', 'play4']
 
 //handler.estrellas = 1
-handler.register = true
+handler.register = false
 
 export default handler
 
