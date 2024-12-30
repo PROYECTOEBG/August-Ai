@@ -1,7 +1,7 @@
 import gplay from "google-play-scraper";
 
 let handler = async (m, { conn, text }) => {
-  if (!text) throw "*[❗] Ingresa el nombre de app que quieres busc6*";
+  if (!text) throw "*[❗] Ingresa el nombre de app que quieres buscar*";
   let res = await gplay.search({ term: text });
   if (!res.length) throw `*[❗] Por favor ingresa el nombre de una app de la play store*`;
   let opt = {
