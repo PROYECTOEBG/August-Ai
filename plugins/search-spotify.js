@@ -1,79 +1,26 @@
-/* ʙʏ ᴊᴛxꜱ 🐢 */
-import fetch from 'node-fetch'
-const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default
+import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
-if (!text) return m.reply('Ingresa el texto de lo que quieres buscar en Spotify ❤️‍🔥');
+  if (!text) {
+    return conn.reply(m.chat, '❀ Ingresa el link de una cancion de spotify', m, rcanal);
+  }
 
-try {
-async function createImage(url) {
-const { imageMessage } = await generateWAMessageContent({image: { url }}, {upload: conn.waUploadToServer})
-return imageMessage
-}
+  try {
+    let api = await fetch(`https://api.giftedtech.my.id/api/download/spotifydl?apikey=gifted&url=${text}`);
+    let json = await api.json();
+    let { quality, title, duration, thumbnail, download_url: dl_url } = json.result;
+   
+    let HS = `- Titulo : ${title}
+- Calidad : ${quality}
+- Duracion : ${duration}`;
 
-let push = [];
-let api = await fetch(`https://deliriussapi-oficial.vercel.app/search/spotify?q=${encodeURIComponent(text)}`);
-let json = await api.json()
+    await conn.sendFile(m.chat, thumbnail, 'defoult.jpg', HS, m,rcanal);
+    await conn.sendFile(m.chat, dl_url, 'defoult.mp3', null, m);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-for (let track of json.data) {
-let image = await createImage(track.image)
+handler.command = /^(spotify)$/i;
 
-/* push.push({
-body: proto.Message.InteractiveMessage.Body.fromObject({
-text: '${track.title} - ${track.artist}'
-}),
-footer: proto.Message.InteractiveMessage.Footer.fromObject({text: `By IsitaBot`}),
-header: proto.Message.InteractiveMessage.Header.fromObject({title: '', hasMediaAttachment: true, imageMessage: image}),
-nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
-buttons: [ */ 
-
-        push.push({
-            body: proto.Message.InteractiveMessage.Body.fromObject({
-                text: `◦ *Título:* ${track.title} \n◦ *Artistas:* ${track.artist} \n◦ *Album:* ${track.album} \n◦ *Duración:* ${track.duration} \n◦ *Popularidad:* ${track.popularity} \n◦ *Fecha:* ${track.publish}`
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.fromObject({
-                text: '' 
-            }),
-            header: proto.Message.InteractiveMessage.Header.fromObject({
-                title: '',
-                hasMediaAttachment: true,
-                imageMessage: image 
-            }),
-            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
-                buttons: [
-{
-"name": "cta_copy",
-"buttonParamsJson": "{\"display_text\":\"🎧 ¡Descargar Audio! 🎧\",\"id\":\"123456789\",\"copy_code\":\".spotify " + track.url + "\"}"
-},
-]
-})
-});
-}
-
-const msg = generateWAMessageFromContent(m.chat, {
-viewOnceMessage: {
-message: {
-messageContextInfo: {
-deviceListMetadata: {},
-deviceListMetadataVersion: 2
-},
-interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-body: proto.Message.InteractiveMessage.Body.create({text: '*`\Resultados de:\`* ' + `${text}`}),
-footer: proto.Message.InteractiveMessage.Footer.create({text: '_\`ꜱ\` \`ᴘ\` \`-\` \`ꜱ\` \`ᴇ\` \`ᴀ\` \`ʀ\` \`ᴄ\` \`ʜ\`_'}),
-header: proto.Message.InteractiveMessage.Header.create({hasMediaAttachment: false}),
-carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({cards: [...push]})
-})
-}}}, {
-    'quoted': m
-  });
-
-await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
-} catch (error) {
-console.error(error)
-}}
-
-handler.help = ["spotifysearch"]
-handler.tags = ["search"]
-handler.command = /^(spotifysearch)$/i
-
-export default handler
+export default handler;
