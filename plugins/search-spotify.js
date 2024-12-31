@@ -23,4 +23,4 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.command = /^(spotify)$/i;
 
-export default handler;
+export default handler
