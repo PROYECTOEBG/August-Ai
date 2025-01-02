@@ -38,4 +38,4 @@ handler.tags = ['downloader'];
 handler.command = ['ytmp4', 'yt', 'ytv']; 
 // handler.limit = 1
 
-export default handler
+export default handler;
