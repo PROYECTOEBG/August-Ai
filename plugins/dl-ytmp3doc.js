@@ -1,105 +1,72 @@
-import FormData from 'form-data';
-import axios from 'axios';
-import cheerio from 'cheerio';
+import fg from 'api-dylux'
+import yts from 'yt-search'
+import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
+import fetch from 'node-fetch' 
+let limit = 200
 
-const extractVideoID = (url) => {
-  const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-  const match = url.match(regex);
-  return match ? match[1] : null;
-};
+let handler = async (m, { conn: star, args, text, isPrems, isOwner, usedPrefix, command }) => {
+if (!args || !args[0]) return star.reply(m.chat, '🚩 Ingresa el enlace del vídeo de YouTube junto al comando.\n\n`Ejemplo:`\n' + `> *${usedPrefix + command}* https://youtu.be/QSvaCSt8ixs`, m, rcanal)
+if (!args[0].match(/youtu/gi)) return star.reply(m.chat, `Verifica que el enlace sea de YouTube.`, m, rcanal).then(_ => m.react('✖️'))
+let q = '128kbps'
 
-const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) {
-    return m.reply(
-      `🔰 Admin-TK: Por favor, envía el enlace del video de YouTube junto al comando.\n\n✦ Ejemplo:\n> ${usedPrefix + command} https://youtube.com/watch?v=kGobHQ7z8X4`
-    );
-  }
+await m.react('🕓')
+try {
+let v = args[0]
+let yt = await youtubedl(v).catch(async () => await youtubedlv2(v))
+let dl_url = await yt.audio[q].download()
+let title = await yt.title
+let size = await yt.audio[q].fileSizeH
+let thumbnail = await yt.thumbnail
 
-  const videoID = extractVideoID(text);
-  if (!videoID) {
-    return m.reply('🔰 Admin-TK: El enlace proporcionado no es válido. Asegúrate de usar un enlace de YouTube.');
-  }
+let img = await (await fetch(`${thumbnail}`)).buffer()  
+if (size.split('MB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
+        let txt = '`乂  Y O U T U B E  -  M P 3 D O C`\n\n'
+       txt += `        ✩   *Titulo* : ${title}\n`
+       txt += `        ✩   *Calidad* : ${q}\n`
+       txt += `        ✩   *Tamaño* : ${size}\n\n`
+       txt += `> *- ↻ El audio se esta enviando espera un momento, soy lenta. . .*`
+await star.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
+await star.sendMessage(m.chat, { document: { url: dl_url }, caption: '', mimetype: 'audio/mpeg', fileName: `${title}.mp3`}, { quoted: m })
+await m.react('✅')
+} catch {
+try {
+let yt = await fg.yta(args[0], q)
+let { title, dl_url, size } = yt 
+let vid = (await yts(text)).all[0]
+let { thumbnail, url } = vid
 
-  await conn.sendMessage(m.chat, { react: { text: '🕒', key: m.key } });
+let img = await (await fetch(`${vid.thumbnail}`)).buffer()  
+if (size.split('MB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
+        let txt = '`乂  Y O U T U B E  -  M P 3 D O C`\n\n'
+       txt += `        ✩   *Titulo* : ${title}\n`
+       txt += `        ✩   *Calidad* : ${q}\n`
+       txt += `        ✩   *Tamaño* : ${size}\n\n`
+       txt += `> *- ↻ El audio se esta enviando espera un momento, soy lenta. . .*`
+await star.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
+await star.sendMessage(m.chat, { document: { url: dl_url }, caption: '', mimetype: 'audio/mpeg', fileName: `${title}.mp3`}, { quoted: m })
+await m.react('✅')
+} catch {
+try {
+let yt = await fg.ytmp3(args[0], q)
+let { title, dl_url, size, thumb } = yt 
 
-  try {
-    let ytdata = await ytdl(text);
+let img = await (await fetch(`${thumb}`)).buffer()
+if (size.split('MB')[0] >= limit) return star.reply(m.chat, `El archivo pesa mas de ${limit} MB, se canceló la Descarga.`, m, rcanal).then(_ => m.react('✖️'))
+        let txt = '`乂  Y O U T U B E  -  M P 3 D O C`\n\n'
+       txt += `        ✩   *Titulo* : ${title}\n`
+       txt += `        ✩   *Calidad* : ${q}\n`
+       txt += `        ✩   *Tamaño* : ${size}\n\n`
+       txt += `> *- ↻ El audio se esta enviando espera un momento, soy lenta. . .*`
+await star.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
+await star.sendMessage(m.chat, { document: { url: dl_url }, caption: '', mimetype: 'audio/mpeg', fileName: `${title}.mp3`}, { quoted: m })
+await m.react('✅')
+} catch {
+await m.react('✖️')
+}}}}
+handler.help = ['ytmp3doc *<link yt>*']
+handler.tags = ['downloader']
+handler.command = ['ytmp3doc', 'ytadoc'] 
+//handler.limit = 1
+handler.register = true 
 
-    if (!ytdata.success || !ytdata.audio[0]) {
-      throw new Error('No se pudo obtener el enlace de descarga de audio. Inténtalo más tarde.');
-    }
-
-    let audioInfo = ytdata.audio[0];
-    await conn.sendMessage(
-      m.chat,
-      {
-        document: { url: audioInfo.downloadLink },
-        caption: `🔰 Admin-TK: Tu pedido está listo.\n\n🎵 Título: ${ytdata.title}\n⏳ Duración: ${ytdata.duration}\n✅ Audio descargado con éxito.`,
-        mimetype: 'audio/mp3',
-        fileName: `${ytdata.title}.mp3`,
-      },
-      { quoted: m }
-    );
-
-    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
-  } catch (error) {
-    console.error(`Error: ${error.message}`);
-    await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } });
-    m.reply(
-      `🔰 Admin-TK: Ocurrió un error al procesar tu solicitud.\n\n✦ Detalle del error:\n${error.message || 'Error desconocido.'}`
-    );
-  }
-};
-
-handler.help = ['ytmp3 *<link>*', 'ytadoc *<link>*'];
-handler.tags = ['downloader'];
-handler.command = /^(ytmp3|ytadoc|ytmp3doc)$/i;
-
-export default handler;
-
-async function ytdl(query) {
-  const form = new FormData();
-  form.append('query', query);
-
-  try {
-    const response = await axios.post('https://yttomp4.pro/', form, {
-      headers: {
-        ...form.getHeaders(),
-      },
-    });
-
-    const $ = cheerio.load(response.data);
-
-    const results = {
-      success: true,
-      title: $('.vtitle').text().trim(),
-      duration: $('.res_left p').text().replace('Duracion: ', '').trim(),
-      image: $('.ac img').attr('src'),
-      video: [],
-      audio: [],
-      other: [],
-    };
-
-    $('.tab-item-data').each((index, tab) => {
-      const tabTitle = $(tab).attr('id');
-      $(tab).find('tbody tr').each((i, element) => {
-        const fileType = $(element).find('td').eq(0).text().trim();
-        const fileSize = $(element).find('td').eq(1).text().trim();
-        const downloadLink = $(element).find('a.dbtn').attr('href');
-
-        if (tabTitle === 'tab-item-1') {
-          results.video.push({ fileType, fileSize, downloadLink });
-        } else if (tabTitle === 'tab-item-2') {
-          results.audio.push({ fileType, fileSize, downloadLink });
-        } else if (tabTitle === 'tab-item-3') {
-          results.other.push({ fileType, fileSize, downloadLink });
-        }
-      });
-    });
-
-    return results;
-  } catch (error) {
-    console.error('Error:', error.message);
-    return { success: false, message: error.message };
-  }
-}
+export default handler
