@@ -10,32 +10,41 @@ export async function before(m, {conn, participants, groupMetadata}) {
   if (chat.bienvenida && m.messageStubType == 27) {
     if (chat.sWelcome) {
       let user = `@${m.messageStubParameters[0].split`@`[0]}`
-      let welcome = chat.sWelcome.replace('@user', () => user);
+      let welcome = chat.sWelcome
+        .replace('@user', () => user)
+        .replace('@group', () => groupMetadata.subject)
+        .replace('@desc', () => groupMetadata.desc || 'sin descripción');
       await conn.sendAi(m.chat, botname, textbot, welcome, img, img, canal)
     } else {
-      let bienvenida = `┌─★ Barbozabot - Ai \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   └───────────────┈ ⳹`
-      await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img, canal)
+      let bienvenida = `┌─★ Barboza Bot \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   │✑  Descripción:\n${groupMetadata.desc || 'sin descripción'}\n   └───────────────┈ ⳹`
+      await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img)
     }
   }
 
   if (chat.bienvenida && m.messageStubType == 28) {
     if (chat.sBye) {
       let user = `@${m.messageStubParameters[0].split`@`[0]}`
-      let bye = chat.sBye.replace('@user', () => user);
-      await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal)
+      let bye = chat.sBye
+        .replace('@user', () => user)
+        .replace('@group', () => groupMetadata.subject)
+        .replace('@desc', () => groupMetadata.desc || 'sin descripción');
+      await conn.sendAi(m.chat, botname, textbot, bye, img, img)
     } else {
-      let bye = `┌─★ Barbozabot - Ai \n│「 ADIOS 😂 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
-      await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal)
+      let bye = `┌─★ Barboza Bot  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      await conn.sendAi(m.chat, botname, textbot, bye, img, img)
     }
   }
 
   if (chat.bienvenida && m.messageStubType == 32) {
     if (chat.sBye) {
       let user = `@${m.messageStubParameters[0].split`@`[0]}`
-      let bye = chat.sBye.replace('@user', () => user);
-      await conn.sendAi(m.chat, botname, textbot, bye, img, img, canal)
+      let bye = chat.sBye
+        .replace('@user', () => user)
+        .replace('@group', () => groupMetadata.subject)
+        .replace('@desc', () => groupMetadata.desc || 'sin descripción');
+      await conn.sendAi(m.chat, botname, textbot, bye, img, img)
     } else {
-      let kick = `┌─★ Barbozabot - Ai \n│「 ADIOS 😂 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Se fue\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
-      await conn.sendAi(m.chat, botname, textbot, kick, img, img, canal)
+      let kick = `┌─★ Barboza Bot  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      await conn.sendAi(m.chat, botname, textbot, kick, img, img)
     }
 }}
