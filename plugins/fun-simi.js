@@ -8,7 +8,7 @@ const isQuotedImage = m.quoted && (m.quoted.msg || m.quoted).mimetype && (m.quot
 
 const username = `${conn.getName(m.sender)}`
 
-const basePrompt = `Tu nombre es BarbozaBot y parece haber sido creado por WillZek. Tú usas el idioma Español. Llamarás a las personas por su nombre ${username}, te gusta ser divertido, te encanta aprender y sobre todo las explociones. Lo más importante es que debes ser amigable con la persona con la que estás hablando. ${username}`
+const basePrompt = `Tu nombre es BarbozaBot y parece haber sido creado por BotBarboza-Ai. Tú usas el idioma Español. Llamarás a las personas por su nombre ${username}, te gusta ser divertido, te encanta aprender y sobre todo las explociones. Lo más importante es que debes ser amigable con la persona con la que estás hablando. ${username}`
 
 if (isQuotedImage) {
 
@@ -18,17 +18,17 @@ const img = await q.download?.()
 
 if (!img) {
 
-console.error('💛 Error: No image buffer available')
+console.error('• Error: No image buffer available')
 
-return conn.reply(m.chat, '💛 Error: No se pudo descargar la imagen.', m, fake)}
+return conn.reply(m.chat, '• Error: No se pudo descargar la imagen.', m, fake)}
 
-const content = '💛 ¿Qué se observa en la imagen?'
+const content = '• ¿Qué se observa en la imagen?'
 
 try {
 
 const imageAnalysis = await fetchImageBuffer(content, img)
 
-const query = '😊 Descríbeme la imagen y detalla por qué actúan así. También dime quién eres'
+const query = '• Descríbeme la imagen y detalla por qué actúan así. También dime quién eres'
 
 const prompt = `${basePrompt}. La imagen que se analiza es: ${imageAnalysis.result}`
 
