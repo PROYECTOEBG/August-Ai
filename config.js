@@ -10,6 +10,7 @@ import axios from 'axios'
 
 global.owner = [
   ['584246582666', 'Bot-Ai',true],
+  ['51968382008', 'Darkcore',true],
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
