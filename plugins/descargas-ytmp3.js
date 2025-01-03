@@ -10,7 +10,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 
   const videoInfo = search.all[0];
-  const body = `*Youtube By CrowBot*
+  const body = `*Youtube By Barboza*
 
     • *Título :* » ${videoInfo.title}
     • *Views :* » ${videoInfo.views}
