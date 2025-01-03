@@ -1,40 +1,80 @@
+/* 
+- Play Botones By Angel-OFC 
+- https://whatsapp.com/channel/0029VaJxgcB0bIdvuOwKTM2Y
+*/
+import fetch from 'node-fetch';
 import yts from 'yt-search';
 
-let handler = async (m, { conn, command, args, text, usedPrefix }) => {
-    if (!text) {
-        return conn.reply(m.chat, '*Que quieres que busque 𝐑𝐄𝐍𝐆𝐄𝐋 𝐁𝐎𝐓*', m);
-    }
+let handler = async (m, { conn, args }) => {
+  if (!args[0]) return conn.reply(m.chat, '*\`Ingresa el nombre de lo que quieres buscar\`*', m);
 
-    await m.react('⏳');
-    let res = await yts(text);
-    let play = res.videos[0];
+  await m.react('🕓');
+  try {
+    let res = await search(args.join(" "));
+    let video = res[0];
+    let img = await (await fetch(video.image)).buffer();
 
-    if (!play) {
-        throw `Error: Vídeo no encontrado`;
-    }
+    let txt = `*\`【Y O U T U B E - P L A Y】\`*\n\n`;
+    txt += `• *\`Título:\`* ${video.title}\n`;
+    txt += `• *\`Duración:\`* ${secondString(video.duration.seconds)}\n`;
+    txt += `• *\`Publicado:\`* ${eYear(video.ago)}\n`;
+    txt += `• *\`Canal:\`* ${video.author.name || 'Desconocido'}\n`;
+    txt += `• *\`Url:\`* _https://youtu.be/${video.videoId}_\n\n`;
 
-    let { title, thumbnail, ago, timestamp, views, videoId, url } = play;
-
-    let txt = '```𝚈𝚘𝚞𝚃𝚞𝚋𝚎 𝙳𝚎𝚜𝚌𝚊𝚛𝚐𝚊𝚜```\n';
-    txt += '╭━─━─━─━─≪✠≫─━─━─━─━╮\n';
-    txt += `> *𝚃𝚒𝚝𝚞𝚕𝚘* : _${title}_\n`;
-    txt += `> *𝙲𝚛𝚎𝚊𝚍𝚘* : _${ago}_\n`;
-    txt += `> *𝙳𝚞𝚛𝚊𝚌𝚒𝚘𝚗* : _${timestamp}_\n`;
-    txt += `> *𝚅𝚒𝚜𝚒𝚝𝚊𝚜* : _${views.toLocaleString()}_\n`;
-    txt += `> *𝙻𝚒𝚗𝚔* : _https://www.youtube.com/watch?v=${videoId}_\n`;
-    txt += '┗─══──━══─| ✠ |─══━─═──┛ \n';
-    txt += '𝐑𝐄𝐍𝐆𝐄𝐋 𝐌𝐄𝐋𝐇𝐎𝐑 𝐁𝐎𝐓';
-
-    await conn.sendButton2(m.chat, txt, '. ', thumbnail, [
-        ['MP3', `${usedPrefix}ytmp3 ${url}`],
-        ['MENU RENGEL', `${usedPrefix}menu ${url}`],
-        ], null, [['Canal', '']], m);
+    await conn.sendMessage(m.chat, {
+      image: img,
+      caption: txt,
+      footer: 'Selecciona una opción',
+      buttons: [
+        {
+          buttonId: `.ytmp3 https://youtu.be/${video.videoId}`,
+          buttonText: {
+            displayText: '🎵 Audio',
+          },
+        },
+        {
+          buttonId: `.ytmp4 https://youtu.be/${video.videoId}`,
+          buttonText: {
+            displayText: '🎥 Video',
+          },
+        },
+      ],
+      viewOnce: true,
+      headerType: 4,
+    }, { quoted: m });
 
     await m.react('✅');
+  } catch (e) {
+    console.error(e);
+    await m.react('✖️');
+    conn.reply(m.chat, '*\`Error al buscar el video.\`*', m);
+  }
 };
 
-handler.help = ['play'];
-handler.tags = ['downloader'] 
-handler.command = ['play',];
+handler.help = ['play *<texto>*'];
+handler.tags = ['dl'];
+handler.command = ['play'];
 
 export default handler;
+
+async function search(query, options = {}) {
+  let search = await yts.search({ query, hl: "es", gl: "ES", ...options });
+  return search.videos;
+}
+
+function secondString(seconds) {
+  seconds = Number(seconds);
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s`;
+}
+
+function eYear(txt) {
+  if (txt.includes('year')) return txt.replace('year', 'año').replace('years', 'años');
+  if (txt.includes('month')) return txt.replace('month', 'mes').replace('months', 'meses');
+  if (txt.includes('day')) return txt.replace('day', 'día').replace('days', 'días');
+  if (txt.includes('hour')) return txt.replace('hour', 'hora').replace('hours', 'horas');
+  if (txt.includes('minute')) return txt.replace('minute', 'minuto').replace('minutes', 'minutos');
+  return txt;
+}
