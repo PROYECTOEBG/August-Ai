@@ -1,31 +1,129 @@
-import {youtubedl, youtubedlv2} from '@bochilteam/scraper';
 import fetch from 'node-fetch';
-const handler = async (m, {conn, args}) => {
-  if (!args[0]) throw '*[❗𝐈𝐍𝐅𝐎❗] 𝙸𝙽𝚂𝙴𝚁𝚃𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙼𝙰𝚂 𝙴𝙻 𝙴𝙽𝙻𝙰𝙲𝙴 / 𝙻𝙸𝙽𝙺 𝙳𝙴 𝚄𝙽 𝚅𝙸𝙳𝙴𝙾 𝙳𝙴 𝚈𝙾𝚄𝚃𝚄𝙱𝙴*';
-  await m.reply(`*_⏳Sᴇ ᴇsᴛᴀ ᴘʀᴏᴄᴇsᴀɴᴅᴏ Sᴜ ᴠɪᴅᴇᴏ...⏳_*\n\n*◉ Sɪ Sᴜ ᴠɪᴅᴇᴏ ɴᴏ ᴇs ᴇɴᴠɪᴀᴅᴏ, ᴘʀᴜᴇʙᴇ ᴄᴏɴ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ #playdoc ᴏ #play.2 ᴏ #ytmp4doc ◉*`);
-  try {
-    const qu = args[1] || '360';
-    const q = qu + 'p';
-    const v = args[0];
-    const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
-    const dl_url = await yt.video[q].download();
-    const ttl = await yt.title;
-    const size = await yt.video[q].fileSizeH;
-    const cap = `*◉—⌈📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥⌋—◉*\n❏ *𝚃𝙸𝚃𝚄𝙻𝙾:* ${ttl}\n❏ *𝙿𝙴𝚂𝙾:* ${size}`.trim();
-    await await conn.sendMessage(m.chat, {document: {url: dl_url}, caption: cap, mimetype: 'video/mp4', fileName: ttl + `.mp4`}, {quoted: m});
-  } catch {
-    try {
-      const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytvideo2?apikey=${lolkeysapi}&url=${args[0]}`);
-      const lolh = await lolhuman.json();
-      const n = lolh.result.title || 'error';
-      const n2 = lolh.result.link;
-      const n3 = lolh.result.size;
-      const cap2 = `*◉—⌈📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥⌋—◉*\n❏ *𝚃𝙸𝚃𝚄𝙻𝙾:* ${n}\n❏ *𝙿𝙴𝚂𝙾:* ${n3}`.trim();
-      await conn.sendMessage(m.chat, {document: {url: n2}, caption: cap2, mimetype: 'video/mp4', fileName: n + `.mp4`}, {quoted: m});
-    } catch {
-      await conn.reply(m.chat, '*[❗] 𝙴𝚁𝚁𝙾𝚁 𝙽𝙾 𝙵𝚄𝙴 𝙿𝙾𝚂𝙸𝙱𝙻𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚁 𝙴𝙻 𝚅𝙸𝙳𝙴𝙾*', m);
+import yts from "yt-search";
+import axios from 'axios';
+const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@adiwajshing/baileys')).default;
+import FormData from "form-data";
+import Jimp from "jimp";
+
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+    if (!text) return m.reply(`• *Ejemplo:* ${usedPrefix + command} elaina edit`);
+
+    await m.reply('> _*`Cargando...`*_');
+
+    async function createImage(img) {
+        const { imageMessage } = await generateWAMessageContent({
+            image: img
+        }, {
+            upload: conn.waUploadToServer
+        });
+        return imageMessage;
     }
-  }
-};
-handler.command = /^ytmp4doc|ytvdoc|ytmp4.2|ytv.2$/i;
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    let push = [];
+    let results = await yts(text);
+    let videos = results.videos.slice(0, 6); 
+    shuffleArray(videos);
+
+    let i = 1;
+    for (let video of videos) {
+        let imageUrl = video.thumbnail;
+        let imageK = await fetch(imageUrl);
+        let imageB = await imageK.buffer();
+      let pr = await remini(imageB, "enhance")
+        push.push({
+            body: proto.Message.InteractiveMessage.Body.fromObject({
+                text: `🎬 *Título:* ${video.title}\n⌛ *Duración:* ${video.timestamp}\n👀 *Vistas:* ${video.views}`
+            }),
+            footer: proto.Message.InteractiveMessage.Footer.fromObject({
+                text: '乂 Y O U T U B E' 
+            }),
+            header: proto.Message.InteractiveMessage.Header.fromObject({
+                title: `Video - ${i++}`,
+                hasMediaAttachment: true,
+                imageMessage: await createImage(pr) 
+            }),
+            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+                buttons: [
+                    {
+                        "name": "cta_url",
+                        "buttonParamsJson": `{"display_text":"Mirar en YouTube","url":"${video.url}"}`
+                    },
+                    {
+                "name": "cta_copy",
+                "buttonParamsJson": JSON.stringify({
+                "display_text": "Copiar Link",
+                "copy_code": `${video.url}`
+                })
+              }
+                ]
+            })
+        });
+    }
+
+    const bot = generateWAMessageFromContent(m.chat, {
+        viewOnceMessage: {
+            message: {
+                messageContextInfo: {
+                    deviceListMetadata: {},
+                    deviceListMetadataVersion: 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+                    body: proto.Message.InteractiveMessage.Body.create({
+                        text: "Resultados de la búsqueda completos..."
+                    }),
+                    footer: proto.Message.InteractiveMessage.Footer.create({
+                        text: "Sexo"
+                    }),
+                    header: proto.Message.InteractiveMessage.Header.create({
+                        hasMediaAttachment: false
+                    }),
+                    carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+                        cards: [...push] // Mengisi carousel dengan hasil video
+                    })
+
+                })
+            }
+        }
+    }, {});
+
+    await conn.relayMessage(m.chat, bot.message, { messageId: bot.key.id });
+}
+
+handler.help = ["ytslide", "yts"];
+handler.tags = ["search"];
+handler.command = ["ytslide", "yts"];
+
 export default handler;
+
+async function remini(imageData, operation) {
+  return new Promise(async (resolve, reject) => {
+    const availableOperations = ["enhance", "recolor", "dehaze"]
+    if (availableOperations.includes(operation)) {
+      operation = operation
+    } else {
+      operation = availableOperations[0]
+    }
+    const baseUrl = "https://inferenceengine.vyro.ai/" + operation + ".vyro"
+    const formData = new FormData()
+    formData.append("image", Buffer.from(imageData), {filename: "enhance_image_body.jpg", contentType: "image/jpeg"})
+    formData.append("model_version", 1, {"Content-Transfer-Encoding": "binary", contentType: "multipart/form-data; charset=utf-8"})
+    formData.submit({url: baseUrl, host: "inferenceengine.vyro.ai", path: "/" + operation, protocol: "https:", headers: {"User-Agent": "okhttp/4.9.3", Connection: "Keep-Alive", "Accept-Encoding": "gzip"}},
+      function (err, res) {
+        if (err) reject(err);
+        const chunks = [];
+        res.on("data", function (chunk) {chunks.push(chunk)});
+        res.on("end", function () {resolve(Buffer.concat(chunks))});
+        res.on("error", function (err) {
+        reject(err);
+        });
+      },
+    )
+  })
+}
