@@ -6,7 +6,7 @@ import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
 
 var handler = async (m, { conn, command, args, text, usedPrefix }) => {
 
-if (!text) return conn.reply(m.chat, `🌟 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, ${usedPrefix + command} Es un Secreto Plan B`,  m, rcanal)
+if (!text) return conn.reply(m.chat, `🎄 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, ${usedPrefix + command} Es un Secreto Plan B`,  m, rcanal)
 
 await m.react(rwait)
 
@@ -226,4 +226,4 @@ let url = []
 for (let i = 0; i < result.length; i++) { url.push(result[i].url) }
 let random = url[0]
 let getVideo = await ytMp4(random)
-resolve(getVideo)}).catch(reject)})} i 
+resolve(getVideo)}).catch(reject)})}
