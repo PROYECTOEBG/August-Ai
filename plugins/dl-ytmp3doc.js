@@ -1,33 +1,118 @@
-import Starlights from '@StarlightsTeam/Scraper'
+// *[ ❀ PLAY (VIDEO|AUDIO|DOC) ]*
+import yts from 'yt-search'
 import fetch from 'node-fetch'
 
-const limit = 200
+let handler = async (m, { conn, args, usedPrefix, text, command }) => {
+let formatos = ["mp3", "mp4", "mp3doc", "mp4doc"]
+let [feature, ...query] = text.split(" ")
 
-let handler = async (m, { conn, args, text, isPrems, isOwner, usedPrefix, command }) => {
-    if (!args[0]) { return conn.reply(m.chat, '[ ✰ ] Ingresa el enlace del vídeo de *YouTube* junto al comando.\n\n`» Ejemplo :`\n' + `> *${usedPrefix + command}* https://youtu.be/QSvaCSt8ixs`, m, rcanal)}
+if (!formatos.includes(feature)) {
+return conn.reply(m.chat, `❀ Ingresa el formato y el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*\n\n*❀ Formatos disponibles* :\n\n*${usedPrefix + command}* mp3\n*${usedPrefix + command}* mp3doc\n*${usedPrefix + command}* mp4\n*${usedPrefix + command}* mp4doc`, m)
+}
 
-await m.react('🕓')
+if (!query.length) {
+return conn.reply(m.chat, `❀ ingresa el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*`, m)
+}
+
+let res = await yts(query.join(" "))
+let vid = res.videos[0]
+let txt = `- *Título*: ${vid.title}
+- *Duración*: ${vid.timestamp}
+- *Visitas*: ${toNum(vid.views)}
+- *Autor*: ${vid.author.name}
+- *Publicado*: ${eYear(vid.ago)}
+- *Url*: https://youtu.be/${vid.videoId}`
+
+await conn.sendFile(m.chat, vid.thumbnail, 'thumbnail.jpg', txt, m)
+  
 try {
-let { title, size, quality, thumbnail, dl_url } = await Starlights.ytmp3(args[0])
+let api = await fetch(`https://api.giftedtech.my.id/api/download/ytdl?apikey=gifted&url=${vid.url}`)
+let json = await api.json()
 
-if (parseFloat(size.split('MB')[0]) >= limit) { return m.reply(`El archivo pesa más de ${limit} MB, se canceló la descarga.`).then(() => m.react('✖️'))}
 
-let img = await (await fetch(thumbnail)).buffer()
-let txt = '`乂  Y O U T U B E  -  M P 3 D O C`\n\n' +
-       `        ✩   *Título* : ${title}\n` +
-       `        ✩   *Calidad* : ${quality}\n` +
-       `        ✩   *Tamaño* : ${size}\n\n` +
-       '> *- ↻ El audio se está enviando, espera un momento...*'
+let dl_url = feature.includes('mp3') ? json.result.audio_url : json.result.video_url
+let fileType = feature.includes('mp3') ? 'audio/mp3' : 'video/mp4'
+let fileName = `${json.result.title}.${feature.includes('mp3') ? 'mp3' : 'mp4'}`
 
-await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
-await conn.sendMessage(m.chat, { document: { url: dl_url }, mimetype: 'audio/mpeg', fileName: `${title}.mp3` }, { quoted: m })
-await m.react('✅')
-} catch {
-await m.react('✖️')
+let isDoc = feature.includes('doc')
+let file = { url: dl_url }
+
+await conn.sendMessage(m.chat, { [isDoc ? 'document' : feature.includes('mp3') ? 'audio' : 'video']: file,  mimetype: fileType,  fileName: fileName  }, { quoted: m })
+    
+} catch (error) {
+console.error(error)
 }}
-handler.help = ['ytmp3doc *<link yt>*']
-handler.tags = ['downloader']
-handler.command = ['ytmp3doc', 'ytadoc']
-handler.register = true
 
+
+handler.command = ['play']
 export default handler
+
+function eYear(txt) {
+    if (!txt) return '×'
+    if (txt.includes('month ago')) {
+        var T = txt.replace("month ago", "").trim()
+        var L = 'hace '  + T + ' mes'
+        return L
+    }
+    if (txt.includes('months ago')) {
+        var T = txt.replace("months ago", "").trim()
+        var L = 'hace ' + T + ' meses'
+        return L
+    }
+    if (txt.includes('year ago')) {
+        var T = txt.replace("year ago", "").trim()
+        var L = 'hace ' + T + ' año'
+        return L
+    }
+    if (txt.includes('years ago')) {
+        var T = txt.replace("years ago", "").trim()
+        var L = 'hace ' + T + ' años'
+        return L
+    }
+    if (txt.includes('hour ago')) {
+        var T = txt.replace("hour ago", "").trim()
+        var L = 'hace ' + T + ' hora'
+        return L
+    }
+    if (txt.includes('hours ago')) {
+        var T = txt.replace("hours ago", "").trim()
+        var L = 'hace ' + T + ' horas'
+        return L
+    }
+    if (txt.includes('minute ago')) {
+        var T = txt.replace("minute ago", "").trim()
+        var L = 'hace ' + T + ' minuto'
+        return L
+    }
+    if (txt.includes('minutes ago')) {
+        var T = txt.replace("minutes ago", "").trim()
+        var L = 'hace ' + T + ' minutos'
+        return L
+    }
+    if (txt.includes('day ago')) {
+        var T = txt.replace("day ago", "").trim()
+        var L = 'hace ' + T + ' dia'
+        return L
+    }
+    if (txt.includes('days ago')) {
+        var T = txt.replace("days ago", "").trim()
+        var L = 'hace ' + T + ' dias'
+        return L
+    }
+    return txt
+}
+
+
+function toNum(number) {
+    if (number >= 1000 && number < 1000000) {
+        return (number / 1000).toFixed(1) + 'k'
+    } else if (number >= 1000000) {
+        return (number / 1000000).toFixed(1) + 'M'
+    } else if (number <= -1000 && number > -1000000) {
+        return (number / 1000).toFixed(1) + 'k'
+    } else if (number <= -1000000) {
+        return (number / 1000000).toFixed(1) + 'M'
+    } else {
+        return number.toString()
+    }
+}
