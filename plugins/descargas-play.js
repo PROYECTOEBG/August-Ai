@@ -1,77 +1,62 @@
+/**
+© ZENITH
+ᘎ https://whatsapp.com/channel/0029Vai9MMj5vKABWrYzIJ2Z
+*/
 import fetch from "node-fetch"
 import yts from "yt-search"
 
-let handler = async (m, { conn, command, args, text, usedPrefix }) => {
-if (!text) return conn.reply(m.chat, `🚩 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, !${command} Distancia - Kimberly Contreraxx`,  m, rcanal, )
+let handler = async (m, { conn, args }) => {
+  const text = args.join(" ") || m.quoted?.text || m.quoted?.caption || m.quoted?.description || ""
+  if (!text.trim()) return m.reply("[🚨] 𝐒𝐨𝐥𝐢𝐜𝐢𝐭𝐮𝐝 𝐢𝐧𝐜𝐨𝐦𝐩𝐥𝐞𝐭𝐚. 𝐈𝐧𝐭𝐞𝐧𝐭𝐞 𝐧𝐮𝐞𝐯𝐚𝐦𝐞𝐧𝐭𝐞, 𝐞𝐬𝐭𝐚 𝐯𝐞𝐳 𝐩𝐫𝐨𝐩𝐨𝐫𝐜𝐢𝐨𝐧𝐚𝐧𝐝𝐨 𝐮𝐧 𝐭í𝐭𝐮𝐥𝐨 𝐝𝐞 𝐯𝐢𝐝𝐞𝐨 𝐝𝐞 𝐘𝐨𝐮𝐓𝐮𝐛𝐞.\n\n[✅] 𝐄𝐣𝐞𝐦𝐩𝐥𝐨: */play* 𝐔𝐧 𝐚𝐦𝐨𝐫 𝐝𝐞𝐥 𝐚𝐲𝐞𝐫")
+  await m.reply("*[🚨] 𝐒𝐨𝐥𝐢𝐜𝐢𝐭𝐮𝐝 𝐞𝐧 𝐩𝐫𝐨𝐜𝐞𝐬𝐨...*")
 
-conn.reply(m.chat, global.wait, m, {
-contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
-title: packname,
-body: dev,
-previewType: 0, thumbnail: icons,
-sourceUrl: channel }}})
+  const res = await yts(text)
+  const vid = res.videos[0]
+  if (!vid) return m.reply("🌸 Soy un poco lenta espera para un ratito ")
 
-try {
-await m.react(rwait)
-let yt_play = await search(args.join(" "))
-let img = await (await fetch(`${yt_play[0].image}`)).buffer()
+  const { title, thumbnail, timestamp, views, ago, url } = vid
+  const formattedViews = parseInt(views).toLocaleString("id-ID") + " el link esta mal "
+  const captvid = `★¸.•☆•.¸★ 𝐃𝐄𝐒𝐂𝐀𝐑𝐆𝐀𝐒 | 𝐏𝐋𝐀𝐘 ★⡀.•☆•.★\n\n[🍿] *𝐓Í𝐓𝐔𝐋𝐎:*\n*»* ${title}\n\n[⌛] *𝐃𝐔𝐑𝐀𝐂𝐈Ó𝐍:*\n*»* ${timestamp}\n\n[📆] *𝐏𝐔𝐁𝐋𝐈𝐂𝐀𝐃𝐎:*\n*»* ${ago}\n`
 
-let txt = `*乂  Y O U T U B E  -  P L A Y  乂*\n\n`   
-    txt += `🚩 *Titulo:*\n${yt_play[0].title}\n\n`
-    txt += `📅 *Publicado:*\n${yt_play[0].ago}\n\n`
-    txt += `🕜 *Duración:*\n${secondString(yt_play[0].duration.seconds)}\n\n`
-    txt += `📎 *Url:*\n${'https://youtu.be/' + yt_play[0].videoId}\n\n`    
-    txt += `✨️ *Nota:* Para descargar etiqueta este mensaje con su respuesta 
-💞NAKANO-BOT💞 *1* o *2*.\n\n`
-    txt += `*1:* Video\n*2:* Audio`
+  const ytthumb = (await conn.getFile(thumbnail))?.data
 
-await conn.sendMessage(m.chat, {
-text: txt,
-contextInfo: { 
-forwardingScore: 9999, 
-isForwarded: true, 
-externalAdReply: {
-title: `${yt_play[0].title}`,
-body: dev,
-thumbnailUrl: img,
-thumbnail: img,
-sourceUrl: `${yt_play[0].url}`,
-mediaType: 1,
-renderLargerThumbnail: true
-}}}, { quoted: fkontak})
-await m.react(done)
-} catch {
-await m.react(error)
-await m.reply(`✘ Ocurrío un error`)}}
+  const infoReply = {
+    contextInfo: {
+      externalAdReply: {
+        body: "🌸 𝐌𝐈𝐙𝐔𝐊𝐈 𝐀𝐈 🌸",
+        mediaType: 1,
+        mediaUrl: url,
+        previewType: 0,
+        renderLargerThumbnail: true,
+        sourceUrl: url,
+        thumbnail: ytthumb,
+        title: "Y O U T U B E - P L A Y"
+      }
+    }
+  }
 
-handler.help = ['play', 'play2']
-handler.tags = ['descargas']
-handler.command = ['play', 'play2']
-handler.register = true
+  await conn.reply(m.chat, captvid, m, infoReply, rcanal)
+
+  const apiRes = await fetch(`https://api.zenkey.my.id/api/download/ytmp3?apikey=zenkey&url=${url}`)
+  const json = await apiRes.json()
+
+  if (json.status) {
+    const { result } = json
+    const { download } = result
+    await conn.sendMessage(m.chat, {
+      audio: { url: download.url },
+      caption: `*Judul:* ${title}\n*Ukuran File:* ${download.size}\n*Kualitas:* ${download.quality}`,
+      mimetype: "audio/mpeg",
+      contextInfo: infoReply.contextInfo
+    }, { quoted: m })
+  } else {
+    await m.reply("Tiene un error en el código ")
+  }
+}
+
+handler.help = ['play', 'play2', 'play3', 'play4', 'playdoc'];
+handler.tags = ['descargas'];
+handler.command = ['play', 'play2', 'play3', 'play4', 'mp3', 'mp4', 'playdoc', 'playdoc2']
+handler.limit = true
+
 export default handler
-
-async function search(query, options = {}) {
-let search = await yts.search({ query, hl: "es", gl: "ES", ...options });
-return search.videos;
-}
-
-function MilesNumber(number) {
-let exp = /(\d)(?=(\d{3})+(?!\d))/g;
-let rep = "$1.";
-let arr = number.toString().split(".");
-arr[0] = arr[0].replace(exp, rep);
-return arr[1] ? arr.join(".") : arr[0];
-}
-
-function secondString(seconds) {
-seconds = Number(seconds);
-var d = Math.floor(seconds / (3600 * 24));
-var h = Math.floor((seconds % (3600 * 24)) / 3600);
-var m = Math.floor((seconds % 3600) / 60);
-var s = Math.floor(seconds % 60);
-var dDisplay = d > 0 ? d + (d == 1 ? ":" : ":") : "";
-var hDisplay = h > 0 ? h + (h == 1 ? ":" : ":") : "";
-var mDisplay = m > 0 ? m + (m == 1 ? ":" : ":") : "";
-var sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "";
-return dDisplay + hDisplay + mDisplay + sDisplay;
-}
