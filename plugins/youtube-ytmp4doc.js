@@ -14,7 +14,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
     // Decodificar la URL de la API
     const encodedApiUrl = "aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS95dHBsYXltcDQ="; // Codificado en Base64
-    const apiUrl = `${Buffer.from(encodedApiUrl, "base64").toString("utf-8")}?query=${encodeURIComponent(text)}`;
+    const apiUrl = https://restapi.apibotwa.biz.id/api/ytmp4?url=$
 
     const response = await fetch(apiUrl);
     const data = await response.json();
