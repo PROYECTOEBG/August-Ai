@@ -1,105 +1,229 @@
-/*creado por TECNO*/
+import fetch from 'node-fetch'
+import yts from 'yt-search'
+import ytdl from 'ytdl-core'
+import axios from 'axios'
+import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
 
-import fetch from 'node-fetch';
-import axios from 'axios';
+var handler = async (m, { conn, command, args, text, usedPrefix }) => {
 
-let handler = async (m, { conn, command, args, text, usedPrefix }) => {
-if (!text) return conn.reply(m.chat, `🧑‍💻INGRESE EL NOMBRE DE ALGUNA CANCION *Soundcloud.*`, m, rcanal)
+if (!text) return conn.reply(m.chat, `🌟 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, ${usedPrefix + command} Es un Secreto Plan B`,  m, rcanal)
 
-await m.react('🕒');
+await m.react(rwait)
+
 try {
-let api = await fetch(`https://apis-starlights-team.koyeb.app/starlight/soundcloud-search?text=${encodeURIComponent(text)}`);
-let json = await api.json();
-let { url } = json[0];
 
-let api2 = await fetch(`https://apis-starlights-team.koyeb.app/starlight/soundcloud?url=${url}`);
-let json2 = await api2.json();
+conn.reply(m.chat, global.wait, m, {
+contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
+title: packname,
+body: wm,
+previewType: 0, thumbnail: icons,
+sourceUrl: channel }}})
 
-let { link: dl_url, quality, image } = json2;
+const yt_play = await search(args.join(' '))
+let additionalText = ''
+if (command === 'play') {
+additionalText = 'audio'
+} else if (command === 'play2') {
+additionalText = 'video'}
 
-let audio = await getBuffer(dl_url);
+let texto1 = `☁ *Título:*
+• ${yt_play[0].title}
 
-let txt = `*\`- S O U N C L O U D - M U S I C -\`*\n\n`;
-    txt += `        ✩  *Título* : ${json[0].title}\n`;
-    txt += `        ✩  *Calidad* : ${quality}\n`;
-    txt += `        ✩  *Url* : ${url}\n\n`;
-    txt += `> 🚩 *${textbot}*`
+⭐ *Duración:* 
+• ${secondString(yt_play[0].duration.seconds)}
 
-await conn.sendFile(m.chat, image, 'thumbnail.jpg', txt, m, null, rcanal);
-await conn.sendMessage(m.chat, { audio: audio, fileName: `${json[0].title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m })
+⭐ *Autor:*
+• ${yt_play[0].author.name}
 
-await m.react('✅');
+⭐ *Canal:*
+• ${yt_play[0].author.url}
+
+⭐ *Enlace:*
+• ${yt_play[0].url}
+
+*Enviando su ${additionalText}*
+🌟 Espere un momento`.trim()
+await conn.sendMessage(m.chat, { text: texto1, contextInfo: { externalAdReply: { title: yt_play[0].title, body: dev, thumbnailUrl: yt_play[0].thumbnail, mediaType: 1, showAdAttribution: true, renderLargerThumbnail: true }}} , { quoted: fkontak })
+
+if (command == 'play') {        
+try {
+let q = '128kbps'
+let v = yt_play[0].url
+const yt = await youtubedl(v).catch(async _ => await youtubedlv2(v))
+const dl_url = await yt.audio[q].download()
+const ttl = await yt.title
+const size = await yt.audio[q].fileSizeH
+await conn.sendMessage(m.chat, { audio: { url: dl_url }, mimetype: 'audio/mpeg', contextInfo: { externalAdReply: { title: ttl, body: dev, thumbnailUrl: yt_play[0].thumbnail, mediaType: 1, showAdAttribution: true, renderLargerThumbnail: true }}} , { quoted: m }) 
+await m.react(done)   
 } catch {
-await m.react('✖️');
-}}
 
-handler.help = ['soundcloud *<búsqueda>*']
-handler.tags = ['downloader']
-handler.command = ['soundcloud', 'sound', 'play']
+try {
+await m.react(rwait)
+const dataRE = await fetch(`https://api.akuari.my.id/downloader/youtube?link=${yt_play[0].url}`)
+const dataRET = await dataRE.json()
+await conn.sendMessage(m.chat, { audio: { url: dataRET.mp3[1].url }, mimetype: 'audio/mpeg', contextInfo: { externalAdReply: { title: yt_play[0].title, body: dev, thumbnailUrl: yt_play[0].thumbnail, mediaType: 1, showAdAttribution: true, renderLargerThumbnail: true }}} , { quoted: m })
+await m.react(done) 
+} catch {
+
+try {
+await m.react(rwait)
+let humanLol = await fetch(`https://api.lolhuman.xyz/api/ytplay?apikey=${lolkeysapi}&query=${yt_play[0].title}`)
+let humanRET = await humanLol.json()
+await conn.sendMessage(m.chat, { audio: { url: humanRET.result.audio.link }, mimetype: 'audio/mpeg', contextInfo: { externalAdReply: {title: yt_play[0].title, body: dev, thumbnailUrl: yt_play[0].thumbnail, mediaType: 1, showAdAttribution: true, renderLargerThumbnail: true }}} , { quoted: m })
+await m.react(done)      
+} catch {
+
+try {
+await m.react(rwait)
+let lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytaudio2?apikey=${lolkeysapi}&url=${yt_play[0].url}`)    
+let lolh = await lolhuman.json()
+let n = lolh.result.title || 'error'
+m.react(done)
+await conn.sendMessage(m.chat, { audio: { url: lolh.result.link}, mimetype: 'audio/mpeg', contextInfo: { externalAdReply: { title: n, body: dev, thumbnailUrl: yt_play[0].thumbnail, mediaType: 1, showAdAttribution: true, renderLargerThumbnail: true }}} , { quoted: m })  
+await m.react(done)  
+} catch {
+
+try {
+await m.react(rwait)
+let searchh = await yts(yt_play[0].url)
+let __res = searchh.all.map(v => v).filter(v => v.type == "video")
+let infoo = await ytdl.getInfo('https://youtu.be/' + __res[0].videoId)
+let ress = await ytdl.chooseFormat(infoo.formats, { filter: 'audioonly' })
+await m.react(done)
+await conn.sendMessage(m.chat, { audio: { url: ress.url }, mimetype: 'audio/mpeg', contextInfo: { externalAdReply: { title: __res[0].title, body: dev, thumbnailUrl: yt_play[0].thumbnail, mediaType: 1, showAdAttribution: true, renderLargerThumbnail: true }}} , { quoted: m }) 
+await m.react(done)   
+
+} catch {
+}}}}}
+} if (command == 'play2') {
+try {
+await m.react(rwait)
+let qu = '360'
+let q = qu + 'p'
+let v = yt_play[0].url
+const yt = await youtubedl(v).catch(async _ => await youtubedlv2(v))
+const dl_url = await yt.video[q].download()
+const ttl = await yt.title
+const size = await yt.video[q].fileSizeH
+m.react(done)
+await conn.sendMessage(m.chat, { video: { url: dl_url }, fileName: `${ttl}.mp4`, mimetype: 'video/mp4', caption: `⭐ *Título*: ${ttl}\n*Peso:* ${size}`, thumbnail: await fetch(yt.thumbnail) }, { quoted: m })
+await m.react(done) 
+} catch {
+
+try {
+await m.react(rwait)
+let mediaa = await ytMp4(yt_play[0].url)
+await m.react(done)
+await conn.sendMessage(m.chat, { video: { url: mediaa.result }, fileName: `error.mp4`, caption: `⭐ *Título*: ${ttl}\n*Peso:* ${size}`, thumbnail: mediaa.thumb, mimetype: 'video/mp4' }, { quoted: m })   
+await m.react(done)   
+} catch {
+
+try {
+await m.react(rwait)
+let lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytvideo2?apikey=${lolkeysapi}&url=${yt_play[0].url}`)    
+let lolh = await lolhuman.json()
+let n = lolh.result.title || 'error'
+let n2 = lolh.result.link
+let n3 = lolh.result.size
+let n4 = lolh.result.thumbnail
+await conn.sendMessage(m.chat, { video: { url: n2 }, fileName: `${n}.mp4`, mimetype: 'video/mp4', caption: `⭐ *Título*: ${ttl}\n*Peso:* ${size}`, thumbnail: await fetch(n4) }, { quoted: m })
+} catch {
+await m.react(error)
+await conn.reply(m.chat, '☁ *Ocurrió un fallo*', m, fake) }}}    
+}} catch {
+await m.react(error)
+return conn.reply(m.chat, '☁ *Inténtelo de nuevo*', m, fake)}
+
+}
+handler.help = ['play', 'play2']
+handler.tags = ['descargas']
+handler.command = ['play', 'play2']
+handler.register = true
+//handler.estrellas = 1
 
 export default handler
 
-const getBuffer = async (url, options) => {
-try {
-const res = await axios({
-method: 'get',
-url,
-headers: {
-'DNT': 1,
-'Upgrade-Insecure-Request': 1,
-},
-...options,
-responseType: 'arraybuffer',
-});
-return res.data;
-} catch (e) {
-console.log(`Error : ${e}`);
-}
-};
+async function search(query, options = {}) {
+const search = await yts.search({ query, hl: 'es', gl: 'ES', ...options })
+return search.videos}
 
-/*
-//Instalar la dependencia Node-id3 🙃
-//Use math por problemas de que algunos audios no se envian
-//La segunda url si descarga los datos de la cancion para eso tienes que ingresar a Souncloud la musica que quieres descargar ingresas y copias el link y lo pegas en la segunda url :) 
-//el buscador aun no tiene permisos para ir directamente a la cancion y obtener el link directamente a la cancion por eso es que algunos audios no son enviados
-import axios from 'axios'
-import fs from 'fs'
-import nodeID3 from 'node-id3'
+function MilesNumber(number) {
+const exp = /(\d)(?=(\d{3})+(?!\d))/g
+const rep = '$1.'
+let arr = number.toString().split(".")
+arr[0] = arr[0].replace(exp, rep)
+return arr[1] ? arr.join('.') : arr[0]}
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-if (!text) return conn.reply(m.chat, `🚩 Ingrese el nombre de la cancion de *Soundcloud.*`, m, rcanal)
-await m.react('🕓')
-try {
-let { data: results } = await axios.get(`https://apis-starlights-team.koyeb.app/starlight/soundcloud-search?text=${text}`, { headers: { 'Content-Type': 'application/json' } })
-let randoms = results[Math.floor(Math.random() * results.length)]
-let { data: sm } = await axios.get(`https://apis-starlights-team.koyeb.app/starlight/soundcloud?url=${randoms.url}`, { headers: { 'Content-Type': 'application/json' }})
-let mpeg = await axios.get(sm.audio, { responseType: 'arraybuffer' })
-let img = await axios.get(randoms.image, { responseType: 'arraybuffer' })
-let mp3 = `${sm.title}.mp3`
-fs.writeFileSync(mp3, Buffer.from(mpeg.data))
-let tags = {
-title: sm.title,
-artist: sm.creator, 
-image: Buffer.from(img.data) 
-}
-nodeID3.write(tags, mp3)
-let txt = `*\`- S O U N C L O U D - M U S I C -\`*\n\n`
-txt += `🍘• *Nombre:* ${randoms.title}\n`
-txt += `🍘• *Artista:* ${randoms.artist}\n`
-txt += `🍘• *Duracion:* ${randoms.duration}\n`
-txt += `🍘• *Reproducciones:* ${randoms.repro}\n`
-txt += `🍘• *Link:* ${randoms.url}\n\n`
-txt += `🚩 Powered By Starlights Team`
-await conn.sendFile(m.chat, randoms.image, 'thumb.jpg', txt, m)
-await conn.sendMessage(m.chat, { audio: fs.readFileSync(mp3), fileName: `${sm.title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m })
-fs.unlinkSync(mp3)
-await m.react('✅')
-} catch {
-await m.react('✖️')
-}}
-handler.help = ['soundcloud *<búsqueda>*']
-handler.tags = ['downloader']
-handler.command = ['soundcloud', 'sound', 'play']
-handler.register = true
-//handler.limit = 3
-export default handler*/
+function secondString(seconds) {
+seconds = Number(seconds)
+var d = Math.floor(seconds / (3600 * 24))
+var h = Math.floor((seconds % (3600 * 24)) / 3600)
+var m = Math.floor((seconds % 3600) / 60)
+var s = Math.floor(seconds % 60)
+var dDisplay = d > 0 ? d + (d == 1 ? ' día, ' : ' días, ') : ''
+var hDisplay = h > 0 ? h + (h == 1 ? " hora, " : " horas, ") : ''
+var mDisplay = m > 0 ? m + (m == 1 ? " minuto, " : " minutos, ") : ''
+var sDisplay = s > 0 ? s + (s == 1 ? ' segundo' : ' segundos') : ''
+return dDisplay + hDisplay + mDisplay + sDisplay}
+
+function bytesToSize(bytes) {
+return new Promise((resolve, reject) => {
+const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+if (bytes === 0) return 'n/a'
+const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10)
+if (i === 0) resolve(`${bytes} ${sizes[i]}`);
+resolve(`${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`)})}
+
+async function ytMp3(url) {
+return new Promise((resolve, reject) => {
+ytdl.getInfo(url).then(async(getUrl) => {
+let result = []
+for(let i = 0; i < getUrl.formats.length; i++) {
+let item = getUrl.formats[i]
+if (item.mimeType == 'audio/webm; codecs=\"opus\"') {
+let { contentLength } = item
+let bytes = await bytesToSize(contentLength)
+result[i] = { audio: item.url, size: bytes }}}
+let resultFix = result.filter(x => x.audio != undefined && x.size != undefined) 
+let tiny = await axios.get(`https://tinyurl.com/api-create.php?url=${resultFix[0].audio}`)
+let tinyUrl = tiny.data;
+let title = getUrl.videoDetails.title;
+let thumb = getUrl.player_response.microformat.playerMicroformatRenderer.thumbnail.thumbnails[0].url
+resolve({ title, result: tinyUrl, result2: resultFix, thumb })}).catch(reject)})}
+
+async function ytMp4(url) {
+return new Promise(async(resolve, reject) => {
+ytdl.getInfo(url).then(async(getUrl) => {
+let result = []
+for(let i = 0; i < getUrl.formats.length; i++) {
+let item = getUrl.formats[i]
+if (item.container == 'mp4' && item.hasVideo == true && item.hasAudio == true) {
+let { qualityLabel, contentLength } = item
+let bytes = await bytesToSize(contentLength)
+result[i] = { video: item.url, quality: qualityLabel, size: bytes }}}
+let resultFix = result.filter(x => x.video != undefined && x.size != undefined && x.quality != undefined) 
+let tiny = await axios.get(`https://tinyurl.com/api-create.php?url=${resultFix[0].video}`)
+let tinyUrl = tiny.data
+let title = getUrl.videoDetails.title
+let thumb = getUrl.player_response.microformat.playerMicroformatRenderer.thumbnail.thumbnails[0].url
+resolve({ title, result: tinyUrl, rersult2: resultFix[0].video, thumb })}).catch(reject)})}
+
+async function ytPlay(query) {
+return new Promise((resolve, reject) => {
+yts(query).then(async(getData) => {
+let result = getData.videos.slice( 0, 5 )
+let url = []
+for (let i = 0; i < result.length; i++) { url.push(result[i].url) }
+let random = url[0]
+let getAudio = await ytMp3(random)
+resolve(getAudio)}).catch(reject)})}
+
+async function ytPlayVid(query) {
+return new Promise((resolve, reject) => {
+yts(query).then(async(getData) => {
+let result = getData.videos.slice( 0, 5 )
+let url = []
+for (let i = 0; i < result.length; i++) { url.push(result[i].url) }
+let random = url[0]
+let getVideo = await ytMp4(random)
+resolve(getVideo)}).catch(reject)})}
