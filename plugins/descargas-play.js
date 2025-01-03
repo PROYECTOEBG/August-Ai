@@ -1,64 +1,77 @@
-import fetch from 'node-fetch';
-import axios from 'axios';
+import fetch from "node-fetch"
+import yts from "yt-search"
 
-const handler = async (m, {conn, command, args, text, usedPrefix}) => {
+let handler = async (m, { conn, command, args, text, usedPrefix }) => {
+if (!text) return conn.reply(m.chat, `🚩 *Ingrese el nombre de un video de YouTube*\n\nEjemplo, !${command} Distancia - Kimberly Contreraxx`,  m, rcanal, )
 
-    if (!text) throw `_*[ ⚠️ ] Agrega lo que quieres buscar*_\n\n_Ejemplo:_\n.play Marshmello Moving On`;
+conn.reply(m.chat, global.wait, m, {
+contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
+title: packname,
+body: dev,
+previewType: 0, thumbnail: icons,
+sourceUrl: channel }}})
 
-    try { 
+try {
+await m.react(rwait)
+let yt_play = await search(args.join(" "))
+let img = await (await fetch(`${yt_play[0].image}`)).buffer()
 
-        let { data } = await axios.get(`https://deliriussapi-oficial.vercel.app/search/spotify?q=${encodeURIComponent(text)}&limit=10`);
+let txt = `*乂  Y O U T U B E  -  P L A Y  乂*\n\n`   
+    txt += `🚩 *Titulo:*\n${yt_play[0].title}\n\n`
+    txt += `📅 *Publicado:*\n${yt_play[0].ago}\n\n`
+    txt += `🕜 *Duración:*\n${secondString(yt_play[0].duration.seconds)}\n\n`
+    txt += `📎 *Url:*\n${'https://youtu.be/' + yt_play[0].videoId}\n\n`    
+    txt += `✨️ *Nota:* Para descargar etiqueta este mensaje con su respuesta 
+💞NAKANO-BOT💞 *1* o *2*.\n\n`
+    txt += `*1:* Video\n*2:* Audio`
 
-        if (!data.data || data.data.length === 0) {
-            throw `_*[ ⚠️ ] No se encontraron resultados para "${text}" en Youtube.*_`;
-        }
+await conn.sendMessage(m.chat, {
+text: txt,
+contextInfo: { 
+forwardingScore: 9999, 
+isForwarded: true, 
+externalAdReply: {
+title: `${yt_play[0].title}`,
+body: dev,
+thumbnailUrl: img,
+thumbnail: img,
+sourceUrl: `${yt_play[0].url}`,
+mediaType: 1,
+renderLargerThumbnail: true
+}}}, { quoted: fkontak})
+await m.react(done)
+} catch {
+await m.react(error)
+await m.reply(`✘ Ocurrío un error`)}}
 
-        const img = data.data[0].image;
-        const url = data.data[0].url;
-        const info = `⧁ 𝙏𝙄𝙏𝙐𝙇𝙊
-» ${data.data[0].title}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
-⚠️ 𝙋𝙐𝘽𝙇𝙄𝘾𝘼𝘿𝙊
-» ${data.data[0].publish}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
-🕐 𝗗𝗨𝗥𝗔𝗖𝗜𝗢𝗡
-» ${data.data[0].duration}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
-🤯  𝙋𝙊𝙋𝙐𝙇𝘼𝙍𝙄𝘿𝘼𝘿
-» ${data.data[0].popularity}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
-👀  𝘼𝙍𝙏𝙄𝙎𝙏𝘼
-» ${data.data[0].artist}
-﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
+handler.help = ['play', 'play2']
+handler.tags = ['descargas']
+handler.command = ['play', 'play2']
+handler.register = true
+export default handler
 
-_*🎶 Enviando música...*_`.trim();
+async function search(query, options = {}) {
+let search = await yts.search({ query, hl: "es", gl: "ES", ...options });
+return search.videos;
+}
 
-        await conn.sendFile(m.chat, img, 'imagen.jpg', info, m);
+function MilesNumber(number) {
+let exp = /(\d)(?=(\d{3})+(?!\d))/g;
+let rep = "$1.";
+let arr = number.toString().split(".");
+arr[0] = arr[0].replace(exp, rep);
+return arr[1] ? arr.join(".") : arr[0];
+}
 
-        //＼／＼／＼／＼／＼／ DESCARGAR ＼／＼／＼／＼／＼／
-
-        const apiUrl = `https://deliriussapi-oficial.vercel.app/download/spotifydl?url=${encodeURIComponent(url)}`;
-        const response = await fetch(apiUrl);
-        const result = await response.json();
-
-        if (result.data.url) {
-            const downloadUrl = result.data.url;
-            const filename = `${result.data.title || 'audio'}.mp3`;
-            await conn.sendMessage(m.chat, { audio: { url: downloadUrl }, fileName: filename, mimetype: 'audio/mpeg', caption: `╭━❰  *YouTube*  ❱━⬣\n${filename}\n╰━❰ *${botname}* ❱━⬣`, quoted: m });
-        } else {
-            throw new Error('_*[ ❌ ] Ocurrió un error al descargar el archivo mp3_');
-        }
-
-    } catch (e) {
-
-        await conn.reply(m.chat, `❌ _*El comando #play está fallando, repórtalo al creador del bot*_`, m);
-
-        console.log(`❌ El comando #play está fallando`);
-        console.log(e);
-    }
-};
-
-handler.help = ['play'] 
-handler.tags = ['downloader']
-handler.command = ['play'];
-export default handler;
+function secondString(seconds) {
+seconds = Number(seconds);
+var d = Math.floor(seconds / (3600 * 24));
+var h = Math.floor((seconds % (3600 * 24)) / 3600);
+var m = Math.floor((seconds % 3600) / 60);
+var s = Math.floor(seconds % 60);
+var dDisplay = d > 0 ? d + (d == 1 ? ":" : ":") : "";
+var hDisplay = h > 0 ? h + (h == 1 ? ":" : ":") : "";
+var mDisplay = m > 0 ? m + (m == 1 ? ":" : ":") : "";
+var sDisplay = s > 0 ? s + (s == 1 ? "" : "") : "";
+return dDisplay + hDisplay + mDisplay + sDisplay;
+}
