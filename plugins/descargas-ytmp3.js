@@ -18,7 +18,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     • *Uploaded :* » ${videoInfo.ago}
     • *URL :* » ${videoInfo.url}
 
-> ${espera}`;
+> ${listo}`;
 
 m.react(rwait)
   conn.sendMessage(m.chat, {
