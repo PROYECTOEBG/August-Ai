@@ -1,80 +1,64 @@
-/* 
-- Play Botones By Angel-OFC 
-- https://whatsapp.com/channel/0029VaJxgcB0bIdvuOwKTM2Y
-*/
 import fetch from 'node-fetch';
-import yts from 'yt-search';
+import axios from 'axios';
 
-let handler = async (m, { conn, args }) => {
-  if (!args[0]) return conn.reply(m.chat, '*\`Ingresa el nombre de lo que quieres buscar\`*', m, rcanal);
+const handler = async (m, {conn, command, args, text, usedPrefix}) => {
 
-  await m.react('🕓');
-  try {
-    let res = await search(args.join(" "));
-    let video = res[0];
-    let img = await (await fetch(video.image)).buffer();
+    if (!text) throw `_*[ ⚠️ ] Agrega lo que quieres buscar*_\n\n_Ejemplo:_\n.play Marshmello Moving On`;
 
-    let txt = `*\`【Y O U T U B E - P L A Y】\`*\n\n`;
-    txt += `• *\`Título:\`* ${video.title}\n`;
-    txt += `• *\`Duración:\`* ${secondString(video.duration.seconds)}\n`;
-    txt += `• *\`Publicado:\`* ${eYear(video.ago)}\n`;
-    txt += `• *\`Canal:\`* ${video.author.name || 'Desconocido'}\n`;
-    txt += `• *\`Url:\`* _https://youtu.be/${video.videoId}_\n\n`;
+    try { 
 
-    await conn.sendMessage(m.chat, {
-      image: img,
-      caption: txt,
-      footer: 'Selecciona una opción',
-      buttons: [
-        {
-          buttonId: `.ytmp3 https://youtu.be/${video.videoId}`,
-          buttonText: {
-            displayText: '🎵 Audio',
-          },
-        },
-        {
-          buttonId: `.ytmp4 https://youtu.be/${video.videoId}`,
-          buttonText: {
-            displayText: '🎥 Video',
-          },
-        },
-      ],
-      viewOnce: true,
-      headerType: 4,
-    }, { quoted: m });
+        let { data } = await axios.get(`https://deliriussapi-oficial.vercel.app/search/spotify?q=${encodeURIComponent(text)}&limit=10`);
 
-    await m.react('✅');
-  } catch (e) {
-    console.error(e);
-    await m.react('✖️');
-    conn.reply(m.chat, '*\`Error al buscar el video.\`*', m);
-  }
+        if (!data.data || data.data.length === 0) {
+            throw `_*[ ⚠️ ] No se encontraron resultados para "${text}" en Youtube.*_`;
+        }
+
+        const img = data.data[0].image;
+        const url = data.data[0].url;
+        const info = `⧁ 𝙏𝙄𝙏𝙐𝙇𝙊
+» ${data.data[0].title}
+﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
+⚠️ 𝙋𝙐𝘽𝙇𝙄𝘾𝘼𝘿𝙊
+» ${data.data[0].publish}
+﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
+🕐 𝗗𝗨𝗥𝗔𝗖𝗜𝗢𝗡
+» ${data.data[0].duration}
+﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
+🤯  𝙋𝙊𝙋𝙐𝙇𝘼𝙍𝙄𝘿𝘼𝘿
+» ${data.data[0].popularity}
+﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
+👀  𝘼𝙍𝙏𝙄𝙎𝙏𝘼
+» ${data.data[0].artist}
+﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘﹘
+
+_*🎶 Enviando música...*_`.trim();
+
+        await conn.sendFile(m.chat, img, 'imagen.jpg', info, m);
+
+        //＼／＼／＼／＼／＼／ DESCARGAR ＼／＼／＼／＼／＼／
+
+        const apiUrl = `https://deliriussapi-oficial.vercel.app/download/spotifydl?url=${encodeURIComponent(url)}`;
+        const response = await fetch(apiUrl);
+        const result = await response.json();
+
+        if (result.data.url) {
+            const downloadUrl = result.data.url;
+            const filename = `${result.data.title || 'audio'}.mp3`;
+            await conn.sendMessage(m.chat, { audio: { url: downloadUrl }, fileName: filename, mimetype: 'audio/mpeg', caption: `╭━❰  *YouTube*  ❱━⬣\n${filename}\n╰━❰ *${botname}* ❱━⬣`, quoted: m });
+        } else {
+            throw new Error('_*[ ❌ ] Ocurrió un error al descargar el archivo mp3_');
+        }
+
+    } catch (e) {
+
+        await conn.reply(m.chat, `❌ _*El comando #play está fallando, repórtalo al creador del bot*_`, m);
+
+        console.log(`❌ El comando #play está fallando`);
+        console.log(e);
+    }
 };
 
-handler.help = ['playop *<texto>*'];
-handler.tags = ['descargas'];
-handler.command = ['playop'];
-
+handler.help = ['play'] 
+handler.tags = ['downloader']
+handler.command = ['play'];
 export default handler;
-
-async function search(query, options = {}) {
-  let search = await yts.search({ query, hl: "es", gl: "ES", ...options });
-  return search.videos;
-}
-
-function secondString(seconds) {
-  seconds = Number(seconds);
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = Math.floor(seconds % 60);
-  return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s`;
-}
-
-function eYear(txt) {
-  if (txt.includes('year')) return txt.replace('year', 'año').replace('years', 'años');
-  if (txt.includes('month')) return txt.replace('month', 'mes').replace('months', 'meses');
-  if (txt.includes('day')) return txt.replace('day', 'día').replace('days', 'días');
-  if (txt.includes('hour')) return txt.replace('hour', 'hora').replace('hours', 'horas');
-  if (txt.includes('minute')) return txt.replace('minute', 'minuto').replace('minutes', 'minutos');
-  return txt;
-}
