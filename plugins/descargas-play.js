@@ -1,4 +1,4 @@
-/*creado por TECNO*/
+/*creado por Barboza*/
 
 import fetch from 'node-fetch';
 import axios from 'axios';
