@@ -1,50 +1,58 @@
-import fg from 'api-dylux'
-import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
-let limit = 320
-let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
-        if (!args || !args[0]) throw `✳️ ${mssg.example} :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`
-    if (!args[0].match(/youtu/gi)) throw `❎ ${mssg.noLink('YouTube')}`
-         let chat = global.db.data.chats[m.chat]
-         m.react(rwait) 
 
-         let q = args[1] || '360p'
- try {
-                const yt = await fg.ytv(args[0], q)
-                let { title, dl_url, quality, size, sizeB } = yt
-        let isLimit = limit * 1024 < sizeB 
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return conn.sendMessage(m.chat, {
+      text: `❗ *Por favor ingresa una URL de YouTube para descargar el video.*\n\n📌 *Ejemplo de uso:*\n\`${usedPrefix}${command} https://www.youtube.com/watch?v=dQw4w9WgXcQ\``,
+    });
+  }
 
-     m.reply(` ${isLimit ? `≡  *Sylph - YTDL*\n\n❖ *⚖️${mssg.size}*: ${size}\n❖ *🎞️${mssg.quality}*: ${quality}\n\n❖ _${mssg.limitdl}_ *+${limit} MB*` : global.wait }  `)
+  try {
+    // Mensaje mientras se procesa la solicitud
+    await conn.sendMessage(m.chat, {
+      text: `⏳ *Procesando tu solicitud...*\n\nPor favor, espera mientras preparamos tu descarga. 🚀`,
+    });
 
-          if(!isLimit) conn.sendFile(m.chat, dl_url, title + '.mp4', `
- ≡  *Sylph - YTDL*
-  
-*📌${mssg.title}:* ${title}
-*🎞️${mssg.quality}:* ${quality}
-*⚖️${mssg.size}:* ${size}
-`.trim(), m, false, { asDocument: false })
-                m.react(done) 
-         } catch {
+    // Decodificar la URL de la API (Base64)
+    const base64Api = "aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS95dG1wNA==";
+    const apiUrl = `${Buffer.from(base64Api, "base64").toString("utf-8")}?url=${encodeURIComponent(text)}`;
 
-        try {
-        let yt = await fg.ytmp4(args[0], q)
-    let { title, size, sizeB, dl_url, quality } = yt
+    // Llamar a la API y parsear los datos
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-  let isLimit = limit * 1024 < sizeB 
-  m.reply(` ${isLimit ? `≡  *Sylph - YTDL*\n\n❖ *⚖️${mssg.size}*: ${size}\n❖ *🎞️${mssg.quality}*: ${quality}\n\n❖ _${mssg.limitdl}_ *+${limit} MB*` : global.wait }  `)
-          if(!isLimit) conn.sendFile(m.chat, dl_url, title + '.mp3', `
- ≡  *Sylph - YTDL*
-  
-❖ *📌${mssg.title}* : ${title}
-*🎞️${mssg.quality}:* ${quality}
-❖ *⚖️${mssg.size}* : ${size}
-`.trim(), m, false, { asDocument: false })
-                m.react(done)
+    // Comprobar si los datos son válidos
+    if (!data || data.status !== 200 || !data.result || !data.result.download || !data.result.download.url) {
+      throw new Error("No se encontraron datos válidos para tu solicitud.");
+    }
 
-        } catch {
-                await m.reply(`❎ ${mssg.error}`)
-        }
-                } 
-}
-handler.command = ['ytmp4', 'ytv', 'ytvideo']
-handler.diamond = 5
-export default handler
+    const {
+      result: {
+        download: { url: rawDownloadUrl, filename },
+      },
+    } = data;
+
+    // Corregir la URL de descarga (reemplazar espacios con %20)
+    const downloadUrl = rawDownloadUrl.replace(/\s+/g, "%20");
+
+    // Enviar el video como documento (MP4)
+    await conn.sendMessage(
+      m.chat,
+      {
+        document: { url: downloadUrl },  // Enviar la URL del video como documento
+        mimetype: "video/mp4",            // Especificar que es un video en formato MP4
+        fileName: filename || "video.mp4",  // El nombre del archivo
+        caption: `🎥 *Tu video está listo para descargar.*`,  // Caption del archivo
+      },
+      { quoted: m }  // Responder a la solicitud inicial
+    );
+  } catch (error) {
+    console.error("Error al procesar el video:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+handler.command = /^ytv$/i;
+
+export default handler;
