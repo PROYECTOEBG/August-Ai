@@ -1,58 +1,112 @@
+import fetch from 'node-fetch';
+import yts from 'yt-search';
+import axios from 'axios';
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) {
-    return conn.sendMessage(m.chat, {
-      text: `❗ *Por favor ingresa una URL de YouTube para descargar el video.*\n\n📌 *Ejemplo de uso:*\n\`${usedPrefix}${command} https://www.youtube.com/watch?v=dQw4w9WgXcQ\``,
-    });
+const handler = async (m, { conn, args, usedPrefix, command }) => {
+  const datas = global;
+  const idioma = datas.db.data.users[m.sender].language;
+  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`));
+  const tradutor = _translate.plugins.downloader_ytv;
+
+  if (!args[0]) throw tradutor.texto1;
+  let enviando;
+  if (enviando) return;
+  enviando = true;
+
+  let youtubeLink = '';
+  if (args[0].includes('you')) {
+    youtubeLink = args[0];
+  } else {
+    const index = parseInt(args[0]) - 1;
+    if (index >= 0) {
+      if (Array.isArray(global.videoList) && global.videoList.length > 0) {
+        const matchingItem = global.videoList.find((item) => item.from === m.sender);
+        if (matchingItem) {
+          if (index < matchingItem.urls.length) {
+            youtubeLink = matchingItem.urls[index];
+          } else {
+            enviando = false;
+            throw `${tradutor.texto2} ${matchingItem.urls.length}*`;
+          }
+        } else {
+          enviando = false;
+          throw `${tradutor.texto3[0]} (${usedPrefix + command} ${tradutor.texto3[1]} ${usedPrefix}playlist <texto>*`;
+        }
+      } else {
+        enviando = false;
+        throw `${tradutor.texto4[0]} (${usedPrefix + command} ${tradutor.texto4[1]} ${usedPrefix}playlist <texto>*`;
+      }
+    }
   }
 
+  const { key } = await conn.sendMessage(m.chat, { text: tradutor.texto5 }, { quoted: m });
+
   try {
-    // Mensaje mientras se procesa la solicitud
-    await conn.sendMessage(m.chat, {
-      text: `⏳ *Procesando tu solicitud...*\n\nPor favor, espera mientras preparamos tu descarga. 🚀`,
-    });
+    const yt_play = await yts(youtubeLink);
+    const videoUrl = `${global.MyApiRestBaseUrl}/api/v1/ytmp4?url=${yt_play.all[0].url}&apikey=${global.MyApiRestApikey}`;
+    const buff_vid = await getBuffer(videoUrl);
+    const fileSizeInBytes = buff_vid.byteLength;
+    const fileSizeInKB = fileSizeInBytes / 1024;
+    const fileSizeInMB = fileSizeInKB / 1024;
+    const roundedFileSizeInMB = fileSizeInMB.toFixed(2);
+    const title = yt_play.all[0].title;
 
-    // Decodificar la URL de la API (Base64)
-    const base64Api = "aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS95dG1wNA==";
-    const apiUrl = `${Buffer.from(base64Api, "base64").toString("utf-8")}?url=${encodeURIComponent(text)}`;
-
-    // Llamar a la API y parsear los datos
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    // Comprobar si los datos son válidos
-    if (!data || data.status !== 200 || !data.result || !data.result.download || !data.result.download.url) {
-      throw new Error("No se encontraron datos válidos para tu solicitud.");
+    if (fileSizeInMB > 100) {
+      await conn.sendMessage(m.chat, { document: buff_vid, caption: `${tradutor.texto6[0]} ${title}\n${tradutor.texto6[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+      await conn.sendMessage(m.chat, { text: `${tradutor.texto6[2]} ${roundedFileSizeInMB} ${tradutor.texto6[3]} ${title}`, edit: key }, { quoted: m });
+      enviando = false;
+    } else {
+      await conn.sendMessage(m.chat, { video: buff_vid, caption: `${tradutor.texto7[0]} ${title}\n${tradutor.texto7[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+      await conn.sendMessage(m.chat, { text: `${tradutor.texto7[2]}`, edit: key }, { quoted: m });
+      enviando = false;
     }
-
-    const {
-      result: {
-        download: { url: rawDownloadUrl, filename },
-      },
-    } = data;
-
-    // Corregir la URL de descarga (reemplazar espacios con %20)
-    const downloadUrl = rawDownloadUrl.replace(/\s+/g, "%20");
-
-    // Enviar el video como documento (MP4)
-    await conn.sendMessage(
-      m.chat,
-      {
-        document: { url: downloadUrl },  // Enviar la URL del video como documento
-        mimetype: "video/mp4",            // Especificar que es un video en formato MP4
-        fileName: filename || "video.mp4",  // El nombre del archivo
-        caption: `🎥 *Tu video está listo para descargar.*`,  // Caption del archivo
-      },
-      { quoted: m }  // Responder a la solicitud inicial
-    );
   } catch (error) {
-    console.error("Error al procesar el video:", error);
-    await conn.sendMessage(m.chat, {
-      text: `❌ *Ocurrió un error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
-    });
+    console.log('Primera API falló, intentando con la segunda...');
+    try {
+      const yt_play = await yts(youtubeLink);
+      const videoUrl = `${global.MyApiRestBaseUrl}/api/v2/ytmp4?url=${yt_play.all[0].url}&apikey=${global.MyApiRestApikey}`;
+      const buff_vid = await getBuffer(videoUrl);
+      const fileSizeInBytes = buff_vid.byteLength;
+      const fileSizeInKB = fileSizeInBytes / 1024;
+      const fileSizeInMB = fileSizeInKB / 1024;
+      const roundedFileSizeInMB = fileSizeInMB.toFixed(2);
+      const title = yt_play.all[0].title;
+
+      if (fileSizeInMB > 100) {
+        await conn.sendMessage(m.chat, { document: buff_vid, caption: `${tradutor.texto6[0]} ${title}\n${tradutor.texto6[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+        await conn.sendMessage(m.chat, { text: `${tradutor.texto6[2]} ${roundedFileSizeInMB} ${tradutor.texto6[3]} ${title}`, edit: key }, { quoted: m });
+        enviando = false;
+      } else {
+        await conn.sendMessage(m.chat, { video: buff_vid, caption: `${tradutor.texto7[0]} ${title}\n${tradutor.texto7[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+        await conn.sendMessage(m.chat, { text: `${tradutor.texto7[2]}`, edit: key }, { quoted: m });
+        enviando = false;
+      }
+    } catch (error) {
+      await conn.sendMessage(m.chat, { text: tradutor.texto8, edit: key }, { quoted: m });
+      throw tradutor.texto9;
+    }
   }
 };
 
-handler.command = /^ytv$/i;
-
+handler.command = /^(video|fgmp4|dlmp4|getvid|yt(v|mp4)?)$/i;
 export default handler;
+
+const getBuffer = async (url, options) => {
+  try {
+    options ? options : {};
+    const res = await axios({
+      method: 'get',
+      url,
+      headers: {
+        'DNT': 1,
+        'Upgrade-Insecure-Request': 1,
+      },
+      ...options,
+      responseType: 'arraybuffer',
+    });
+
+    return res.data;
+  } catch (e) {
+    console.log(`Error : ${e}`);
+  }
+};
