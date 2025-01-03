@@ -1,129 +1,112 @@
 import fetch from 'node-fetch';
-import yts from "yt-search";
+import yts from 'yt-search';
 import axios from 'axios';
-const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@adiwajshing/baileys')).default;
-import FormData from "form-data";
-import Jimp from "jimp";
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) return m.reply(`• *Ejemplo:* ${usedPrefix + command} elaina edit`);
+const handler = async (m, { conn, args, usedPrefix, command }) => {
+  const datas = global;
+  const idioma = datas.db.data.users[m.sender].language;
+  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`));
+  const tradutor = _translate.plugins.downloader_ytv;
 
-    await m.reply('> _*`Cargando...`*_');
+  if (!args[0]) throw tradutor.texto1;
+  let enviando;
+  if (enviando) return;
+  enviando = true;
 
-    async function createImage(img) {
-        const { imageMessage } = await generateWAMessageContent({
-            image: img
-        }, {
-            upload: conn.waUploadToServer
-        });
-        return imageMessage;
-    }
-
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+  let youtubeLink = '';
+  if (args[0].includes('you')) {
+    youtubeLink = args[0];
+  } else {
+    const index = parseInt(args[0]) - 1;
+    if (index >= 0) {
+      if (Array.isArray(global.videoList) && global.videoList.length > 0) {
+        const matchingItem = global.videoList.find((item) => item.from === m.sender);
+        if (matchingItem) {
+          if (index < matchingItem.urls.length) {
+            youtubeLink = matchingItem.urls[index];
+          } else {
+            enviando = false;
+            throw `${tradutor.texto2} ${matchingItem.urls.length}*`;
+          }
+        } else {
+          enviando = false;
+          throw `${tradutor.texto3[0]} (${usedPrefix + command} ${tradutor.texto3[1]} ${usedPrefix}playlist <texto>*`;
         }
+      } else {
+        enviando = false;
+        throw `${tradutor.texto4[0]} (${usedPrefix + command} ${tradutor.texto4[1]} ${usedPrefix}playlist <texto>*`;
+      }
     }
+  }
 
-    let push = [];
-    let results = await yts(text);
-    let videos = results.videos.slice(0, 6); 
-    shuffleArray(videos);
+  const { key } = await conn.sendMessage(m.chat, { text: tradutor.texto5 }, { quoted: m });
 
-    let i = 1;
-    for (let video of videos) {
-        let imageUrl = video.thumbnail;
-        let imageK = await fetch(imageUrl);
-        let imageB = await imageK.buffer();
-      let pr = await remini(imageB, "enhance")
-        push.push({
-            body: proto.Message.InteractiveMessage.Body.fromObject({
-                text: `🎬 *Título:* ${video.title}\n⌛ *Duración:* ${video.timestamp}\n👀 *Vistas:* ${video.views}`
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.fromObject({
-                text: '乂 Y O U T U B E' 
-            }),
-            header: proto.Message.InteractiveMessage.Header.fromObject({
-                title: `Video - ${i++}`,
-                hasMediaAttachment: true,
-                imageMessage: await createImage(pr) 
-            }),
-            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
-                buttons: [
-                    {
-                        "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"Mirar en YouTube","url":"${video.url}"}`
-                    },
-                    {
-                "name": "cta_copy",
-                "buttonParamsJson": JSON.stringify({
-                "display_text": "Copiar Link",
-                "copy_code": `${video.url}`
-                })
-              }
-                ]
-            })
-        });
+  try {
+    const yt_play = await yts(youtubeLink);
+    const videoUrl = `${global.MyApiRestBaseUrl}/api/v1/ytmp4?url=${yt_play.all[0].url}&apikey=${global.MyApiRestApikey}`;
+    const buff_vid = await getBuffer(videoUrl);
+    const fileSizeInBytes = buff_vid.byteLength;
+    const fileSizeInKB = fileSizeInBytes / 1024;
+    const fileSizeInMB = fileSizeInKB / 1024;
+    const roundedFileSizeInMB = fileSizeInMB.toFixed(2);
+    const title = yt_play.all[0].title;
+
+    if (fileSizeInMB > 100) {
+      await conn.sendMessage(m.chat, { document: buff_vid, caption: `${tradutor.texto6[0]} ${title}\n${tradutor.texto6[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+      await conn.sendMessage(m.chat, { text: `${tradutor.texto6[2]} ${roundedFileSizeInMB} ${tradutor.texto6[3]} ${title}`, edit: key }, { quoted: m });
+      enviando = false;
+    } else {
+      await conn.sendMessage(m.chat, { video: buff_vid, caption: `${tradutor.texto7[0]} ${title}\n${tradutor.texto7[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+      await conn.sendMessage(m.chat, { text: `${tradutor.texto7[2]}`, edit: key }, { quoted: m });
+      enviando = false;
     }
+  } catch (error) {
+    console.log('Primera API falló, intentando con la segunda...');
+    try {
+      const yt_play = await yts(youtubeLink);
+      const videoUrl = `${global.MyApiRestBaseUrl}/api/v2/ytmp4?url=${yt_play.all[0].url}&apikey=${global.MyApiRestApikey}`;
+      const buff_vid = await getBuffer(videoUrl);
+      const fileSizeInBytes = buff_vid.byteLength;
+      const fileSizeInKB = fileSizeInBytes / 1024;
+      const fileSizeInMB = fileSizeInKB / 1024;
+      const roundedFileSizeInMB = fileSizeInMB.toFixed(2);
+      const title = yt_play.all[0].title;
 
-    const bot = generateWAMessageFromContent(m.chat, {
-        viewOnceMessage: {
-            message: {
-                messageContextInfo: {
-                    deviceListMetadata: {},
-                    deviceListMetadataVersion: 2
-                },
-                interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-                    body: proto.Message.InteractiveMessage.Body.create({
-                        text: "Resultados de la búsqueda completos..."
-                    }),
-                    footer: proto.Message.InteractiveMessage.Footer.create({
-                        text: "Sexo"
-                    }),
-                    header: proto.Message.InteractiveMessage.Header.create({
-                        hasMediaAttachment: false
-                    }),
-                    carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
-                        cards: [...push] // Mengisi carousel dengan hasil video
-                    })
+      if (fileSizeInMB > 100) {
+        await conn.sendMessage(m.chat, { document: buff_vid, caption: `${tradutor.texto6[0]} ${title}\n${tradutor.texto6[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+        await conn.sendMessage(m.chat, { text: `${tradutor.texto6[2]} ${roundedFileSizeInMB} ${tradutor.texto6[3]} ${title}`, edit: key }, { quoted: m });
+        enviando = false;
+      } else {
+        await conn.sendMessage(m.chat, { video: buff_vid, caption: `${tradutor.texto7[0]} ${title}\n${tradutor.texto7[1]} ${roundedFileSizeInMB} MB`, fileName: title + '.mp4', mimetype: 'video/mp4' }, { quoted: m });
+        await conn.sendMessage(m.chat, { text: `${tradutor.texto7[2]}`, edit: key }, { quoted: m });
+        enviando = false;
+      }
+    } catch (error) {
+      await conn.sendMessage(m.chat, { text: tradutor.texto8, edit: key }, { quoted: m });
+      throw tradutor.texto9;
+    }
+  }
+};
 
-                })
-            }
-        }
-    }, {});
-
-    await conn.relayMessage(m.chat, bot.message, { messageId: bot.key.id });
-}
-
-handler.help = ["ytslide", "yts"];
-handler.tags = ["search"];
-handler.command = ["ytslide", "yts"];
-
+handler.command = /^(video|fgmp4|dlmp4|getvid|yt(v|mp4)?)$/i;
 export default handler;
 
-async function remini(imageData, operation) {
-  return new Promise(async (resolve, reject) => {
-    const availableOperations = ["enhance", "recolor", "dehaze"]
-    if (availableOperations.includes(operation)) {
-      operation = operation
-    } else {
-      operation = availableOperations[0]
-    }
-    const baseUrl = "https://inferenceengine.vyro.ai/" + operation + ".vyro"
-    const formData = new FormData()
-    formData.append("image", Buffer.from(imageData), {filename: "enhance_image_body.jpg", contentType: "image/jpeg"})
-    formData.append("model_version", 1, {"Content-Transfer-Encoding": "binary", contentType: "multipart/form-data; charset=utf-8"})
-    formData.submit({url: baseUrl, host: "inferenceengine.vyro.ai", path: "/" + operation, protocol: "https:", headers: {"User-Agent": "okhttp/4.9.3", Connection: "Keep-Alive", "Accept-Encoding": "gzip"}},
-      function (err, res) {
-        if (err) reject(err);
-        const chunks = [];
-        res.on("data", function (chunk) {chunks.push(chunk)});
-        res.on("end", function () {resolve(Buffer.concat(chunks))});
-        res.on("error", function (err) {
-        reject(err);
-        });
+const getBuffer = async (url, options) => {
+  try {
+    options ? options : {};
+    const res = await axios({
+      method: 'get',
+      url,
+      headers: {
+        'DNT': 1,
+        'Upgrade-Insecure-Request': 1,
       },
-    )
-  })
-}
+      ...options,
+      responseType: 'arraybuffer',
+    });
+
+    return res.data;
+  } catch (e) {
+    console.log(`Error : ${e}`);
+  }
+};
