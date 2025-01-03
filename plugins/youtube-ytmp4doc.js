@@ -1,41 +1,65 @@
 import fetch from 'node-fetch';
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
+let handler = async (m, { conn, text }) => {
   if (!text) {
-    return conn.reply(m.chat,`❗ *Por favor ingresa un término de búsqueda o URL para encontrar el video.*\n\n*Ejemplo:* ${usedPrefix}${command} https://youtu.be/dQw4w9WgXcQ`,m);
+    return conn.reply(
+      m.chat,
+      '❗ *Por favor ingresa un enlace válido de YouTube para descargar el video.*',
+      m
+    );
   }
 
-  await m.react('🕓');
-
   try {
+    await conn.reply(
+      m.chat,
+      '⏳✨ *Procesando tu solicitud...* Por favor, espera mientras preparamos tu descarga.',
+      m
+    );
+
     const apiUrl = `https://api.giftedtech.my.id/api/download/dlmp4?apikey=gifted&url=${encodeURIComponent(text)}`;
     const response = await fetch(apiUrl);
-    const data = await response.json();
 
-    const { title, quality, thumbail, download_url } = data.result;
+    if (!response.ok) {
+      throw new Error('No se pudo obtener una respuesta válida de la API.');
+    }
+
+    const {
+      success,
+      result: { title, download_url: downloadUrl, quality, thumbail },
+    } = await response.json();
+
+    if (!success || !downloadUrl) {
+      throw new Error('No se encontró un enlace de descarga válido en la respuesta de la API.');
+    }
+
+    const fileResponse = await fetch(downloadUrl, { method: 'HEAD' });
+    const fileSize = parseInt(fileResponse.headers.get('content-length') || 0);
+    const fileSizeMB = (fileSize / (1024 * 1024)).toFixed(2);
 
     await conn.sendMessage(
       m.chat,
       {
-        document: { url: download_url },
+        document: { url: downloadUrl },
         mimetype: 'video/mp4',
         fileName: `${title}.mp4`,
-        caption: `📂 *Video Descargado:*\n\n📌 *Título:* ${title}\n🎥 *Calidad:* ${quality}\n🖼️ [Vista previa](${thumbail})`,
+        caption: `🎥 *Título:* ${title}\n📁 *Calidad:* ${quality}\n📦 *Tamaño:* ${fileSizeMB} MB`,
       },
       { quoted: m }
     );
-
-    await m.react('✅'); 
   } catch (error) {
-    console.error('Error al procesar el video:', error);
-    await conn.reply(m.chat, `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || 'Error desconocido'}`, m);
-    await m.react('❌');
+    console.error('Error al procesar la descarga de video:', error);
+    await conn.reply(
+      m.chat,
+      `❌ *Error al descargar el video:*
+${error.message || 'Error desconocido'}`,
+      m
+    );
   }
 };
 
-handler.help = ['ytmp4 <url>'];
-handler.tags = ['dl'];
-handler.command = /^ytmp4$/i;
+handler.help = ['ytmp4doc <url>'];
+handler.tags = ['downloader'];
+handler.command = /^ytmp4doc$/i;
 handler.register = true;
 
 export default handler;
