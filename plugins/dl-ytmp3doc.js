@@ -1,118 +1,45 @@
-// *[ ❀ PLAY (VIDEO|AUDIO|DOC) ]*
-import yts from 'yt-search'
-import fetch from 'node-fetch'
+```javascript
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const ytdl = require('ytdl-core');
+const fs = require('fs');
 
-let handler = async (m, { conn, args, usedPrefix, text, command }) => {
-let formatos = ["mp3", "mp4", "mp3doc", "mp4doc"]
-let [feature, ...query] = text.split(" ")
+const client = new Client({
+    authStrategy: new LocalAuth()
+});
 
-if (!formatos.includes(feature)) {
-return conn.reply(m.chat, `❀ Ingresa el formato y el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*\n\n*❀ Formatos disponibles* :\n\n*${usedPrefix + command}* mp3\n*${usedPrefix + command}* mp3doc\n*${usedPrefix + command}* mp4\n*${usedPrefix + command}* mp4doc`, m)
-}
+client.on('qr', (qr) => {
+    console.log('Escanea el código QR para iniciar sesión:', qr);
+});
 
-if (!query.length) {
-return conn.reply(m.chat, `❀ ingresa el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*`, m)
-}
+client.on('ready', () => {
+    console.log('¡Bot de WhatsApp listo!');
+});
 
-let res = await yts(query.join(" "))
-let vid = res.videos[0]
-let txt = `- *Título*: ${vid.title}
-- *Duración*: ${vid.timestamp}
-- *Visitas*: ${toNum(vid.views)}
-- *Autor*: ${vid.author.name}
-- *Publicado*: ${eYear(vid.ago)}
-- *Url*: https://youtu.be/${vid.videoId}`
+client.on('message', async (message) => {
+    if (message.body.startsWith('.ytmp3doc')) {
+        const args = message.body.split(' ').slice(1);
+        const url = args[0]; // URL del video de YouTube
 
-await conn.sendFile(m.chat, vid.thumbnail, 'thumbnail.jpg', txt, m)
-  
-try {
-let api = await fetch(`https://api.giftedtech.my.id/api/download/ytdl?apikey=gifted&url=${vid.url}`)
-let json = await api.json()
+        if (!ytdl.validateURL(url)) {
+            return message.reply('¡URL de YouTube no válida! Asegúrate de que sea correcta.');
+        }
 
+        const info = await ytdl.getInfo(url);
+        const title = info.videoDetails.title.replace(/[<>:"/\\|?*]/g, ''); // Limpiar el título para el nombre del archivo
+        const filePath = `${title}.mp3`;
 
-let dl_url = feature.includes('mp3') ? json.result.audio_url : json.result.video_url
-let fileType = feature.includes('mp3') ? 'audio/mp3' : 'video/mp4'
-let fileName = `${json.result.title}.${feature.includes('mp3') ? 'mp3' : 'mp4'}`
-
-let isDoc = feature.includes('doc')
-let file = { url: dl_url }
-
-await conn.sendMessage(m.chat, { [isDoc ? 'document' : feature.includes('mp3') ? 'audio' : 'video']: file,  mimetype: fileType,  fileName: fileName  }, { quoted: m })
-    
-} catch (error) {
-console.error(error)
-}}
-
-
-handler.command = ['play']
-export default handler
-
-function eYear(txt) {
-    if (!txt) return '×'
-    if (txt.includes('month ago')) {
-        var T = txt.replace("month ago", "").trim()
-        var L = 'hace '  + T + ' mes'
-        return L
+        // Descargar el audio
+        ytdl(url, { filter: 'audioonly' })
+            .pipe(fs.createWriteStream(filePath))
+            .on('finish', async () => {
+                await message.reply('¡Descarga completada! Aquí tienes tu MP3:', { 
+                    caption: title, 
+                    media: fs.createReadStream(filePath) 
+                });
+                fs.unlinkSync(filePath); // Eliminar el archivo después de enviar
+            });
     }
-    if (txt.includes('months ago')) {
-        var T = txt.replace("months ago", "").trim()
-        var L = 'hace ' + T + ' meses'
-        return L
-    }
-    if (txt.includes('year ago')) {
-        var T = txt.replace("year ago", "").trim()
-        var L = 'hace ' + T + ' año'
-        return L
-    }
-    if (txt.includes('years ago')) {
-        var T = txt.replace("years ago", "").trim()
-        var L = 'hace ' + T + ' años'
-        return L
-    }
-    if (txt.includes('hour ago')) {
-        var T = txt.replace("hour ago", "").trim()
-        var L = 'hace ' + T + ' hora'
-        return L
-    }
-    if (txt.includes('hours ago')) {
-        var T = txt.replace("hours ago", "").trim()
-        var L = 'hace ' + T + ' horas'
-        return L
-    }
-    if (txt.includes('minute ago')) {
-        var T = txt.replace("minute ago", "").trim()
-        var L = 'hace ' + T + ' minuto'
-        return L
-    }
-    if (txt.includes('minutes ago')) {
-        var T = txt.replace("minutes ago", "").trim()
-        var L = 'hace ' + T + ' minutos'
-        return L
-    }
-    if (txt.includes('day ago')) {
-        var T = txt.replace("day ago", "").trim()
-        var L = 'hace ' + T + ' dia'
-        return L
-    }
-    if (txt.includes('days ago')) {
-        var T = txt.replace("days ago", "").trim()
-        var L = 'hace ' + T + ' dias'
-        return L
-    }
-    return txt
-}
+});
 
-
-function toNum(number) {
-    if (number >= 1000 && number < 1000000) {
-        return (number / 1000).toFixed(1) + 'k'
-    } else if (number >= 1000000) {
-        return (number / 1000000).toFixed(1) + 'M'
-    } else if (number <= -1000 && number > -1000000) {
-        return (number / 1000).toFixed(1) + 'k'
-    } else if (number <= -1000000) {
-        return (number / 1000000).toFixed(1) + 'M'
-    } else {
-        return number.toString()
-    }
-}
+client.initialize();
+```
