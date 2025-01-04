@@ -5,7 +5,7 @@ import qs from 'qs';
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
     return m.reply(`Ejemplo de uso: ${usedPrefix + command} _Rojo_ - _27_
-By Barboza🔥`);
+_By Barboza super bot💯_`);
   }
 
   const appleMusic = {
