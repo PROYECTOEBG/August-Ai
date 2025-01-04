@@ -166,7 +166,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.help = ['play'];
 handler.tags = ['downloader'];
-handler.limit = 3;
 handler.command = ['play'];
 
 export default handler;
