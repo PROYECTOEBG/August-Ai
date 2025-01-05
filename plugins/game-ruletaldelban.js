@@ -11,7 +11,7 @@ let handler = async (m, { conn, groupMetadata }) => {
 
     // Función para verificar si un usuario es administrador, moderador o el creador del bot
     const isAdminOrCreator = (participant) => {
-        return participant.admin === 'admin' || participant.admin === 'superadmin' || participant.id === groupMetadata.owner || participant.id === botCreatorNumber;
+        return participant.admin === 'admin' || participant.admin === 'superadmin' || participant.id ===  || participant.id === botCreatorNumber;
     };
 
     // Filtrar participantes (no incluir al bot y a los administradores, moderadores y creador del bot)
