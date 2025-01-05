@@ -52,7 +52,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
 })
       await conn.sendFile(m.chat, link, name, '', m, null, {mimetype: mime, asDocument: true});
     } catch {
-      await m.reply(`*🎄Ingresa un link de mediafire junto al comando. Ejemplo:* \n${usedPrefix + command} https://www.mediafire.com/file/941xczxhn27qbby/GBWA_V12.25FF-By.SamMods-.apk\n\n> *Powered By WillZek*`);
+      await m.reply(`*🎄Ingresa un link de mediafire junto al comando. Ejemplo:* \n${usedPrefix + command} https://www.mediafire.com/file/941xczxhn27qbby/GBWA_V12.25FF-By.SamMods-.apk\n\n> *Powered By Barboza*`);
     }
   }
 };
