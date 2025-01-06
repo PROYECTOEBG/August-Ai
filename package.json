@@ -26,17 +26,17 @@
         "PrakBot",
         "baileys-md"
     ],
-    "homepage": "https://github.com/Elrebelde1/-Botbarboza-ai",
+    "homepage": "https://github.com/WillZek/CrowBot-Ai",
     "author": {
-        "name": "Barboza"
+        "name": "WillZek"
     },
     "repository": {
         "type": "git",
-        "url": "git+"
+        "url": "git+https://github.com/WillZek/CrowBot-Ai.git"
     },
     "bugs": {
         "url":
-"https://github.com/Elrebelde1/-Botbarboza-ai/issues"
+"https://github.com/WillZek/CrowBot-Ai/issues"
     },
     "license": "MIT",
     "dependencies": {
@@ -46,7 +46,6 @@
         "@vitalets/google-translate-api": "^9.2.0",
         "@whiskeysockets/baileys": "^6.7.5",
         "@xct007/frieren-scraper": "^0.0.2",
-        "@SumiFX/Scraper": "*",
         "google-libphonenumber": "latest",
         "acrcloud": "^1.4.0",
         "firebase": "latest",
