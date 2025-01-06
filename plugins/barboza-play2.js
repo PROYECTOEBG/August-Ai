@@ -1,97 +1,117 @@
-import fetch from 'node-fetch';
-import { Buffer } from 'buffer';
+import fetch from 'node-fetch'
 
-const getChat = (context, fields) => fields.chat;
-const toMegabytes = (bytes) => parseInt(bytes) / (1024 * 1024);
-const isLargeFile = (size) => size > 70;
-const isPasavid = (command) => command === 'pasavid';
+let handler = async (m, { conn, args, usedPrefix, text, command }) => {
+let formatos = ["mp3", "mp4", "mp3doc", "mp4doc"]
+let [feature, ...query] = text.split(" ")
 
-const handleCommand = async (_context, { conn, text, usedPrefix, command }) => {
- if (!text) {
-        let promptMessage = isPasavid(command)
-            ? `${usedPrefix} Dices que te Vas`
-            : `${usedPrefix} Amorfoda`;
+if (!formatos.includes(feature)) {
+return conn.reply(m.chat, `❀ Ingresa el formato y el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*\n\n*❀ Formatos disponibles* :\n\n*${usedPrefix + command}* mp3\n*${usedPrefix + command}* mp3doc\n*${usedPrefix + command}* mp4\n*${usedPrefix + command}* mp4doc`, m)
+}
 
-        return conn.sendMessage(getChat(_context, { chat: _context.chat }), {
-            text: `🍁 *Por favor ingresa una búsqueda.*\n\n*Ejemplo:* ${usedPrefix}${command} ${promptMessage}`,
-        });
+if (!query.length) {
+return conn.reply(m.chat, `❀ ingresa el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*`, m)
+}
+
+let res = await yts(query.join(" "))
+let vid = res.videos[0]
+let txt = `- *Título*: ${vid.title}
+- *Duración*: ${vid.timestamp}
+- *Visitas*: ${toNum(vid.views)}
+- *Autor*: ${vid.author.name}
+- *Publicado*: ${eYear(vid.ago)}
+- *Url*: https://youtu.be/${vid.videoId}`
+
+await conn.sendFile(m.chat, vid.thumbnail, 'thumbnail.jpg', txt, m)
+
+try {
+let api = await fetch(`https://api.giftedtech.my.id/api/download/ytdl?apikey=gifted&url=${vid.url}`)
+let json = await api.json()
+
+
+let dl_url = feature.includes('mp3') ? json.result.audio_url : json.result.video_url
+let fileType = feature.includes('mp3') ? 'audio/mp3' : 'video/mp4'
+let fileName = `${json.result.title}.${feature.includes('mp3') ? 'mp3' : 'mp4'}`
+
+let isDoc = feature.includes('doc')
+let file = { url: dl_url }
+
+await conn.sendMessage(m.chat, { [isDoc ? 'document' : feature.includes('mp3') ? 'audio' : 'video']: file,  mimetype: fileType,  fileName: fileName  }, { quoted: m })
+
+} catch (error) {
+console.error(error)
+}}
+
+
+handler.command = ['play2']
+
+export default handler
+
+function eYear(txt) {
+    if (!txt) return '×'
+    if (txt.includes('month ago')) {
+        var T = txt.replace("month ago", "").trim()
+        var L = 'hace '  + T + ' mes'
+        return L
     }
-
-    try {
-         await conn.sendMessage(_context.chat, {
-            text: `🎥 Descargando video...\n\n⏳ *Por favor, espera.*`,
-        });
-
-        const apiUrl = `https://api.vreden.my.id/api/ytplaymp4?query=${encodeURIComponent(text)}`;
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        if (!data || data.status !== 200 || !data.result || !data.result.download) {
-            throw new Error('La API no devolvió datos válidos.');
-        }
-
-        const {
-            result: {
-                metadata: { title, author, timestamp, image, views, url },
-                download: { url: downloadUrl },
-            },
-        } = data;
-
-        if (!downloadUrl) {
-            throw new Error('La URL de descarga no está disponible.');
-        }
-
-        const cleanDownloadUrl = downloadUrl.replace(/\s+/g, '%20');
-
-        const headResponse = await fetch(cleanDownloadUrl, { method: 'HEAD' });
-        const fileSize = parseInt(headResponse.headers.get('content-length') || 0);
-        const sizeInMB = toMegabytes(fileSize);
-
-        await conn.sendMessage(_context.chat, {
-            image: { url: image },
-            caption:
-                `🎥 *Título:* ${title}\n` +
-                `👤 *Autor:* ${author.name}\n` +
-                `⏳ *Duración:* ${timestamp}\n` +
-                `📥 *Tamaño:* ${sizeInMB.toFixed(2)} MB\n\n` +
-                `🔗 *Enlace:* ${url}\n\n` +
-                `🎬 *Enviando Video.*`,
-        });
-
-        if (isPasavid(command)) {
-            await conn.sendMessage(_context.chat, {
-                video: { url: cleanDownloadUrl },
-                mimetype: 'video/mp4',
-                fileName: `${title}.mp4`,
-                caption: `🎬 *Video Reproducible:*`,
-                quoted: _context,
-            });
-        } else if (isLargeFile(sizeInMB)) {
-            await conn.sendMessage(_context.chat, {
-                document: { url: cleanDownloadUrl },
-                mimetype: 'video/mp4',
-                fileName: `${title}.mp4`,
-                caption: `📄 *Video en Formato Documento:*`,
-                quoted: _context,
-            });
-        } else {
-            await conn.sendMessage(_context.chat, {
-                video: { url: cleanDownloadUrl },
-                mimetype: 'video/mp4',
-                fileName: `${title}.mp4`,
-                caption: `🎬 *Video Reproducible:*`,
-                quoted: _context,
-            });
-        }
-    } catch (error) {
-        console.error('Error al descargar el video:', error);
-        await conn.sendMessage(_context.chat, {
-            text: `⚠️ *Ocurrió un error al intentar procesar tu solicitud:*\n\n${error.message || 'Error desconocido'}`,
-        });
+    if (txt.includes('months ago')) {
+        var T = txt.replace("months ago", "").trim()
+        var L = 'hace ' + T + ' meses'
+        return L
     }
-};
+    if (txt.includes('year ago')) {
+        var T = txt.replace("year ago", "").trim()
+        var L = 'hace ' + T + ' año'
+        return L
+    }
+    if (txt.includes('years ago')) {
+        var T = txt.replace("years ago", "").trim()
+        var L = 'hace ' + T + ' años'
+        return L
+    }
+    if (txt.includes('hour ago')) {
+        var T = txt.replace("hour ago", "").trim()
+        var L = 'hace ' + T + ' hora'
+        return L
+    }
+    if (txt.includes('hours ago')) {
+        var T = txt.replace("hours ago", "").trim()
+        var L = 'hace ' + T + ' horas'
+        return L
+    }
+    if (txt.includes('minute ago')) {
+        var T = txt.replace("minute ago", "").trim()
+        var L = 'hace ' + T + ' minuto'
+        return L
+    }
+    if (txt.includes('minutes ago')) {
+        var T = txt.replace("minutes ago", "").trim()
+        var L = 'hace ' + T + ' minutos'
+        return L
+    }
+    if (txt.includes('day ago')) {
+        var T = txt.replace("day ago", "").trim()
+        var L = 'hace ' + T + ' dia'
+        return L
+    }
+    if (txt.includes('days ago')) {
+        var T = txt.replace("days ago", "").trim()
+        var L = 'hace ' + T + ' dias'
+        return L
+    }
+    return txt
+}
 
-handleCommand.command = /^vid|play2$/i;
 
-export default handleCommand;
-
+function toNum(number) {
+    if (number >= 1000 && number < 1000000) {
+        return (number / 1000).toFixed(1) + 'k'
+    } else if (number >= 1000000) {
+        return (number / 1000000).toFixed(1) + 'M'
+    } else if (number <= -1000 && number > -1000000) {
+        return (number / 1000).toFixed(1) + 'k'
+    } else if (number <= -1000000) {
+        return (number / 1000000).toFixed(1) + 'M'
+    } else {
+        return number.toString()
+    }
+}
