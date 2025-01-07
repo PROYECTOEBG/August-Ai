@@ -10,6 +10,7 @@ import axios from 'axios'
 
 global.owner = [
   ['584246582666', 'Bot-Ai',true],
+  ['584146277368', 'Barboza OFC',true],
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
