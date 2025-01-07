@@ -26,15 +26,15 @@ let handler = async (m, { conn }) => {
   await m.react('✅')
   if (api.data.data) {
     let txt = '`I B B  -  U P L O A D E R`\n\n'
-        txt += `*🔖 Titulo* : ${q.filename || 'x'}\n`
-        txt += `*🔖 Id* : ${api.data.data.id}\n`
-        txt += `*🔖 Enlace* : ${api.data.data.url}\n`
-        txt += `*🔖 Directo* : ${api.data.data.url_viewer}\n`
-        txt += `*🔖 Mime* : ${mime}\n`
-        txt += `*🔖 File* : ${q.filename || 'x.jpg'}\n`
-        txt += `*🔖 Extension* : ${api.data.data.image.extension}\n`
-        txt += `*🔖 Delete* : ${api.data.data.delete_url}\n\n`
-        txt += `© By: BarbozaBot-Ai`
+        txt += `*🔖 TÍTULO* : ${q.filename || 'x'}\n`
+        txt += `*🔖 ID* : ${api.data.data.id}\n`
+        txt += `*🔖 ENLACE* : ${api.data.data.url}\n`
+        txt += `*🔖 DIRECTO* : ${api.data.data.url_viewer}\n`
+        txt += `*🔖 MIME* : ${mime}\n`
+        txt += `*🔖 FILE* : ${q.filename || 'x.jpg'}\n`
+        txt += `*🔖 EXTENSION* : ${api.data.data.image.extension}\n`
+        txt += `*🔖DELETE* : ${api.data.data.delete_url}\n\n`
+        txt += `*➤ By: ${botname}*`
     await conn.sendFile(m.chat, api.data.data.url, 'ibb.jpg', txt, m, null, fake)
   } else {
     await m.react('✅')
