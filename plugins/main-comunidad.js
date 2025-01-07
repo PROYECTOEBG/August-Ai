@@ -13,7 +13,7 @@ const handler = async (m, { conn }) => {
 
 • 📢 ➤ **Canal de Bot Barboza Ai**  
    Recibe actualizaciones, noticias y lanzamientos del bot.  
-➤https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
+https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
 • 💬 ➤ **Grupo de WhatsApp activo**  
    Chatea con usuarios en tiempo real y sé parte de la conversación y usa al bot que esta de uso libre.  
 ➤https://chat.whatsapp.com/E1kx7olE0RpA18BdALdaWV
