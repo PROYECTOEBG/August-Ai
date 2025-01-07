@@ -21,21 +21,28 @@ let Styles = (text, style = 1) => {
   return output.join('');
 };
 let tags = {
-  'main': 'INFO',
-  'anime': 'ANIME',
-  'search': 'SEARCH',
-  'rg': 'REGISTRO',
-  'sticker': 'STICKER',
-  'group': 'GROUPS',
-  'nable': 'ON / OFF',
-  'downloader': 'DOWNLOAD',
-  'tools': 'TOOLS',
-  'fun': 'FUN',
-  'nsfw': 'NSFW', 
-  'owner': 'OWNER', 
-  'audio': 'AUDIOS', 
+  'anime': '🧧 ANIME 🎐',
+  'main': '❗ INFO ❕',
+  'search': '🔎 SEARCH 🔍',
+  'game': '🕹️ GAME 🎮',
+  'serbot': '⚙️ SUB BOTS 🤖',
+  'rpg': '🌐 RPG 🥇',
+  'rg': '🎑 REGISTRO 🎟️',
+  'sticker': '💟 STICKER 🏷️',
+  'img': '🖼️ IMAGE 🎇',
+  'group': '👥 GROUPS 📢',
+//  'logo': 'MAKER',
+  'nable': '🎛️ ON / OFF 🔌', 
+  'premium': '💎 PREMIUM 👑',
+  'downloader': '📥 DOWNLOAD 📤',
+  'tools': '🔧 TOOLS 🛠️',
+  'fun': '🎉 FUN 🎊',
+  'nsfw': '🔞 NSFW 📛', 
+  'cmd': '🧮 DATABASE 🖥️',
+  'owner': '👤 OWNER 👁️', 
+  'audio': '📣 AUDIOS 🔊', 
+  'advanced': '🗝️ ADVANCED 📍',
 }
-
 const defaultMenu = {
   before: `
 > 「 ${textbot} あ⁩ 」\n
