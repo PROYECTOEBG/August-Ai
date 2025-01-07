@@ -1,15 +1,15 @@
 const handler = async (m, { conn }) => {
-  let gifUrl = "https://qu.ax/jrfeN.mp4";
+  let gifUrl = "https://i.ibb.co/hy3G9Rz/file.jpg";
 
   let text = `
  ──────── ⚔ ────────  
      **COMUNIDAD**  
 ──────── ⚔ ────────  
 
-**SON GOKU BOT**  
-• ,👥➤ **Grupo de WhatsApp de la comunidad de SonGoku**  
+**Bot barboza**  
+• ,👥➤ **Grupo de WhatsApp de la comunidad de Bot Barboza Ai**  
    Únete para compartir y resolver dudas con otros usuarios. 
-  ➤[https://chat.whatsapp.com/COGynlbC2SVHx72LaLPsVG] 
+  ➤https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
 
 • 📢 ➤ **Canal de Bot Barboza Ai**  
    Recibe actualizaciones, noticias y lanzamientos del bot.  
