@@ -69,7 +69,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
         { quoted: m }
       );
     } else {
-      return conn.reply(m.chat, '☃️ *_¿Y el video? Intenta enviar primero imagen/video/gif y luego responde con el comando._*', m);
+      return conn.reply(m.chat, '⚡ *_¿Y el video? Intenta enviar primero imagen/video/gif y luego responde con el comando._*', m);
     }
   }
 };
