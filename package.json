@@ -26,17 +26,17 @@
         "PrakBot",
         "baileys-md"
     ],
-    "homepage": "https://github.com/WillZek/CrowBot-Ai",
+    "homepage": "https://github.com/Elrebelde1/-Botbarboza-ai",
     "author": {
         "name": "WillZek"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/WillZek/CrowBot-Ai.git"
+        "url": "git+https://github.com/Elrebelde1/-Botbarboza-ai.git"
     },
     "bugs": {
         "url":
-"https://github.com/WillZek/CrowBot-Ai/issues"
+"https://github.com/Elrebelde1/-Botbarboza-ai/issues"
     },
     "license": "MIT",
     "dependencies": {
