@@ -4,7 +4,7 @@ import qs from 'qs';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    return m.reply(`Ejemplo de uso: ${usedPrefix + command} _Rojo_ - _27_ \n_By Barboza super bot_`);
+    return m.reply(`Ejemplo de uso: *${usedPrefix + command} Joji - Ew*`);
   }
 
   const appleMusic = {
@@ -23,7 +23,21 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         return results;
       } catch (error) {
         console.error("Error en búsqueda de Apple Music:", error.message);
-        return [];
+        return { success: false, message: error.message };
+      }
+    },
+    detail: async (url) => {
+      try {
+        const { data } = await axios.get(url);
+        const $ = cheerio.load(data);
+        const albumTitle = $('h1[data-testid="non-editable-product-title"]').text().trim();
+        const artistName = $('a[data-testid="click-action"]').first().text().trim();
+        const releaseInfo = $('div.headings__metadata-bottom').text().trim();
+        const description = $('div[data-testid="description"]').text().trim();
+        return { albumTitle, artistName, releaseInfo, description };
+      } catch (error) {
+        console.error("Error en detalles de Apple Music:", error.message);
+        return { success: false, message: error.message };
       }
     }
   };
@@ -43,7 +57,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         return response.data;
       } catch (error) {
         console.error("Error obteniendo datos de Apple Music Downloader:", error.message);
-        return null;
+        return { success: false, message: error.message };
       }
     },
     getAudio: async (trackName, artist, urlMusic, token) => {
@@ -66,7 +80,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
         return response.data.dlink;
       } catch (error) {
         console.error("Error obteniendo audio de Apple Music:", error.message);
-        return null;
+        return { success: false, message: error.message };
       }
     },
     download: async (urls) => {
@@ -127,17 +141,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     return m.reply("No se encontraron resultados para tu búsqueda.");
   }
 
-  const firstResult = searchResults[0];
-  const songDetails = await appledown.getData(firstResult.link);
-
-  if (!songDetails || !songDetails.name || !songDetails.artist || !songDetails.duration) {
-    return m.reply("No se pudo obtener la información completa de la canción.");
-  }
-
-  const songInfoMessage = `🎶 Nombre: ${songDetails.name}\n🎤 Artista: ${songDetails.artist}\n⏱️ Duración: ${songDetails.duration}`;
-  await conn.sendMessage(m.chat, { text: songInfoMessage }, { quoted: m });
-
-  const musicData = await appledown.download(firstResult.link);
+  const musicData = await appledown.download(searchResults[0].link);
   if (!musicData.success) {
     return m.reply(`Error: ${musicData.message}`);
   }
@@ -166,7 +170,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.help = ['play'];
 handler.tags = ['downloader'];
-
-handler.command = ['play'];
+handler.limit = 3;
+handler.command = 'play',/^(applemusicplay|play|song)$/i;
 
 export default handler;
