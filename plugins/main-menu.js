@@ -41,7 +41,7 @@ const defaultMenu = {
 > 「 ${textbot} あ⁩ 」\n
 
 ›    ╔──────¤◎¤──────╗
-› *╭━❍🎄BARBOZA-BOT-AI⚡❍━╮*
+› *╭━❍⚡BARBOZA-BOT-AI⚡❍━╮*
 ›    ╚──────¤◎¤──────╝
 ╭━─━─━─≪𖣘≫─━─━─━╮
 ┃🚀 ➬ *Cliente:* %name
