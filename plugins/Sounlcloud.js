@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import axios from 'axios';
 
 let handler = async (m, { conn, command, args, text, usedPrefix }) => {
-if (!text) return conn.reply(m.chat, `🚩 Ingrese el nombre de la cancion de *Soundcloud.*`, m, rcanal)
+if (!text) return conn.reply(m.chat, `🧑‍💻INGRESE EL NOMBRE DE ALGUNA CANCION *Soundcloud.*`, m, rcanal)
 
 await m.react('🕒');
 try {
@@ -31,10 +31,9 @@ await m.react('✅');
 await m.react('✖️');
 }}
 
-handler.help = ['playmusica *<búsqueda>*']
+handler.help = ['soundcloud *<búsqueda>*']
 handler.tags = ['downloader']
-handler.command = ['soundcloud', 'sound', 'playmusica']
-handler.limit = 5
+handler.command = ['soundcloud', 'sound', 'play']
 
 export default handler
 
@@ -88,7 +87,7 @@ txt += `🍘• *Artista:* ${randoms.artist}\n`
 txt += `🍘• *Duracion:* ${randoms.duration}\n`
 txt += `🍘• *Reproducciones:* ${randoms.repro}\n`
 txt += `🍘• *Link:* ${randoms.url}\n\n`
-txt += `🚩 Powered By StarCore Team`
+txt += `🚩 Powered By Starlights Team`
 await conn.sendFile(m.chat, randoms.image, 'thumb.jpg', txt, m)
 await conn.sendMessage(m.chat, { audio: fs.readFileSync(mp3), fileName: `${sm.title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m })
 fs.unlinkSync(mp3)
@@ -96,10 +95,9 @@ await m.react('✅')
 } catch {
 await m.react('✖️')
 }}
-
 handler.help = ['soundcloud *<búsqueda>*']
 handler.tags = ['downloader']
-handler.command = ['soundcloud', 'sound']
+handler.command = ['soundcloud', 'sound', 'play']
 handler.register = true
-handler.limit = 5
+//handler.limit = 3
 export default handler*/
