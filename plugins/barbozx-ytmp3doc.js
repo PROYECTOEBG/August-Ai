@@ -1,61 +1,64 @@
-import Starlights from '@StarlightsTeam/Scraper'
-import fetch from 'node-fetch'
-import Sph from 'ytdl-mp3'
+import fetch from "node-fetch";
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-    if (!args[0]) {
-        return m.reply('[ ✰ ] Ingresa el enlace del vídeo de *YouTube* junto al comando.\n\n`» Ejemplo :`\n' + `> *${usedPrefix + command}* https://youtu.be/QSvaCSt8ixs`)
-    }
-
-    await m.react('🕓') 
+// Función para manejar reintentos de solicitudes
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-        let { title, duration, size, thumbnail, dl_url } = await Starlights.ytmp3v2(args[0])
-
-        let img = await (await fetch(thumbnail)).buffer()
-        let txt = '`乂  Y O U T U B E  -  M P 3`\n\n' +
-                  `        ✩   *Título* : ${title}\n` +
-                  `        ✩   *Duración* : ${duration}\n` +
-                  `        ✩   *Tamaño* : ${size}\n\n` +
-                  '> *- ↻ El audio se está enviando, espera un momento...*'
-
-        await conn.sendMessage(m.chat, { image: img, caption: txt }, { quoted: m })
-        await conn.sendMessage(m.chat, { audio: { url: dl_url }, fileName: `${title}.mp3`, mimetype: 'audio/mp4' }, { quoted: m })
-        await m.react('✅')
-    } catch {
-        try {
-            let { title, size, quality, thumbnail, dl_url } = await Starlights.ytmp3(args[0])
-
-            let img = await (await fetch(thumbnail)).buffer()
-            let txt = '`乂  Y O U T U B E  -  M P 3`\n\n' +
-                      `        ✩   *Título* : ${title}\n` +
-                      `        ✩   *Calidad* : ${quality}\n` +
-                      `        ✩   *Tamaño* : ${size}\n\n` +
-                      '> *- ↻ El audio se está enviando, espera un momento...*'
-
-            await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m)
-            await conn.sendMessage(m.chat, { audio: { url: dl_url }, fileName: `${title}.mp3`, mimetype: 'audio/mp4' }, { quoted: m })
-            await m.react('✅')
-        } catch {
-            try {
-                let cxf = await Sph.ytdl(args[0])
-                let txt = '`乂  Y O U T U B E  -  M P 3`\n\n' +
-                          `        ✩   *Título* : ${cxf.title}\n` +
-                          `        ✩   *Calidad* : ${cxf.quality}\n` +
-                          `        ✩   *Url* : ${cxf.url}\n\n` +
-                          '> *- ↻ El audio se está enviando, espera un momento...*'
-
-                await conn.sendMessage(m.chat, { image: { url: cxf.thumbnail }, caption: txt }, { quoted: m })
-                await conn.sendMessage(m.chat, { document: { url: dl_url }, mimetype: 'audio/mpeg', fileName: `${title}.mp3` }, { quoted: m })
-                await m.react('✅')
-            } catch {
-                await m.react('✖️')
-            }
-        }
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data?.status === 200 && data?.result?.download?.url) return data.result;
+    } catch (error) {
+      console.error(`Error en el intento ${attempt + 1}:`, error.message);
     }
-}
-handler.help = ['ytmp3doc *<link yt>*']
-handler.tags = ['dl']
-handler.command = ['ytmp3doc', 'ytadoc', 'fgmp3doc']
-handler.register = true
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
+};
 
-export default handler
+// Reconstruir URL desde base64
+const reconstructUrl = () => {
+  const parts = ["aHR0cHM6Ly9hcGkudnJlZGVu", "LndlYi5pZC9hcGkveXRtcDM="];
+  return Buffer.from(parts.join(""), "base64").toString("utf-8");
+};
+
+// Handler principal
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
+    return conn.sendMessage(m.chat, {
+      text: `❗ *Por favor ingresa un enlace válido de YouTube para descargar la música.*\n\n📌 *Ejemplo:* ${usedPrefix}ytmp3doc https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+    });
+  }
+
+  const key = await conn.sendMessage(m.chat, {
+    text: `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🔎 *Procesando tu solicitud, por favor espera...*`,
+  });
+
+  try {
+    const apiUrl = `${reconstructUrl()}?url=${encodeURIComponent(text)}`;
+    const { metadata, download } = await fetchWithRetries(apiUrl);
+    const { title, duration, views, author, url: videoUrl } = metadata;
+    const { url: downloadUrl } = download;
+
+    const description = `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🎵 *Título:* ${title}\n⏳ *Duración:* ${duration.timestamp || "Desconocida"}\n👁️ *Vistas:* ${views.toLocaleString() || "Desconocidas"}\n✍️ *Autor:* ${author.name || "Desconocido"}\n🔗 *Enlace del video:* ${videoUrl}\n\n✨ *Tu archivo se está enviando como documento, por favor espera...*\n\n⌘━━─≪ Power By Barboza Bot AI ≫─━━⌘`;
+
+    await conn.sendMessage(m.chat, { text: description, edit: key });
+    await conn.sendMessage(
+      m.chat,
+      {
+        document: { url: downloadUrl },
+        mimetype: "audio/mpeg",
+        fileName: `${title}.mp3`,
+        caption: `🎶 *Descarga completada por Barboza Bot AI*`,
+      },
+      { quoted: m }
+    );
+  } catch (error) {
+    console.error("Error al procesar la solicitud:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+      edit: key,
+    });
+  }
+};
+
+handler.command = /^ytmp3doc$/i;
+export default handler;
