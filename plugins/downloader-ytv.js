@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+Import fetch from "node-fetch";
 
 // Función para decodificar Base64
 const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
