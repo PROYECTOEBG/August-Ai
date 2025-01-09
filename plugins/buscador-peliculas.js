@@ -1,43 +1,64 @@
-/* Creado por Bruno Sobrino (https://github.com/Night) */
+/* Creado/adaptado por Bruno Sobrino (https://github.com/BrunoSobrino) */
+
 import fetch from 'node-fetch';
 import axios from 'axios';
-
+import {load} from 'cheerio';
 const handler = async (m, {text, usedPrefix, command, conn}) => {
- try {
-  const idioma = global.db.data.users[m.sender].language
-  const _translate = JSON.parse(fs.readFileSync(`./language/${idioma}.json`))
-  const tradutor = _translate.plugins.buscador_peliculas
-  if (!text) throw `*${tradutor.texto1}*`;
+if (!text) throw`️${lenguajeGB['smsAvisoMG']()}${mid.smsMalused7}\n${usedPrefix + command} El Gato con botas`
   let aaaa;
   let img;
+  try {
     aaaa = await searchC(text);
-    const randomIndex = Math.floor(Math.random() * aaaa.length);
-    try {
-        img = 'https://wwv.cuevana8.com' + aaaa[randomIndex].image;
-    } catch {
-        img = 'https://www.poresto.net/u/fotografias/m/2023/7/5/f1280x720-305066_436741_5050.png';
-    }    
-  if (aaaa == '') throw `*${tradutor.texto2}*`;                                        /* https://wwv.cuevana8.com */
-  const res = await aaaa.map((v) => `*${tradutor.texto3[0]}* ${v.title}\n*${tradutor.texto3[1]}* ${v.link}`).join`\n\n─────────────────\n\n`;
-  const ads = `*${tradutor.texto3[2]}* ${tradutor.texto3[3]}\n*${tradutor.texto3[4]}* https://block-this.com/block-this-latest.apk\n\n≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣\n\n`;
+    img = 'https://cinefilosoficial.com/wp-content/uploads/2021/07/cuevana.jpg';
+  } catch {
+    aaaa = await searchP(text);
+    img = 'https://elcomercio.pe/resizer/RJM30xnujgfmaODGytH1rRVOrAA=/400x0/smart/filters:format(jpeg):quality(75)/arc-anglerfish-arc2-prod-elcomercio.s3.amazonaws.com/public/BJ2L67XNRRGHTFPKPDOEQ2AH5Y.jpg';
+  }
+  if (aaaa == '') throw `️${lenguajeGB['smsAvisoFG']()}${mid.buscador10}`
+  const res = await aaaa.map((v) => `*🎬 • ${mid.smsYT1}:* ${v.title}\n*🍿 • ${mid.smsYT4}:* ${v.link}`).join`\n\n───────────────\n\n`;
+  const ads = `*💫 • ${mid.buscador11}*\nhttps://block-this.com/block-this-latest.apk\n\n≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣≣\n\n`
   conn.sendMessage(m.chat, {image: {url: img}, caption: ads + res}, {quoted: m});
- } catch {
-   return conn.sendMessage(m.chat, {text: '*[❗] Error, no se obtuvieron resultados.'}, {quoted: m});   
- }    
-};   
+};
 handler.command = ['cuevana', 'pelisplus'];
+handler.level = 2
+handler.register = true
 export default handler;
 
-async function searchC(query) {
-  const response = await axios.get(`https://wwv.cuevana8.com/search?q=${query}`);
-  const $ = cheerio.load(response.data);
+const safeLoad = async (url, options = {}) => {
+  try {
+    const {data: pageData} = await axios.get(url, options);
+    const $ = load(pageData);
+    return $;
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.statusText);
+    }
+    throw err;
+  }
+};
+
+async function searchC(query, numberPage = 1) {
+  const $ = await safeLoad(`https://cuevana3.mu/page/${numberPage}/`, {
+    params: {s: query}});
   const resultSearch = [];
-  $('.MovieList .TPostMv').each((_, e) => {
+  $('.results-post > article').each((_, e) => {
     const element = $(e);
-    const title = element.find('.TPostMv .Title').first().text();  
-    const link = element.find('a').attr('href');
-    const image = element.find('img').attr('src');
-    resultSearch.push({ title, link, image });
+    const title = element.find('header > h2').text();
+    const link = element.find('.lnk-blk').attr('href');
+    resultSearch.push({title: title, link: link});
+  });
+  return resultSearch;
+}
+
+async function searchP(query, numberPage = 1) {
+  const $ = await safeLoad(`https://pelisplushd.cx/search/`, {
+    params: {s: query, page: numberPage}});
+  const resultSearch = [];
+  $('a[class^=\'Posters\']').each((_, e) => {
+    const element = $(e);
+    const title = element.find('.listing-content > p').text();
+    const link = element.attr('href');
+    resultSearch.push({title: title, link: link});
   });
   return resultSearch;
 }
