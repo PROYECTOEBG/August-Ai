@@ -1,5 +1,4 @@
 import fetch from "node-fetch";
-import fs from "fs";
 
 // Función para manejar reintentos de solicitudes
 const fetchWithRetries = async (url, maxRetries = 2) => {
@@ -50,7 +49,7 @@ let handler = async (m, { conn, text, usedPrefix }) => {
     const apiData = await fetchWithRetries(apiUrl);
 
     const { metadata, download } = apiData;
-    const { title, duration, views, author, thumbnail, url: videoUrl } = metadata;
+    const { title, duration, views, author, url: videoUrl } = metadata;
     const { url: downloadUrl } = download;
 
     // Descripción personalizada para el archivo encontrado
@@ -67,15 +66,6 @@ let handler = async (m, { conn, text, usedPrefix }) => {
         mimetype: "audio/mpeg",
         fileName: `${title}.mp3`,
         caption: `🎶 *Descarga completada por Barboza Bot AI*`,
-        contextInfo: {
-          externalAdReply: {
-            title: title,
-            body: "Música desde Barboza Bot AI",
-            previewType: "PHOTO",
-            thumbnail: fs.readFileSync("./media/menu.jpg"), // Cambia esta ruta a una imagen disponible en tu entorno
-            mediaUrl: videoUrl,
-          },
-        },
       },
       { quoted: m }
     );
