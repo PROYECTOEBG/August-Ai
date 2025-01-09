@@ -1,6 +1,9 @@
 import fetch from "node-fetch";
 import yts from "yt-search"; // Asegúrate de tener instalado yt-search
 
+// Función para decodificar Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
+
 const fetchWithRetries = async (url, maxRetries = 2) => {
   let attempt = 0;
   while (attempt <= maxRetries) {
@@ -22,7 +25,7 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
     return conn.sendMessage(m.chat, {
-      text: `⚠️ *¡Atención!*\n\n💡 *Por favor ingresa un término de búsqueda para encontrar el video.*\n\n📌 *Ejemplo para ${usedPrefix}play2:* ${usedPrefix}play2 Never Gonna Give You Up`,
+      text: `⚠️ *¡Atención!*\n\n💡 *Por favor ingresa un término de búsqueda para encontrar el video.*\n\n📌 *Ejemplo:* ${usedPrefix}play2 Never Gonna Give You Up`,
     });
   }
 
@@ -30,7 +33,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     await conn.sendMessage(m.chat, {
       text: `
 ╭━━━🌐📡━━━╮  
-   🔍 **Buscando en ☆Bot Barboza Ai☆** 🔍  
+   🔍 **Buscando en ☆Barboza Bot Ai☆** 🔍  
 ╰━━━🌐📡━━━╯  
 
 ✨ *Estamos localizando tu video...*  
@@ -52,12 +55,13 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
     const { title, url: videoUrl, timestamp, views, author, image, ago } = video;
 
-    // Llamar a la API de descarga con reintentos
-    const apiUrl = `https://***********/api/ytmp4?url=${encodeURIComponent(videoUrl)}`; // API ofuscada
+    // URL de la API ofuscada
+    const encodedApiUrl = "aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkveXRtcDQ=";
+    const apiUrl = `${decodeBase64(encodedApiUrl)}?url=${encodeURIComponent(videoUrl)}`;
     const apiData = await fetchWithRetries(apiUrl);
 
     const { metadata, download } = apiData;
-    const { duration } = metadata;
+    const { duration, description } = metadata;
     const { url: downloadUrl, quality, filename } = download;
 
     // Obtener el tamaño del archivo
@@ -68,7 +72,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     // Formato del mensaje de información
     const videoInfo = `
 ╭━━━☆☆☆━━━╮  
- *★ Bot Barboza Ai ★*
+ *★ ☆Barboza Bot Ai☆ ★*
 ╰━━━☆☆☆━━━╯  
 🎵 **Título:**  ${title}  
 
@@ -88,7 +92,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
     await conn.sendMessage(m.chat, { image: { url: image }, caption: videoInfo });
 
-    // Descargar como documento o video según el tamaño
     if (fileSizeInMB > 70) {
       await conn.sendMessage(
         m.chat,
@@ -120,6 +123,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 };
 
-handler.command = /^play2$/i;
+handler.command = /^play2$/i; // Solo funciona con play2
 
 export default handler;
