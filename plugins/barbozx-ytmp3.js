@@ -1,67 +1,93 @@
-import yts from 'yt-search';
-const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `*Por favor ingresa un texto*\nEjemplo:\n${usedPrefix + command} https://youtu.be/QSvaCSt8ixs`;
+import fetch from "node-fetch";
+import fs from "fs";
 
-  const isVideo = /vid|2|mp4|v$/.test(command);
-  const search = await yts(text);
+// Función para manejar reintentos de solicitudes
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  let attempt = 0;
+  while (attempt <= maxRetries) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
 
-  if (!search.all || search.all.length === 0) {
-    throw "No se encontraron resultados para tu búsqueda.";
+      if (data && data.status === 200 && data.result && data.result.download && data.result.download.url) {
+        return data.result;
+      }
+    } catch (error) {
+      console.error(`Error en el intento ${attempt + 1}:`, error.message);
+    }
+    attempt++;
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
+};
+
+// Función para reconstruir la URL desde cadenas ofuscadas
+const reconstructUrl = () => {
+  const parts = [
+    "aHR0cHM6Ly9hcGkudnJlZGVu",
+    "LndlYi5pZC9hcGkveXRtcDM=",
+  ];
+  return Buffer.from(parts.join(""), "base64").toString("utf-8");
+};
+
+// Handler principal
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
+    return conn.sendMessage(m.chat, {
+      text: `❗ *Por favor ingresa un enlace válido de YouTube para descargar la música.*\n\n📌 *Ejemplo:* ${usedPrefix}ytmp3 https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+    });
   }
 
-  const videoInfo = search.all[0];
-  const body = `*Youtube By Barboza*
+  // Mensaje inicial indicando que Barboza Bot AI está procesando la música
+  const key = await conn.sendMessage(m.chat, {
+    text: `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🔎 *Procesando tu solicitud, por favor espera...*`,
+  });
 
-    • *Título :* » ${videoInfo.title}
-    • *Views :* » ${videoInfo.views}
-    • *Duration :* » ${videoInfo.timestamp}
-    • *Uploaded :* » ${videoInfo.ago}
-    • *URL :* » ${videoInfo.url}
-
-> ${listo}`;
-
-m.react(rwait)
-  conn.sendMessage(m.chat, {
-    image: { url: videoInfo.thumbnail },
-    caption: body,
-  }, { quoted: fkontak });
-
-m.react(done)
-  let result;
   try {
-    if (command === 'play' || command === 'yta' || command === 'ytmp3') {
-      let hh = await fetch(`https://api.siputzx.my.id/api/dl/youtube/mp3?url=${videoInfo.url}`);
-      result = await hh.json()
-    } else if (command === 'playvid' || command === 'ytv' || command === 'play2' || command === 'ytmp4') {
-    let rr = await fetch(`https://deliriussapi-oficial.vercel.app/download/ytmp4?url=${videoInfo.url}`);
-      result = await rr.json()
-    } else {
-      throw "Comando no reconocido.";
-    }
-let url_dl = isVideo ? result.data.download.url : result.data
-    conn.sendMessage(m.chat, {
-      [isVideo ? 'video' : 'audio']: { url: url_dl },
-      mimetype: isVideo ? "video/mp4" : "audio/mpeg",
-      caption: isVideo ? `URL: ${videoInfo.url}` : '',
-    }, { quoted: m });
+    // Reconstruir la URL de la API y construir la solicitud
+    const apiUrl = `${reconstructUrl()}?url=${encodeURIComponent(text)}`;
 
+    // Intentar obtener datos con reintentos
+    const apiData = await fetchWithRetries(apiUrl);
+
+    const { metadata, download } = apiData;
+    const { title, duration, views, author, thumbnail, url: videoUrl } = metadata;
+    const { url: downloadUrl } = download;
+
+    // Descripción personalizada para el archivo encontrado
+    const description = `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🎵 *Título:* ${title}\n⏳ *Duración:* ${duration.timestamp || "Desconocida"}\n👁️ *Vistas:* ${views.toLocaleString() || "Desconocidas"}\n✍️ *Autor:* ${author.name || "Desconocido"}\n🔗 *Enlace del video:* ${videoUrl}\n\n✨ *Tu archivo se está enviando, por favor espera...*\n\n⌘━━─≪ Power By Barboza Bot AI ≫─━━⌘`;
+
+    // Actualizar mensaje inicial con la información específica del video
+    await conn.sendMessage(m.chat, { text: description, edit: key });
+
+    // Enviar archivo como audio
+    await conn.sendMessage(
+      m.chat,
+      {
+        audio: { url: downloadUrl },
+        mimetype: "audio/mpeg",
+        fileName: `${title}.mp3`,
+        caption: `🎶 *Descarga completada por Barboza Bot AI*`,
+        contextInfo: {
+          externalAdReply: {
+            title: title,
+            body: "Música desde Barboza Bot AI",
+            previewType: "PHOTO",
+            thumbnail: fs.readFileSync("./media/menu.jpg"), // Cambia esta ruta a una imagen disponible en tu entorno
+            mediaUrl: videoUrl,
+          },
+        },
+      },
+      { quoted: m }
+    );
   } catch (error) {
-m.react('✖️')
-    throw "${errorm2}";
+    console.error("Error al procesar la solicitud:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+      edit: key,
+    });
   }
 };
 
-handler.command = handler.help = ['yta', 'ytmp3', 'Ytmp3'];
-handler.tags = ['descargas'];
-handler.estrellas = 4;
+handler.command = /^ytmp3$/i; // Comando único: ytmp3
 
 export default handler;
-
-const getVideoId = (url) => {
-  const regex = /(?:v=|\/)([0-9A-Za-z_-]{11}).*/;
-  const match = url.match(regex);
-  if (match) {
-    return match[1];
-  }
-  throw new Error("Invalid YouTube URL");
-};
