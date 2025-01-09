@@ -1,4 +1,3 @@
-
 let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isROwner }) => {
   let isEnable = /true|enable|(turn)?on|1/i.test(command)
   let chat = global.db.data.chats[m.chat]
@@ -45,6 +44,19 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
         throw false
       }
       chat.audios = isEnable
+      break
+
+      case 'detect': case 'avisos':
+      if (!m.isGroup) {
+      if (!isOwner) {
+      global.dfail('group', m, conn)
+      throw false
+      }
+      } else if (!isAdmin) {
+      global.dfail('admin', m, conn)
+      throw false
+      }
+      chat.detect = isEnable
       break
 
   case 'jadibotmd':
