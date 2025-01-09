@@ -1,31 +1,109 @@
-import {youtubedl, youtubedlv2} from '@bochilteam/scraper';
-import fetch from 'node-fetch';
-const handler = async (m, {conn, args}) => {
-  if (!args[0]) throw '*[❗𝐈𝐍𝐅𝐎❗] 𝙸𝙽𝚂𝙴𝚁𝚃𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙼𝙰𝚂 𝙴𝙻 𝙴𝙽𝙻𝙰𝙲𝙴 / 𝙻𝙸𝙽𝙺 𝙳𝙴 𝚄𝙽 𝚅𝙸𝙳𝙴𝙾 𝙳𝙴 𝚈𝙾𝚄𝚃𝚄𝙱𝙴*';
-  await m.reply(`*_⏳Sᴇ ᴇsᴛᴀ ᴘʀᴏᴄᴇsᴀɴᴅᴏ Sᴜ ᴠɪᴅᴇᴏ...⏳_*\n\n*◉ Sɪ Sᴜ ᴠɪᴅᴇᴏ ɴᴏ ᴇs ᴇɴᴠɪᴀᴅᴏ, ᴘʀᴜᴇʙᴇ ᴄᴏɴ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ #playdoc ᴏ #play.2 ᴏ #ytmp4doc ◉*`);
-  try {
-    const qu = args[1] || '360';
-    const q = qu + 'p';
-    const v = args[0];
-    const yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v));
-    const dl_url = await yt.video[q].download();
-    const ttl = await yt.title;
-    const size = await yt.video[q].fileSizeH;
-    const cap = `*◉—⌈📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥⌋—◉*\n❏ *𝚃𝙸𝚃𝚄𝙻𝙾:* ${ttl}\n❏ *𝙿𝙴𝚂𝙾:* ${size}`.trim();
-    await await conn.sendMessage(m.chat, {document: {url: dl_url}, caption: cap, mimetype: 'video/mp4', fileName: ttl + `.mp4`}, {quoted: m});
-  } catch {
+import fetch from "node-fetch";
+
+// Función para decodificar Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
+
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  let attempt = 0;
+  while (attempt <= maxRetries) {
     try {
-      const lolhuman = await fetch(`https://api.lolhuman.xyz/api/ytvideo2?apikey=${lolkeysapi}&url=${args[0]}`);
-      const lolh = await lolhuman.json();
-      const n = lolh.result.title || 'error';
-      const n2 = lolh.result.link;
-      const n3 = lolh.result.size;
-      const cap2 = `*◉—⌈📥 𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐃𝐋 📥⌋—◉*\n❏ *𝚃𝙸𝚃𝚄𝙻𝙾:* ${n}\n❏ *𝙿𝙴𝚂𝙾:* ${n3}`.trim();
-      await conn.sendMessage(m.chat, {document: {url: n2}, caption: cap2, mimetype: 'video/mp4', fileName: n + `.mp4`}, {quoted: m});
-    } catch {
-      await conn.reply(m.chat, '*[❗] 𝙴𝚁𝚁𝙾𝚁 𝙽𝙾 𝙵𝚄𝙴 𝙿𝙾𝚂𝙸𝙱𝙻𝙴 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚁 𝙴𝙻 𝚅𝙸𝙳𝙴𝙾*', m);
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data && data.status === 200 && data.data && data.data.download && data.data.download.url) {
+        return data.data; // Retorna el resultado si es válido
+      }
+    } catch (error) {
+      console.error(`Error en el intento ${attempt + 1}:`, error.message);
     }
+    attempt++;
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
+};
+
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
+    return conn.sendMessage(m.chat, {
+      text: `⚠️ *¡Atención!*\n\n💡 *Por favor ingresa un enlace válido de YouTube para descargar el video.*\n\n📌 *Ejemplo:* ${usedPrefix}ytv https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+    });
+  }
+
+  try {
+    await conn.sendMessage(m.chat, {
+      text: `
+╭━━━🌐📡━━━╮  
+   🔍 **Procesando con ☆Barboza Bot Ai☆** 🔍  
+╰━━━🌐📡━━━╯  
+
+✨ *Estamos descargando tu video...*  
+📥 *Por favor espera unos instantes mientras procesamos tu solicitud.*  
+
+⏳ *Esto puede tardar unos segundos.*  
+      `,
+    });
+
+    // URL de la API ofuscada
+    const encodedApiUrl = "aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkveXRtcDQ=";
+    const apiUrl = `${decodeBase64(encodedApiUrl)}?url=${encodeURIComponent(text)}`;
+    const apiData = await fetchWithRetries(apiUrl);
+
+    const { metadata, download } = apiData;
+    const { title, duration, thumbnail, description } = metadata;
+    const { url: downloadUrl, quality, filename } = download;
+
+    // Obtener el tamaño del archivo
+    const fileResponse = await fetch(downloadUrl, { method: "HEAD" });
+    const fileSize = parseInt(fileResponse.headers.get("content-length") || 0);
+    const fileSizeInMB = fileSize / (1024 * 1024); // Convertir bytes a MB
+
+    // Formato del mensaje de información
+    const videoInfo = `
+📥 **Video Encontrado**  
+━━━━━━━━━━━━━━━━━━━  
+🎵 **Título:** ${title}  
+⏱️ **Duración:** ${duration.timestamp || "No disponible"}  
+📦 **Tamaño:** ${fileSizeInMB.toFixed(2)} MB  
+📽️ **Calidad:** ${quality || "No disponible"}  
+
+📌 **Descripción:**  
+${description || "No hay descripción disponible"}  
+━━━━━━━━━━━━━━━━━━━  
+    `;
+
+    await conn.sendMessage(m.chat, { image: { url: thumbnail }, caption: videoInfo });
+
+    // Descargar el video
+    if (fileSizeInMB > 80) {
+      await conn.sendMessage(
+        m.chat,
+        {
+          document: { url: downloadUrl },
+          mimetype: "video/mp4",
+          fileName: filename || `${title}.mp4`,
+          caption: `📂 *Video en Formato Documento:* \n🎵 *Título:* ${title}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
+        },
+        { quoted: m }
+      );
+    } else {
+      await conn.sendMessage(
+        m.chat,
+        {
+          video: { url: downloadUrl },
+          mimetype: "video/mp4",
+          fileName: filename || `${title}.mp4`,
+          caption: `🎥 *Video Reproducible:* \n🎵 *Título:* ${title}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
+        },
+        { quoted: m }
+      );
+    }
+  } catch (error) {
+    console.error("Error al descargar el video:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
   }
 };
-handler.command = /^ytmp4doc|ytvdoc|ytmp4.2|ytv.2$/i;
+
+handler.command = /^ytv$/i; // Solo responde al comando .ytv
+
 export default handler;
