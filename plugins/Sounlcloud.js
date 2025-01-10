@@ -1,5 +1,4 @@
 import fetch from "node-fetch";
-import fs from "fs";
 import yts from "yt-search";
 
 // Función para manejar reintentos de solicitudes
@@ -65,14 +64,14 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     // Actualizar mensaje inicial con la información específica
     await conn.sendMessage(m.chat, { text: descriptionVideo, edit: key });
 
-    // Enviar archivo como documento
+    // Enviar archivo como audio
     await conn.sendMessage(
       m.chat,
       {
-        document: { url: downloadUrl },
+        audio: { url: downloadUrl },
         mimetype: "audio/mpeg",
         fileName: `${metadata.title}.mp3`,
-        caption: "> Música obtenida desde Barboza Bot Ai",
+        caption: "🎶 Música obtenida desde Barboza Bot Ai",
       },
       { quoted: m }
     );
