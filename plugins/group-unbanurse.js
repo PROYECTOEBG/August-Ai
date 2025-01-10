@@ -9,8 +9,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     conn.reply(m.chat, `🚩 @${who.split`@`[0]} ha sido desbaneado con exito, ahora podrá volver a usar mis comandos.`, m, { mentions: [who] })
 }
 handler.help = ['unban *@user*']
-handler.tags = ['owner']
 handler.command = /^unban$/i
-handler.rowner = true
 
 export default handler
