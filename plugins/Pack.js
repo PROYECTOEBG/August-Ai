@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 const handler = async (m, { conn }) => {
-  const apiUrl = 'aHR0cHM6Ly9kZWxpcml1c3NhcGktb2ZpY2lhbC52ZXJjZWwuYXBwL25zZncvZ2lybHM='; // Ofuscado en Base64
+  const apiUrl = 'https://source.unsplash.com/random/800x600'; // Ofuscado en Base64
 
   const decodeApiUrl = (base64) => Buffer.from(base64, 'base64').toString('utf-8');
   const finalUrl = decodeApiUrl(apiUrl);
