@@ -15,7 +15,9 @@ Barboza Bot es una herramienta creada con el objetivo de mejorar la interacción
 │  
 │📌 **Barboza**: [+58 424 658 2666]  
 │
-│ 
+│📌@ꜱɪꜱᴋᴇᴅ - ʟᴏᴄᴀʟ - 𝟢𝟨
+
+*[ https://wa.me/qr/OEGLZUMXONHDL1 ]* 
 ╰─────────────────────────╯  
 
 🔹 **AGRADECIMIENTOS:**  
