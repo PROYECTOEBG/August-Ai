@@ -23,10 +23,10 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   let sn = createHash('md5').update(m.sender).digest('hex')
   let img = await (await fetch(`https://i.ibb.co/hy3G9Rz/file.jpg'`)).buffer()
   let txt = ` –  *R E G I S T R O  -  B A R B*\n\n`
-      txt += `┌  ⚡ *NOMBRE* : ${name}\n`
-      txt += `│  ⚡  *EDAD* : ${age} años\n`
-      txt += `│  ⚡  *NUMERO DE SERIE*\n`
-      txt += `└  ⚡  ${sn}`
+      txt += `┌  👤 *NOMBRE* : ${name}\n`
+      txt += `│  ⭐  *EDAD* : ${age} años\n`
+      txt += `│  💎  *NUMERO DE SERIE*\n`
+      txt += `└  ☁️  ${sn}`
 await conn.sendAi(m.chat, botname, textbot, txt, img, img, canal, m)
 await m.react('✅')
 }
