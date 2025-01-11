@@ -8,7 +8,6 @@ let handler = async (m, { conn }) => {
     m.react('🔥');
 
     let imagenes = [
-        "https://img-cf.xvideos-cdn.com/videos/thumbs169lll/d9/1e/6d/d91e6d7d504d0e1112d4fa967b759395/d91e6d7d504d0e1112d4fa967b759395.23.jpg",
         "https://telegra.ph/file/17d7a52fa4d09bffd4021.jpg",
         "https://telegra.ph/file/6e4833070c1db456e3f16.jpg",
         "https://telegra.ph/file/6359a215c404084b4b5a5.jpg",
@@ -42,6 +41,6 @@ let handler = async (m, { conn }) => {
 handler.help = ['pechos', 'tetas'];
 handler.tags = ['nsfw'];
 handler.command = ['pechos', 'tetas'];
-
+handler.group = true;
 
 export default handler;
