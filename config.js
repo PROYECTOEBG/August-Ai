@@ -20,17 +20,17 @@ global.prems = []
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.packname = `[ ⛄Sticker Maker`
+global.packname = `[ ⚡Sticker Maker`
 global.author = '_BOT BARBOZA -AI_]'
 global.stickpack = '© BarbozaBot'
 global.stickauth = 'By Barboza'
-global.wm = 'Barboza 🌸'
-global.dev = '© Powered By Barboza ❀'
-global.wait = '🔖 *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> _BOT BARBOZA-AI_🎄*'
+global.wm = 'Barboza ⚡'
+global.dev = '© Powered By Barboza ⚡'
+global.wait = '⚡ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> _BOT BARBOZA-AI_⚡*'
 global.botname = '[ 𝐁𝐚𝐫𝐛𝐨𝐳𝐚 𝐀𝐢 𝐖𝐡𝐚𝐬𝐀𝐩𝐩 𝐁𝐨𝐭 ]'
-global.textbot = `🚩BotBarboza By Barboza🚩`
+global.textbot = `⚡BotBarboza By Barboza⚡`
 global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
-global.namechannel = '🔖_BOT BARBOZA -AI🔖_'
+global.namechannel = '⚡_BOT BARBOZA -AI⚡_'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
@@ -40,7 +40,7 @@ global.miniurl = fs.readFileSync('./storage/img/miniurl.jpg')
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.group = 'https://https://chat.whatsapp.com/D1AH8vZ8P8h4VvcjUHgCFp'
+global.group = 'https://chat.whatsapp.com/GB1m5mhAUsNF0hSKQ508ID'
 global.canal = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQalSy18'
 global.insta = 'https://www.insta.com/https://www.insta.com/sebastian_barboza13'
 
