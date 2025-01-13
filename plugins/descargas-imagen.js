@@ -17,9 +17,9 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
         mediaType: 1,
         showAdAttribution: true,
         title: packname,
-        body: wm,
+        body: textbot,
         previewType: 0,
-        sourceUrl: channel,
+        sourceUrl: canal,
       },
     },
   });
