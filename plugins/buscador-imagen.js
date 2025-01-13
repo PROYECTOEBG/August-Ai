@@ -5,7 +5,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
 
   // Define otras variables necesarias
   const packname = global.packname; // Define tu packname
-  const wm = 'Bot - Barboza'; // Define tu marca de agua
+  const wm = '𝙎𝙄𝙎𝙆𝙀𝘿 - 𝙂𝙊𝙊𝘿'; // Define tu marca de agua
   const channel = global.canal; // Define el enlace del canal
   const textbot = global.textbot; // Define el texto que quieras usar
   const rcanal = 'https://i.ibb.co/WFcXVvr/file.jpg'; // Ajusta según lo que esperes usar
@@ -17,9 +17,9 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
         mediaType: 1,
         showAdAttribution: true,
         title: packname,
-        body: wm,
+        body: textbot,
         previewType: 0,
-        sourceUrl: channel,
+        sourceUrl: canal,
       },
     },
   });
