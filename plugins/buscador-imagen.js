@@ -1,38 +1,38 @@
-import fetch from 'node-fetch';
+import { googleImage } from '@bochilteam/scraper';
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `*🚩 Uso Correcto: ${usedPrefix + command} gatos*`;
+  if (!text) throw `*🚩 Uso Correcto: ${usedPrefix + command} Avión*`;
 
-  // API ofuscada con Base64
-  const encodedApiUrl = 'aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS9naW1hZ2U/cXVlcnk9';
-  const decodeApiUrl = (base64) => Buffer.from(base64, 'base64').toString('utf-8');
+  // Define otras variables necesarias
+  const packname = global.packname; // Define tu packname
+  const wm = 'Bot - Barboza'; // Define tu marca de agua
+  const channel = global.canal; // Define el enlace del canal
+  const textbot = global.textbot; // Define el texto que quieras usar
+  const rcanal = 'https://i.ibb.co/WFcXVvr/file.jpg'; // Ajusta según lo que esperes usar
 
-  const apiUrl = decodeApiUrl(encodedApiUrl) + encodeURIComponent(text);
+  conn.reply(m.chat, '🚩 *Descargando su imagen...*', m, {
+    contextInfo: {
+      externalAdReply: {
+        mediaUrl: null,
+        mediaType: 1,
+        showAdAttribution: true,
+        title: packname,
+        body: wm,
+        previewType: 0,
+        sourceUrl: channel,
+      },
+    },
+  });
 
-  conn.reply(m.chat, '🚩 *Buscando imágenes, espere un momento...*', m);
+  const res = await googleImage(text);
+  const image = await res.getRandom();
+  const link = image;
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    if (data.status !== 200 || !data.result || data.result.length === 0) {
-      throw '🚩 *No se encontraron imágenes para tu búsqueda.*';
-    }
-
-    // Obtener una URL aleatoria de la lista de resultados
-    const imageUrl = data.result[Math.floor(Math.random() * data.result.length)];
-
-    // Enviar la imagen al chat
-    conn.sendFile(m.chat, imageUrl, 'image.jpg', `*🔎 Resultado para: ${text}*`, m);
-  } catch (error) {
-    console.error(error);
-    conn.reply(m.chat, '🚩 *Hubo un problema al obtener las imágenes.*', m);
-  }
+  conn.sendFile(m.chat, link, 'error.jpg', `*🔎 Resultado De: ${text}*\n> ${textbot}`, m, null, rcanal);
 };
 
 handler.help = ['imagen <query>'];
 handler.tags = ['buscador', 'tools', 'descargas'];
-handler.command = /^(image|imagen)$/i;
-handler.register = true;
+handler.command = ['imagen', 'image'];
 
 export default handler;
