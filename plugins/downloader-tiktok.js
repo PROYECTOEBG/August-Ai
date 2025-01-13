@@ -38,7 +38,6 @@ handler.command = /^t(t|iktok(d(own(load(er)?)?|l))?|td(own(load(er)?)?|l))$/i
 
 handler.disable = false
 handler.register = true
-handler.limit = true
 
 export default handler
 
