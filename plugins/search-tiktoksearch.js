@@ -9,7 +9,7 @@ const {
 
 let handler = async (message, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    return conn.reply(message.chat, "❕️ *¿QUÉ BÚSQUEDA DESEA REALIZAR EN TIKTOK?*", message, rcanal);
+    return conn.reply(message.chat, "❕ ¿QUÉ BÚSQUEDA DESEA REALIZAR EN TIKTOK?", message, rcanal);
   }
 
   async function createVideoMessage(url) {
@@ -29,7 +29,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
   }
 
   try {
-    conn.reply(message.chat, '✨️ *ENVIANDO SUS RESULTADOS..*', message, {
+    conn.reply(message.chat, '✨ ENVIANDO SUS RESULTADOS..', message, {
       contextInfo: { 
         externalAdReply: { 
           mediaUrl: null, 
@@ -45,7 +45,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
     });
 
     let results = [];
-    let { data } = await axios.get("https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=" + text);
+    let { data } = await axios.get(`https://apis-starlights-team.koyeb.app/starlight/tiktoksearch?text=${text}`);
     let searchResults = data.data;
     shuffleArray(searchResults);
     let topResults = searchResults.splice(0, 7);
@@ -72,7 +72,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
           },
           interactiveMessage: proto.Message.InteractiveMessage.fromObject({
             body: proto.Message.InteractiveMessage.Body.create({
-              text: "✨️ RESULTADO DE: " + text
+              text: "✨ RESULTADO DE: " + text
             }),
             footer: proto.Message.InteractiveMessage.Footer.create({
               text: "ᥫᩣBarboza"
@@ -95,7 +95,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
     });
   } catch (error) {
     console.error(error);
-    conn.reply(message.chat, `❌️ *OCURRIÓ UN ERROR:* ${error.message}`, message);
+    conn.reply(message.chat, `❌ *OCURRIÓ UN ERROR:* ${error.message}`, message);
   }
 };
 
