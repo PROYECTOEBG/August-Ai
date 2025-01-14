@@ -32,8 +32,8 @@ let handler = async (m, { conn, text }) => {
   }
 
   try {
-    // Reaccionar al mensaje inicial con 🕐
-    await conn.sendReaction(m.chat, m.key, "🕐");
+    // Reaccionar al mensaje inicial con 🕒
+    await conn.sendMessage(m.chat, { react: { text: "🕒", key: m.key } });
 
     // Buscar en YouTube
     const searchResults = await yts(text.trim());
@@ -51,19 +51,31 @@ let handler = async (m, { conn, text }) => {
     });
 
     // Enviar audio en formato de audio (no documento)
-    await conn.sendMessage(m.chat, {
+    const audioMessage = {
       audio: { url: apiData.download.url },
       mimetype: "audio/mpeg",
-      ptt: false, // Cambia a `true` si deseas enviarlo como mensaje de voz
-    });
+      fileName: `${video.title}.mp3`,
+      contextInfo: {
+        externalAdReply: {
+          showAdAttribution: true,
+          mediaType: 2,
+          mediaUrl: video.url,
+          title: video.title,
+          sourceUrl: video.url,
+          thumbnail: await (await conn.getFile(video.thumbnail)).data,
+        },
+      },
+    };
 
-    // Reaccionar al mensaje original con ✅️
-    await conn.sendReaction(m.chat, m.key, "✅️");
+    await conn.sendMessage(m.chat, audioMessage, { quoted: m });
+
+    // Reaccionar al mensaje original con ✅
+    await conn.sendMessage(m.chat, { react: { text: "✅", key: m.key } });
   } catch (error) {
     console.error("Error:", error);
 
-    // Reaccionar al mensaje original con ❌️
-    await conn.sendReaction(m.chat, m.key, "❌️");
+    // Reaccionar al mensaje original con ❌
+    await conn.sendMessage(m.chat, { react: { text: "❌", key: m.key } });
 
     await conn.sendMessage(m.chat, {
       text: `❌ *Error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
