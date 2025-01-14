@@ -19,7 +19,7 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
 
 // Handler principal
 let handler = async (m, { conn, text }) => {
-  if (!text) {
+  if (!text || !text.trim()) {
     return conn.sendMessage(m.chat, {
       text: "❗ *Ingresa un término de búsqueda para encontrar música.*\n\n*Ejemplo:* `.play No llores más`",
     });
@@ -27,7 +27,7 @@ let handler = async (m, { conn, text }) => {
 
   try {
     // Buscar en YouTube
-    const searchResults = await yts(text);
+    const searchResults = await yts(text.trim());
     const video = searchResults.videos[0];
     if (!video) throw new Error("No se encontraron resultados.");
 
@@ -50,6 +50,7 @@ let handler = async (m, { conn, text }) => {
   }
 };
 
-handler.command = /^play $/i;
+// Cambia el Regex para que reconozca ".play"
+handler.command = /^play$/i;
 
 export default handler;
