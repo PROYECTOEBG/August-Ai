@@ -32,6 +32,9 @@ let handler = async (m, { conn, text }) => {
   }
 
   try {
+    // Reaccionar al mensaje inicial con 🕐
+    await conn.sendReaction(m.chat, m.key, "🕐");
+
     // Buscar en YouTube
     const searchResults = await yts(text.trim());
     const video = searchResults.videos[0];
@@ -53,8 +56,15 @@ let handler = async (m, { conn, text }) => {
       mimetype: "audio/mpeg",
       ptt: false, // Cambia a `true` si deseas enviarlo como mensaje de voz
     });
+
+    // Reaccionar al mensaje original con ✅️
+    await conn.sendReaction(m.chat, m.key, "✅️");
   } catch (error) {
     console.error("Error:", error);
+
+    // Reaccionar al mensaje original con ❌️
+    await conn.sendReaction(m.chat, m.key, "❌️");
+
     await conn.sendMessage(m.chat, {
       text: `❌ *Error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
     });
