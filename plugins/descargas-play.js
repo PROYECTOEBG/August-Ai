@@ -18,38 +18,43 @@ let handler = async (m, { conn, text, usedPrefix }) => {
     const video = searchResults.videos[0];
     const { title, url: videoUrl, thumbnail } = video;
 
-    // URL de la API codificada en Base64
-    const encodedApiUrl = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkveXRtcDM/"; // URL codificada en Base64
-    const apiUrl = decodeBase64(encodedApiUrl) + `url=${encodeURIComponent(videoUrl)}`;
+    // URL de la API en Base64 (ofuscada)
+    const encodedApiUrl = "aHR0cHM6Ly9hcGktcmluLXRvaHNrYS52ZXJjZWwuYXBwL2Rvd25sb2FkL3l0bXAzP3VybD0=";
+    
+    // Decodificar la URL de la API
+    const apiUrl = decodeBase64(encodedApiUrl) + encodeURIComponent(videoUrl);
 
     // Realizar la solicitud a la API
     const apiResponse = await fetch(apiUrl);
     const json = await apiResponse.json();
 
-    if (json.estado !== 200 || !json.resultado || !json.resultado.descargar) {
+    if (!json.status || !json.data || !json.data.download) {
       throw new Error("No se pudo obtener la URL de descarga.");
     }
 
     const {
-      metadatos: {
-        título: videoTitle,
-        duración: { marcaDeTiempo: duration },
-        vistas: views,
-        autor: { nombre: authorName, url: authorUrl },
+      data: {
+        title: videoTitle,
+        description,
+        uploaded,
+        duration,
+        views,
+        author: { name: authorName, url: authorUrl },
+        download: downloadUrl,
       },
-      descargar: { url: downloadUrl, calidad: quality },
-    } = json.resultado;
+    } = json;
 
     // Descripción personalizada
-    const description = `🔎 *Resultado Encontrado*\n
+    const descriptionText = `🔎 *Resultado Encontrado*\n
 - 🎵 *Título:* ${videoTitle}
 - ⏱️ *Duración:* ${duration}
 - 👀 *Vistas:* ${views.toLocaleString()}
 - ✍️ *Autor:* [${authorName}](${authorUrl})
-- 🔊 *Calidad:* ${quality}\n\n> _*Barboza Bot está enviando tu archivo, por favor espera..._*`;
+- 📅 *Subido:* ${uploaded}\n
+- 🎶 *Descripción:* ${description}\n\n> _*Barboza Bot está enviando tu archivo, por favor espera..._*`;
 
     // Enviar mensaje con la miniatura
-    await conn.sendFile(m.chat, thumbnail, "thumbnail.jpg", description, m);
+    await conn.sendFile(m.chat, thumbnail, "thumbnail.jpg", descriptionText, m);
 
     // Enviar el archivo de audio
     await conn.sendMessage(
