@@ -42,7 +42,7 @@ let tags = {
   'owner': '👤 OWNER 👁️', 
   'audio': '📣 AUDIOS 🔊', 
   'advanced': '🗝️ ADVANCED 📍',
-  'frefire':  'frefire 🎮 ',
+  'frefire':  '🎮frefire 🎮',
 }
 
 const defaultMenu = {
