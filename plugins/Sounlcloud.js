@@ -1,6 +1,12 @@
 import fetch from "node-fetch";
 import yts from "yt-search";
 
+// API en formato Base64
+const encodedApi = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkveXRtcDM=";
+
+// Función para decodificar la URL de la API
+const getApiUrl = () => Buffer.from(encodedApi, "base64").toString("utf-8");
+
 // Función para obtener datos de la API con reintentos
 const fetchWithRetries = async (url, maxRetries = 2) => {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -32,15 +38,20 @@ let handler = async (m, { conn, text }) => {
     if (!video) throw new Error("No se encontraron resultados.");
 
     // Obtener datos de descarga
-    const apiUrl = `https://api.vreden.web.id/api/ytmp3?url=${encodeURIComponent(video.url)}`;
+    const apiUrl = `${getApiUrl()}?url=${encodeURIComponent(video.url)}`;
     const apiData = await fetchWithRetries(apiUrl);
 
-    // Enviar música como archivo
+    // Enviar información del video con miniatura
     await conn.sendMessage(m.chat, {
-      document: { url: apiData.download.url },
+      image: { url: video.thumbnail },
+      caption: `🎵 *Título:* ${video.title}\n👁️ *Vistas:* ${video.views}\n⏳ *Duración:* ${video.timestamp}\n✍️ *Autor:* ${video.author.name}`,
+    });
+
+    // Enviar audio en formato de audio (no documento)
+    await conn.sendMessage(m.chat, {
+      audio: { url: apiData.download.url },
       mimetype: "audio/mpeg",
-      fileName: `${apiData.metadata.title}.mp3`,
-      caption: `🎵 *Título:* ${apiData.metadata.title}\n👁️ *Vistas:* ${apiData.metadata.views}\n⏳ *Duración:* ${apiData.metadata.duration.timestamp}\n✍️ *Autor:* ${apiData.metadata.author.name}`,
+      ptt: false, // Cambia a `true` si deseas enviarlo como mensaje de voz
     });
   } catch (error) {
     console.error("Error:", error);
