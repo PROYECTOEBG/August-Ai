@@ -48,7 +48,7 @@ let handler = async (m, { conn, usedPrefix }) => {
         { pais: 'Camerún', response: 'Yaundé' },
         { pais: 'Canadá', response: 'Ottawa' },
         { pais: 'Catar', response: 'Doha' },
-        { pais: 'Chad', response: 'N'Djamena' },
+        { pais: 'Chad', response: 'N\'Djamena' },
         { pais: 'Chile', response: 'Santiago' },
         { pais: 'China', response: 'Pekín' },
         { pais: 'Chipre', response: 'Nicosia' },
@@ -119,107 +119,37 @@ let handler = async (m, { conn, usedPrefix }) => {
         { pais: 'Luxemburgo', response: 'Luxemburgo' },
         { pais: 'Madagascar', response: 'Antananarivo' },
         { pais: 'Malasia', response: 'Kuala Lumpur' },
-        { pais: 'Malaui', response: 'Lilongüe' },
+        { pais: 'Malawi', response: 'Lilongüe' },
         { pais: 'Maldivas', response: 'Malé' },
         { pais: 'Malí', response: 'Bamako' },
         { pais: 'Malta', response: 'La Valeta' },
         { pais: 'Marruecos', response: 'Rabat' },
         { pais: 'Mauricio', response: 'Port Louis' },
         { pais: 'Mauritania', response: 'Nuakchot' },
-        { pais: 'México', response: 'Ciudad de México' },
-        { pais: 'Moldavia', response: 'Chisináu' },
-        { pais: 'Mónaco', response: 'Mónaco' },
-        { pais: 'Mongolia', response: 'Ulán Bator' },
-        { pais: 'Montenegro', response: 'Podgorica' },
-        { pais: 'Mozambique', response: 'Maputo' },
-        { pais: 'Namibia', response: 'Windhoek' },
-        { pais: 'Naurú', response: 'Yaren' },
-        { pais: 'Nepal', response: 'Katmandú' },
-        { pais: 'Nicaragua', response: 'Managua' },
-        { pais: 'Níger', response: 'Niamey' },
-        { pais: 'Nigeria', response: 'Abuya' },
-        { pais: 'Noruega', response: 'Oslo' },
-        { pais: 'Nueva Zelanda', response: 'Wellington' },
-        { pais: 'Omán', response: 'Mascate' },
-        { pais: 'Países Bajos', response: 'Ámsterdam' },
-        { pais: 'Pakistán', response: 'Islamabad' },
-        { pais: 'Palaos', response: 'Ngerulmud' },
-        { pais: 'Panamá', response: 'Ciudad de Panamá' },
-        { pais: 'Papúa Nueva Guinea', response: 'Puerto Moresby' },
-        { pais: 'Paraguay', response: 'Asunción' },
-        { pais: 'Perú', response: 'Lima' },
-        { pais: 'Polonia', response: 'Varsovia' },
-        { pais: 'Portugal', response: 'Lisboa' },
-        { pais: 'Reino Unido', response: 'Londres' },
-        { pais: 'República Checa', response: 'Praga' },
-        { pais: 'República Dominicana', response: 'Santo Domingo' },
-        { pais: 'Ruanda', response: 'Kigali' },
-        { pais: 'Rumanía', response: 'Bucarest' },
-        { pais: 'Samoa', response: 'Apia' },
-        { pais: 'San Cristóbal y Nieves', response: 'Basseterre' },
-        { pais: 'San Marino', response: 'Ciudad de San Marino' },
-        { pais: 'San Vicente y las Granadinas', response: 'Kingstown' },
-        { pais: 'Santa Lucía', response: 'Castries' },
-        { pais: 'Santo Tomé y Príncipe', response: 'Santo Tomé' },
-        { pais: 'Senegal', response: 'Dakar' },
-        { pais: 'Serbia', response: 'Belgrado' },
-        { pais: 'Seychelles', response: 'Victoria' },
-        { pais: 'Sierra Leona', response: 'Freetown' },
-        { pais: 'Singapur', response: 'Singapur' },
-        { pais: 'Siria', response: 'Damasco' },
-        { pais: 'Somalia', response: 'Mogadiscio' },
-        { pais: 'Sri Lanka', response: 'Colombo' },
-        { pais: 'Sudáfrica', response: 'Pretoria' },
-        { pais: 'Sudán', response: 'Jartum' },
-        { pais: 'Sudán del Sur', response: 'Yuba' },
-        { pais: 'Suecia', response: 'Estocolmo' },
-        { pais: 'Suiza', response: 'Basilea' },
-        { pais: 'Surinam', response: 'Paramaribo' },
-        { pais: 'Svalbard', response: 'Longyearbyen' },
-        { pais: 'Swazilandia', response: 'Mbabane' },
-        { pais: 'Siria', response: 'Damasco' },
-        { pais: 'Tailandia', response: 'Bangkok' },
-        { pais: 'Tanzania', response: 'Dodoma' },
-        { pais: 'Togo', response: 'Lomé' },
-        { pais: 'Tonga', response: 'Nukualofa' },
-        { pais: 'Trinidad y Tobago', response: 'Puerto España' },
-        { pais: 'Túnez', response: 'Túnez' },
-        { pais: 'Turkmenistán', response: 'Asjabad' },
-        { pais: 'Turquía', response: 'Ankara' },
-        { pais: 'Tuvalu', response: 'Funafuti' },
-        { pais: 'Uganda', response: 'Kampala' },
-        { pais: 'Ucrania', response: 'Kiev' },
-        { pais: 'Uruguay', response: 'Montevideo' },
-        { pais: 'Uzbekistán', response: 'Taskent' },
-        { pais: 'Vanuatu', response: 'Port Vila' },
-        { pais: 'Vaticano', response: 'Ciudad del Vaticano' },
-        { pais: 'Venezuela', response: 'Caracas' },
-        { pais: 'Vietnam', response: 'Hanói' },
-        { pais: 'Yemen', response: 'Saná' },
-        { pais: 'Yibuti', response: 'Yibuti' },
-        { pais: 'Zambia', response: 'Lusaka' },
-        { pais: 'Zimbabue', response: 'Harare' },
+        { pais: 'México', response: 'Ciudad de México' }
     ];
 
+    // Seleccionar un país aleatorio
     let json = capitals[Math.floor(Math.random() * capitals.length)];
     let _clue = json.response;
     let clue = _clue.replace(/[A-Za-z]/g, '_');
+
     let caption = `
-ⷮ *País:* ${json.pais}
+ⷮ *Pais:* ${json.pais}
 
 *Tiempo:* ${(timeout / 1000).toFixed(2)} segundos
 
 *Responde con el nombre de la ciudad* 🪄
-`.trim()
+`.trim();
 
     conn.tekateki[id] = [
        await conn.reply(m.chat, caption, m),
         json, poin,
         setTimeout(async () => {
-            if (conn.tekateki[id]) await conn.reply(m.chat, `Se acabó el tiempo!, intenta descubrir la capital de otro país.`, conn.tekateki[id][0])
-            delete conn.tekateki[id]
+            if (conn.tekateki[id]) await conn.reply(m.chat, `Se acabó el tiempo!, intenta descubrir la capital de otro país.`, conn.tekateki[id][0]);
+            delete conn.tekateki[id];
         }, timeout)
-    ]
+    ];
 }
 
 handler.help = ['capitalde']
