@@ -59,7 +59,7 @@ Hola *%name* soy *TECNO*
 ╚═════ ♢.✰.♢ ═══════
 
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑼𝑺𝑬𝑹』
-║  ✎ Bot: ©Tecno-Bot-Plus®
+║  ✎ Bot: ©Bot-Barboza-Ai®
 ║  ✎ Modo Público
 ║  ✎ Baileys: Multi Device
 ║  ✎ Tiempo Activo: %muptime
