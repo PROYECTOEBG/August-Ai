@@ -27,7 +27,7 @@ let handler = async (m, { conn, text, usedPrefix }) => {
     const json = await apiResponse.json();
 
     if (json.estado !== 200 || !json.resultado || !json.resultado.descargar) {
-      throw new Error("No se pudo obtener la información del video.");
+      throw new Error("No se pudo obtener la URL de descarga.");
     }
 
     const {
@@ -36,7 +36,6 @@ let handler = async (m, { conn, text, usedPrefix }) => {
         duración: { marcaDeTiempo: duration },
         vistas: views,
         autor: { nombre: authorName, url: authorUrl },
-        miniatura: videoThumbnail,
       },
       descargar: { url: downloadUrl, calidad: quality },
     } = json.resultado;
@@ -50,7 +49,7 @@ let handler = async (m, { conn, text, usedPrefix }) => {
 - 🔊 *Calidad:* ${quality}\n\n> _*Barboza Bot está enviando tu archivo, por favor espera..._*`;
 
     // Enviar mensaje con la miniatura
-    await conn.sendFile(m.chat, videoThumbnail, "thumbnail.jpg", description, m);
+    await conn.sendFile(m.chat, thumbnail, "thumbnail.jpg", description, m);
 
     // Enviar el archivo de audio
     await conn.sendMessage(
