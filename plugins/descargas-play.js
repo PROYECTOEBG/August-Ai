@@ -1,67 +1,78 @@
-import fetch from 'node-fetch';
-import yts from 'yt-search';
+import fetch from "node-fetch";
+import yts from "yt-search";
 
-let handler = async (m, { conn, command, text, usedPrefix }) => {
-  if (!text) {
-    return conn.reply(m.chat, `❀ Ingresa el nombre o término de búsqueda de la canción`, m);
-  }
+// Función para manejar la decodificación Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
+
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text) return conn.reply(m.chat, `❀ Ingresa un término de búsqueda o enlace de YouTube`, m);
 
   try {
-    // Búsqueda en YouTube usando yt-search
-    let searchResults = await yts(text);
+    // Realizar búsqueda en YouTube utilizando yts
+    const searchResults = await yts(text);
     if (!searchResults || !searchResults.videos.length) {
-      return conn.reply(m.chat, `❗ No se encontraron resultados para tu búsqueda: *${text}*`, m);
+      return conn.reply(m.chat, "❌ *No se encontraron resultados en YouTube*.", m);
     }
 
-    // Selecciona el primer resultado
-    let video = searchResults.videos[0];
-    let { title, author, image: img, timestamp: duration, url: videoUrl, views } = video;
+    // Obtener el primer resultado
+    const video = searchResults.videos[0];
+    const { title, url: videoUrl, thumbnail } = video;
 
-    // Llamada a la API con el enlace del video encontrado
-    let api = await fetch(`https://delirius-apiofc.vercel.app/download/ytmp3?url=${videoUrl}`);
-    let json = await api.json();
-    let { download } = json.data;
+    // URL de la API codificada en Base64
+    const encodedApiUrl = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkveXRtcDM/"; // URL codificada en Base64
+    const apiUrl = decodeBase64(encodedApiUrl) + `url=${encodeURIComponent(videoUrl)}`;
 
-    let HS = `🎶 *Información del Audio* 🎶
-- *Título:* ${title}
-- *Autor:* ${author.name || author}
-- *Duración:* ${duration}
-- *Visitas:* ${Num(views)}
+    // Realizar la solicitud a la API
+    const apiResponse = await fetch(apiUrl);
+    const json = await apiResponse.json();
 
-📂 *Detalles del Archivo*
-- *Tamaño:* ${download.size}
-- *Calidad:* ${download.quality}`;
+    if (json.estado !== 200 || !json.resultado || !json.resultado.descargar) {
+      throw new Error("No se pudo obtener la información del video.");
+    }
 
-    // Envía la información del video
-    await conn.sendFile(m.chat, img, 'info.jpg', HS, m);
+    const {
+      metadatos: {
+        título: videoTitle,
+        duración: { marcaDeTiempo: duration },
+        vistas: views,
+        autor: { nombre: authorName, url: authorUrl },
+        miniatura: videoThumbnail,
+      },
+      descargar: { url: downloadUrl, calidad: quality },
+    } = json.resultado;
 
-    // Envía el archivo de audio
+    // Descripción personalizada
+    const description = `🔎 *Resultado Encontrado*\n
+- 🎵 *Título:* ${videoTitle}
+- ⏱️ *Duración:* ${duration}
+- 👀 *Vistas:* ${views.toLocaleString()}
+- ✍️ *Autor:* [${authorName}](${authorUrl})
+- 🔊 *Calidad:* ${quality}\n\n> _*Barboza Bot está enviando tu archivo, por favor espera..._*`;
+
+    // Enviar mensaje con la miniatura
+    await conn.sendFile(m.chat, videoThumbnail, "thumbnail.jpg", description, m);
+
+    // Enviar el archivo de audio
     await conn.sendMessage(
       m.chat,
-      { audio: { url: download.url }, mimetype: 'audio/mpeg' },
+      {
+        audio: { url: downloadUrl },
+        mimetype: "audio/mpeg",
+        fileName: `${videoTitle}.mp3`,
+        caption: "🎶 Música obtenida desde Barboza Bot Ai",
+      },
       { quoted: m }
     );
   } catch (error) {
     console.error(error);
-    conn.reply(m.chat, `❌ Ocurrió un error al procesar tu solicitud: ${error.message}`, m);
+    await conn.reply(
+      m.chat,
+      `❌ *Ocurrió un error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+      m
+    );
   }
 };
 
 handler.command = /^(ytmp3|play)$/i;
 
 export default handler;
-
-// Función para dar formato a números grandes
-function Num(number) {
-  if (number >= 1000 && number < 1000000) {
-    return (number / 1000).toFixed(1) + 'k';
-  } else if (number >= 1000000) {
-    return (number / 1000000).toFixed(1) + 'M';
-  } else if (number <= -1000 && number > -1000000) {
-    return (number / 1000).toFixed(1) + 'k';
-  } else if (number <= -1000000) {
-    return (number / 1000000).toFixed(1) + 'M';
-  } else {
-    return number.toString();
-  }
-}
