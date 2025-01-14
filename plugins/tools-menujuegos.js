@@ -121,7 +121,6 @@ console.log(e)}}
 
 handler.command = /^(menujuego|menujuegos|juegos)$/i
 handler.register = false
-handler.group = true
 export default handler
 
 function clockString(ms) {
