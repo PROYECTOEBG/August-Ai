@@ -5,7 +5,7 @@ import yts from "yt-search";
 const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
 
 let handler = async (m, { conn, text, usedPrefix }) => {
-  if (!text) return conn.reply(m.chat, `❀ Ingresa un término de búsqueda o enlace de YouTube`, m);
+  if (!text) return conn.reply(m.chat, `❀ Ingresa un término de búsqueda o enlace de YouTube✌🏻`, m);
 
   try {
     // Realizar búsqueda en YouTube utilizando yts
