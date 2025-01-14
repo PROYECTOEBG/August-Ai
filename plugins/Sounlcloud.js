@@ -50,21 +50,11 @@ let handler = async (m, { conn, text }) => {
       caption: `🎵 *Título:* ${video.title}\n👁️ *Vistas:* ${video.views}\n⏳ *Duración:* ${video.timestamp}\n✍️ *Autor:* ${video.author.name}`,
     });
 
-    // Enviar audio en formato de audio (no documento)
+    // Enviar solo el audio
     const audioMessage = {
       audio: { url: apiData.download.url },
       mimetype: "audio/mpeg",
       fileName: `${video.title}.mp3`,
-      contextInfo: {
-        externalAdReply: {
-          showAdAttribution: true,
-          mediaType: 2,
-          mediaUrl: video.url,
-          title: video.title,
-          sourceUrl: video.url,
-          thumbnail: await (await conn.getFile(video.thumbnail)).data,
-        },
-      },
     };
 
     await conn.sendMessage(m.chat, audioMessage, { quoted: m });
