@@ -6,25 +6,25 @@ const handler = async (m, { conn }) => {
         DESARROLLADORES  
 ╰────────⚔──────╯  
 
-🔹 **SOBRE EL BOT:**  
+🔹 *SOBRE EL BOT:*  
 Barboza Bot es una herramienta creada con el objetivo de mejorar la interacción y experiencia de los usuarios en diversas plataformas, ofreciendo funcionalidades avanzadas y soporte constante.
 
-🔹 **CONTACTO DE LOS DESARROLLADORES:**  
+🔹 *CONTACTO DE LOS DESARROLLADORES*  
 ╭─────────────────────────╮  
 │🏆 **Barboza Bot - Equipo Oficial**  
 │  
-│📌 **Barboza**: [+58 424 658 2666]  
+│👤 *Barboza*
+│📌 [+58 424 658 2666]  
 │
-│📌@ꜱɪꜱᴋᴇᴅ - ʟᴏᴄᴀʟ - 𝟢𝟨
-
-*[ https://wa.me/qr/OEGLZUMXONHDL1 ]* 
+│🍁 @ꜱɪꜱᴋᴇᴅ - ʟᴏᴄᴀʟ - 𝟢𝟨
+│ *[ https://wa.me/qr/OEGLZUMXONHDL1 ]* 
 ╰─────────────────────────╯  
 
-🔹 **AGRADECIMIENTOS:**  
-Un agradecimiento especial a todos los colaboradores y usuarios que hacen posible la constante evolución de Son Barboza Bot.  
+🔹 *AGRADECIMIENTOS:*
+Un agradecimiento especial para los colaboradores y usuarios que hacen posible la constante evolución de este proyecto.  
 
-🔹 **¿DUDAS O SUGERENCIAS?**  
-No dudes en contactar a cualquiera de los desarrolladores para resolver dudas, enviar sugerencias o reportar problemas.  
+🔹 *¿DUDAS O SUGERENCIAS?*
+Contacta a cualquiera de los desarrolladores para resolver dudas, enviar sugerencias o reportar problemas.  
 
 `.trim();
 
