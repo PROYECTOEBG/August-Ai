@@ -1,104 +1,104 @@
-import axios from 'axios'
-import fetch from 'node-fetch'
-import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
-import search from 'yt-search'
-async function spotifyxv(query) {
-let token = await tokens();
-let response = await axios({
-method: 'get',
-url: 'https://api.spotify.com/v1/search?q=' + encodeURIComponent(query) + '&type=track',
-headers: {
-Authorization: 'Bearer ' + token,
-},
-})
-const tracks = response.data.tracks.items
-const results = tracks.map((track) => ({
-name: track.name,
-artista: track.artists.map((artist) => artist.name),
-album: track.album.name,
-duracion: timestamp(track.duration_ms),
-url: track.external_urls.spotify,
-imagen: track.album.images.length ? track.album.images[0].url : '',
-}))
-return results
-}
-async function tokens() {
-const response = await axios({
-method: 'post',
-url:
-'https://accounts.spotify.com/api/token',
-headers: {
-'Content-Type': 'application/x-www-form-urlencoded',
-Authorization: 'Basic ' + Buffer.from('acc6302297e040aeb6e4ac1fbdfd62c3:0e8439a1280a43aba9a5bc0a16f3f009').toString('base64'),
-},
-data: 'grant_type=client_credentials',
-})
-return response.data.access_token
-}
-function timestamp(time) {
-const minutes = Math.floor(time / 60000);
-const seconds = Math.floor((time % 60000) / 1000);
-return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-}
-async function getBuffer(url, options) {
-try {
-options = options || {};
-const res = await axios({
-method: 'get',
-url,
-headers: {
-DNT: 1,
-'Upgrade-Insecure-Request': 1,
-},
-...options,
-responseType: 'arraybuffer',
-});
-return res.data;
-} catch (err) {
-return err;
-}}
-async function getTinyURL(text) {
-try {
-let response = await axios.get(`https://tinyurl.com/api-create.php?url=${text}`);
-return response.data;
-} catch (error) {
-return text;
-}}
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-if (!text) throw `Escriba El Nombre De Una Canción ⊱ *${usedPrefix + command} Bellyache*`
-try {
-m.react('⌛️')
-let songInfo = await spotifyxv(text)
-if (!songInfo.length) throw `*No se encontró una canción.*`
-let res = songInfo[0]
-let fileSizeInMB = (await getBuffer(res.url)).length / (1024 * 1024)
-let shortURL = await getTinyURL(res.url)
-const info = `✨ *${mid.smsYT1}:*
-_${res.name}_
+import fetch from "node-fetch";
 
-🗣️ *${mid.smsYT13}:*
-» _${res.artista.join(', ')}_
+// URLs de las APIs en Base64
+const SPOTIFY_SEARCH_API = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkvc3BvdGlmeXNlYXJjaD9xdWVyeT0=";
+const SPOTIFY_DOWNLOAD_API = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkvc3BvdGlmeT91cmw9";
 
-🌐 *${mid.smsYT4}*:
-» _${shortURL}_
+// Función para decodificar Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
 
-🎶 *${mid.smsSpoti}*
-${wm}`
+// Función para manejar reintentos de solicitudes
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  let attempt = 0;
+  while (attempt <= maxRetries) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
 
-let resImg = await fetch(res.imagen)
-let thumbb = await resImg.buffer()
-let { videos } = await search(res.name)
-let q = '128kbps'
-let v = videos[0].url
-let yt = await youtubedl(v).catch(async (_) => await youtubedlv2(v))
-let dl_url = await yt.audio[q].download()
-let ttl = await yt.title
-let size = await yt.audio[q].fileSizeH
-let img = await getBuffer(res.imagen)
-conn.sendMessage(m.chat, { audio: { url: dl_url }, fileName: `${ttl}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m })
-await conn.sendMessage(m.chat, {text: info, contextInfo: {forwardingScore: 9999999, isForwarded: true, "externalAdReply": {"showAdAttribution": true, "containsAutoReply": true, "renderLargerThumbnail": true, "title": global.wm, "containsAutoReply": true, "mediaType": 1, "thumbnail": img, "thumbnailUrl": img, "mediaUrl": shortURL, "sourceUrl": shortURL}}}, {quoted: m});
-m.react('✅️')
-} catch (error) {
-}}
-handler.command = /^(spotify|music)$/i
-export default handler
+      if (data && data.status === 200 && data.result) {
+        return data.result;
+      }
+    } catch (error) {
+      console.error(`Error en el intento ${attempt + 1}:`, error.message);
+    }
+    attempt++;
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
+};
+
+// Handler principal
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text) {
+    return conn.sendMessage(m.chat, {
+      text: `🎧 *Spotify Search by BarbozaBot-Ai*\n\n❗ *Ingresa el nombre de la canción o artista que deseas buscar.*\n\n*Ejemplo:* ${usedPrefix}spotify Shape of You`,
+    });
+  }
+
+  // Notificar que se está buscando la música
+  await conn.sendMessage(m.chat, {
+    text: `🎶 *Buscando en Spotify...*\n⌛ Esto puede tardar unos segundos.`,
+  });
+
+  try {
+    // Decodificar y realizar búsqueda en Spotify
+    const searchUrl = `${decodeBase64(SPOTIFY_SEARCH_API)}${encodeURIComponent(text)}`;
+    const searchResults = await fetchWithRetries(searchUrl);
+
+    if (!searchResults || !searchResults.length) {
+      throw new Error("No se encontraron resultados en Spotify.");
+    }
+
+    // Seleccionar el primer resultado
+    const track = searchResults[0];
+    const { title, url: trackUrl, popularity } = track;
+
+    if (!trackUrl) {
+      throw new Error("No se pudo obtener el enlace del track.");
+    }
+
+    // Decodificar y descargar la canción utilizando la API de descarga
+    const downloadUrl = `${decodeBase64(SPOTIFY_DOWNLOAD_API)}${encodeURIComponent(trackUrl)}`;
+    const downloadData = await fetchWithRetries(downloadUrl);
+
+    const { title: downloadTitle, artists, cover, music } = downloadData;
+
+    if (!music) {
+      throw new Error("No se pudo obtener la URL de descarga.");
+    }
+
+    // Mensaje estilizado para Spotify
+    const description = `🎧 *BarbozaBot-Ai: Tu música en un clic*\n\n🎵 *Título:* ${title || "No disponible"}\n🎤 *Artista:* ${artists || "Desconocido"}\n⭐ *Popularidad:* ${popularity || "No disponible"}\n🔗 *Spotify Link:* ${trackUrl}\n\n🟢 *Descargando tu canción...*`;
+
+    // Enviar mensaje con la información del track
+    await conn.sendMessage(m.chat, { text: description });
+
+    // Enviar el archivo como audio
+    await conn.sendMessage(
+      m.chat,
+      {
+        audio: { url: music },
+        mimetype: "audio/mpeg",
+        fileName: `${downloadTitle}.mp3`,
+        caption: "🎶 Música descargada gracias a BarbozaBot-Ai",
+        contextInfo: {
+          externalAdReply: {
+            title: title || "Spotify Music",
+            body: artists || "Powered by BarbozaBot-Ai",
+            thumbnailUrl: cover,
+            mediaUrl: trackUrl,
+          },
+        },
+      },
+      { quoted: m }
+    );
+  } catch (error) {
+    console.error("Error al procesar la solicitud:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+handler.command = /^spotify$/i;
+
+export default handler;
