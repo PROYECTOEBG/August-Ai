@@ -1,4 +1,4 @@
-//Derechos del código de 
+//Derechos del código de
 /* 
 *❀ By Jtxs*
 [ Canal Principal ] :
