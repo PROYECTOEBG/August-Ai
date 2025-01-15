@@ -21,6 +21,7 @@ global.tiktokmusic = [
  "https://telegra.ph/file/710607d85b7abd702eced.mp4",
 "https://telegra.ph/file/0dc17539451e5ead356d0.mp4",
 "https://telegra.ph/file/b9fd93c88043364458e2e.mp4",
+"https://d.uguu.se/FDmnYLla.mp4",
 "https://telegra.ph/file/22c32a1e5963e7a1c3f32.mp4",
 "https://telegra.ph/file/60491ec34b6ace5bd9018.mp4",
 "https://telegra.ph/file/3178b9be8f66527b0867c.mp4",
