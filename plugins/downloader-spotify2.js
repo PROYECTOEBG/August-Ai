@@ -13,8 +13,8 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
   while (attempt <= maxRetries) {
     try {
       const response = await fetch(url);
+      if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
       const data = await response.json();
-
       if (data && data.status === 200 && data.result) {
         return data.result;
       }
