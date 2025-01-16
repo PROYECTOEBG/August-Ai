@@ -48,10 +48,10 @@ let tags = {
 const defaultMenu = {
   before:  `*─ׄ─ׅ─⭒─ׄ─ׄ─⭒─ׅ─ׄ─⭒─ׄ─ׄ─⭒─ׄ─ׄ─*
 
-Hola *%name* soy *Barboza*
+Hola *%name* soy *August-Ai*
 
 ╔══════ •『 𝑪𝑹𝑬𝑨𝑫𝑶𝑹 』
-║  ♛ Barboza
+║  ♛ Agust
 ╚═════ ♢.✰.♢ ══════
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑩𝑶𝑻 』
 ║  ✎ Cliente: %name
@@ -60,7 +60,7 @@ Hola *%name* soy *Barboza*
 ╚═════ ♢.✰.♢ ═══════
 
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑼𝑺𝑬𝑹』
-║  ✎ Bot: ©Bot-Barboza-Ai®
+║  ✎ Bot: ©Bot-Agust-Ai®
 ║  ✎ Modo Público
 ║  ✎ Baileys: Multi Device
 ║  ✎ Tiempo Activo: %muptime
