@@ -8,8 +8,8 @@ global.ComprarBot = `
 〔 *Bot Barboza- Ai* 〕
 
 *BOT PARA GRUPO* :
-> wa.me/584246582666
+> wa.me/573177810378
 
 *BOT PERZONALIZADO* :
-> wa.me/584246582666
+> wa.me/573177810378
 `;
