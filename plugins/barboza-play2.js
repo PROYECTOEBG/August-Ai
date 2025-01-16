@@ -33,7 +33,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     await conn.sendMessage(m.chat, {
       text: `
 ╭━━━🌐📡━━━╮  
-   🔍 **Buscando en ☆Barboza Bot Ai☆** 🔍  
+   🔍 **Buscando en ☆August-Ai☆** 🔍  
 ╰━━━🌐📡━━━╯  
 
 ✨ *Estamos localizando tu video...*  
@@ -72,7 +72,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     // Formato del mensaje de información
     const videoInfo = `
 ╭━━━☆☆☆━━━╮  
- *★ ☆Barboza Bot Ai☆ ★*
+ *★ ☆August-Ai☆ ★*
 ╰━━━☆☆☆━━━╯  
 🎵 **Título:**  ${title}  
 
