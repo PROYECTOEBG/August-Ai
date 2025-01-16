@@ -176,7 +176,7 @@ para el bot
 `.trim())
       throw false
   }
-  m.reply(`LA FUNCION *${type}* SE *${isEnable ? 'activó' : 'desactivó'}* ${isAll ? 'PARA ESTE BOT🧑‍💻' : isUser ? '' : 'PARA ESTE CHAT🧑‍💻'}`)
+  m.reply(`⚠️「 𝘼𝙫𝙞𝙨𝙤 」\n> 💎 𝘾𝙤𝙢𝙖𝙣𝙙𝙤: *${type}*\n> 👤 𝙁𝙪𝙚: *${isEnable ? '𝘈𝘤𝘵𝘪𝘷𝘢𝘥𝘰' : '𝘋𝘦𝘴𝘢𝘤𝘵𝘪𝘷𝘢𝘥𝘰'}*\n> ${isAll ? '*𝘌𝘯 𝘦𝘴𝘵𝘦 𝘉𝘰𝘵*' : isUser ? '' : '*𝘌𝘯 𝘦𝘴𝘵𝘦 𝘊𝘩𝘢𝘵*'}`)
 }
 
 handler.help = ['enable', 'disable', 'on', 'off']
