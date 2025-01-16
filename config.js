@@ -9,8 +9,7 @@ import axios from 'axios'
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.owner = [
-  ['584246582666', 'Bot-Ai',true],
-  ['584146277368', 'Barboza OFC',true],
+  ['573177810378', 'Bot-Ai',true],
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
@@ -21,23 +20,22 @@ global.prems = []
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.packname = `[ ⚡Sticker Maker`
-global.author = '_BOT BARBOZA -AI_]'
-global.stickpack = '© BarbozaBot'
-global.stickauth = 'By Barboza'
-global.wm = 'Barboza ⚡'
-global.dev = '© Powered By Barboza ⚡'
-global.wait = '⚡ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> _BOT BARBOZA-AI_⚡*'
-global.botname = '[ ⚡𝐁𝐚𝐫𝐛𝐨𝐳𝐚 𝐀𝐢 𝐖𝐡𝐚𝐬𝐀𝐩𝐩 𝐁𝐨𝐭⚡ ]'
-global.textbot = `⚡BotBarboza By Barboza⚡`
+global.author = '_Agust - Ai_]'
+global.stickpack = '© Agust - Ai'
+global.stickauth = 'by Agust'
+global.wm = 'Agust ⚡'
+global.dev = '© Powered By August ⚡'
+global.wait = '⚡ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> _Bot Agust-Ai_⚡*'
+global.botname = '[ ⚡ bot Agust - Ai⚡ ]'
+global.textbot = `⚡Bot Agust - Ai⚡`
 global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
-global.namechannel = '⚡_BOT BARBOZA -AI⚡_'
+global.namechannel = '⚡Agust - Ai⚡'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.catalogo = fs.readFileSync('./storage/img/catalogo.png')
 global.imagen2 = fs.readFileSync('./storage/img/Menu2.jpg')
 global.miniurl = fs.readFileSync('./storage/img/miniurl.jpg')
-
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.group = 'https://chat.whatsapp.com/GB1m5mhAUsNF0hSKQ508ID'
