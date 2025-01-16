@@ -16,7 +16,7 @@ export async function before(m, {conn, participants, groupMetadata}) {
         .replace('@desc', () => groupMetadata.desc || 'sin descripción');
       await conn.sendAi(m.chat, botname, textbot, welcome, img, img, canal)
     } else {
-      let bienvenida = `┌─★ Barboza Bot \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   │✑  Descripción:\n${groupMetadata.desc || 'sin descripción'}\n   └───────────────┈ ⳹`
+      let bienvenida = `┌─★ Agust-Ai \n│「 Bienvenido 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Bienvenido a\n   │✑  ${groupMetadata.subject}\n   │✑  Descripción:\n${groupMetadata.desc || 'sin descripción'}\n   └───────────────┈ ⳹`
       await conn.sendAi(m.chat, botname, textbot, bienvenida, img, img)
     }
   }
@@ -30,7 +30,7 @@ export async function before(m, {conn, participants, groupMetadata}) {
         .replace('@desc', () => groupMetadata.desc || 'sin descripción');
       await conn.sendAi(m.chat, botname, textbot, bye, img, img)
     } else {
-      let bye = `┌─★ Barboza Bot  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      let bye = `┌─★ Agust-Ai  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
       await conn.sendAi(m.chat, botname, textbot, bye, img, img)
     }
   }
@@ -44,7 +44,7 @@ export async function before(m, {conn, participants, groupMetadata}) {
         .replace('@desc', () => groupMetadata.desc || 'sin descripción');
       await conn.sendAi(m.chat, botname, textbot, bye, img, img)
     } else {
-      let kick = `┌─★ Barboza Bot  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
+      let kick = `┌─★ Agust-Ai  \n│「 BAYY 👋 」\n└┬★ 「 @${m.messageStubParameters[0].split`@`[0]} 」\n   │✑  Largate\n   │✑ Jamás te quisimos aquí\n   └───────────────┈ ⳹`
       await conn.sendAi(m.chat, botname, textbot, kick, img, img)
     }
 }}
