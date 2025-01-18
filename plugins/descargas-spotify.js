@@ -30,7 +30,7 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
 let handler = async (m, { conn, text, usedPrefix }) => {
   if (!text) {
     return conn.sendMessage(m.chat, {
-      text: `🎧 *Spotify Search by BarbozaBot-Ai*\n\n❗ *Ingresa el nombre de la canción o artista que deseas buscar.*\n\n*Ejemplo:* ${usedPrefix}spotify Shape of You`,
+      text: `🎧 *Spotify Search by August-Ai*\n\n❗ *Ingresa el nombre de la canción o artista que deseas buscar.*\n\n*Ejemplo:* ${usedPrefix}spotify Shape of You`,
     });
   }
 
