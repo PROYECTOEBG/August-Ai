@@ -1,7 +1,5 @@
 let handler = async (m, { conn, participants, groupMetadata }) => {
     try {
-        const ppUrl = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null);
-        const pp = ppUrl || './storage/img/siskedurl.jpg';
         const groupAdmins = participants.filter(p => p.admin);
         const listAdmin = groupAdmins.map((v, i) => `${i + 1}. @${v.id.split('@')[0]}`).join('\n');
         const owner = groupMetadata.owner || groupAdmins.find(p => p.admin === 'superadmin')?.id || m.chat.split`-`[0] + '@s.whatsapp.net';
@@ -68,12 +66,7 @@ let handler = async (m, { conn, participants, groupMetadata }) => {
 ╰─────────────╯
 `.trim();
 
-        // Verificamos si es una URL o archivo local
-        if (pp.startsWith('http')) {
-            await conn.sendFile(m.chat, pp, 'error.jpg', text, m, false, { mentions: [...groupAdmins.map(v => v.id), owner] });
-        } else {
-            await conn.sendFile(m.chat, pp, 'error.jpg', text, m, false, { mentions: [...groupAdmins.map(v => v.id), owner] });
-        }
+        await conn.reply(m.chat, text, m, { mentions: [...groupAdmins.map(v => v.id), owner] });
     } catch (e) {
         console.error(e);
         await conn.reply(m.chat, 'Ocurrió un error al procesar el comando.', m);
