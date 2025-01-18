@@ -1,36 +1,104 @@
-import Starlights from '@StarlightsTeam/Scraper';
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
-let handler = async (m, { conn, text }) => {
-if (!text) return conn.reply(m.chat, '🚩 Ingresa el enlace de algún Track, Playlist o Álbum de Spotify.', m);
+// URLs de las APIs en Base64
+const SPOTIFY_SEARCH_API = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkvc3BvdGlmeXNlYXJjaD9xdWVyeT0=";
+const SPOTIFY_DOWNLOAD_API = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkvc3BvdGlmeT91cmw9";
 
-let isSpotifyUrl = text.match(/^(https:\/\/open\.spotify\.com\/(album|track|playlist)\/[a-zA-Z0-9]+)/i);
-if (!isSpotifyUrl) return conn.reply(m.chat, '🚩 Ingresa un enlace válido de Track, Playlist o Álbum de Spotify.', m);
+// Función para decodificar Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
 
-await m.react('🕓')
-try {
-let { title, artist, album, thumbnail, dl_url } = await Starlights.spotifydl(text);
-let img = await (await fetch(thumbnail)).buffer();
-
-let txt = `*乂  S P O T I F Y  -  D O W N L O A D*\n\n`;
-    txt += `    ✩  *Título* : ${title}\n`;
-    txt += `    ✩  *Álbum* : ${album}\n`;
-    txt += `    ✩  *Artista* : ${artist}\n\n`;
-    txt += `*- ↻ Los audios se están enviando, espera un momento. . .*`;
-
-await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal);
-await conn.sendMessage(m.chat, { audio: { url: dl_url }, fileName: `${title}.mp3`, mimetype: 'audio/mp4' }, { quoted: m });
-
-await m.react('✅');
-} catch {
-await m.react('✖️');
-}
+// Función para manejar reintentos de solicitudes
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  let attempt = 0;
+  while (attempt <= maxRetries) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+      const data = await response.json();
+      if (data && data.status === 200 && data.result) {
+        return data.result;
+      }
+    } catch (error) {
+      console.error(`Error en el intento ${attempt + 1}:`, error.message);
+    }
+    attempt++;
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
 };
 
-handler.help = ['spotifydl'];
-handler.tags = ['downloader'];
-handler.command = ['spotifydl', 'sp'];
-// handler.limit = 1;
-handler.register = true;
+// Handler principal
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text) {
+    return conn.sendMessage(m.chat, {
+      text: `🎧 *Spotify Search by August-Ai*\n\n❗ *Ingresa el nombre de la canción o artista que deseas buscar.*\n\n*Ejemplo:* ${usedPrefix}spotify Shape of You`,
+    });
+  }
+
+  // Notificar que se está buscando la música
+  await conn.sendMessage(m.chat, {
+    text: `🎶 *Buscando en Spotify...*\n⌛ Esto puede tardar unos segundos.`,
+  });
+
+  try {
+    // Decodificar y realizar búsqueda en Spotify
+    const searchUrl = `${decodeBase64(SPOTIFY_SEARCH_API)}${encodeURIComponent(text)}`;
+    const searchResults = await fetchWithRetries(searchUrl);
+
+    if (!searchResults || !searchResults.length) {
+      throw new Error("No se encontraron resultados en Spotify.");
+    }
+
+    // Seleccionar el primer resultado
+    const track = searchResults[0];
+    const { title, url: trackUrl, popularity } = track;
+
+    if (!trackUrl) {
+      throw new Error("No se pudo obtener el enlace del track.");
+    }
+
+    // Decodificar y descargar la canción utilizando la API de descarga
+    const downloadUrl = `${decodeBase64(SPOTIFY_DOWNLOAD_API)}${encodeURIComponent(trackUrl)}`;
+    const downloadData = await fetchWithRetries(downloadUrl);
+
+    const { title: downloadTitle, artists, cover, music } = downloadData;
+
+    if (!music) {
+      throw new Error("No se pudo obtener la URL de descarga.");
+    }
+
+    // Mensaje estilizado para Spotify
+    const description = `🎧 *August-Ai: Tu música en un clic*\n\n🎵 *Título:* ${title || "No disponible"}\n🎤 *Artista:* ${artists || "Desconocido"}\n⭐ *Popularidad:* ${popularity || "No disponible"}\n🔗 *Spotify Link:* ${trackUrl}\n\n🟢 *Descargando tu canción...*`;
+
+    // Enviar mensaje con la información del track
+    await conn.sendMessage(m.chat, { text: description });
+
+    // Enviar el archivo como audio
+    await conn.sendMessage(
+      m.chat,
+      {
+        audio: { url: music },
+        mimetype: "audio/mpeg",
+        fileName: `${downloadTitle}.mp3`,
+        caption: "🎶 Música descargada gracias a BarbozaBot-Ai",
+        contextInfo: {
+          externalAdReply: {
+            title: title || "Spotify Music",
+            body: artists || "Powered by BarbozaBot-Ai",
+            thumbnailUrl: cover,
+            mediaUrl: trackUrl,
+          },
+        },
+      },
+      { quoted: m }
+    );
+  } catch (error) {
+    console.error("Error al procesar la solicitud:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+handler.command = /^spotify$/i;
 
 export default handler;
