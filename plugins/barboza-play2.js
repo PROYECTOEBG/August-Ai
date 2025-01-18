@@ -31,7 +31,7 @@ let handler = async (m, { conn, text, args }) => {
     if (json.result && json.result.download && json.result.download.url) {
       let { title, url: mp4 } = json.result.download;
 
-      await conn.sendMessage(m.chat, { video: { url: mp4 }, caption: `*❀ Sumi Sakurazawa:*  ${text}`, mimetype: 'video/mp4', fileName: `August Ai - ${title}.mp4` }, { quoted: m });
+      await conn.sendMessage(m.chat, { video: { url: mp4 }, caption: `*⭐ Bot August:*  ${text}`, mimetype: 'video/mp4', fileName: `August Ai - ${title}.mp4` }, { quoted: m });
 
       await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
     } else {
