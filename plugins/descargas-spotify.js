@@ -67,7 +67,7 @@ let handler = async (m, { conn, text, usedPrefix }) => {
     }
 
     // Mensaje estilizado para Spotify
-    const description = `🎧 *BarbozaBot-Ai: Tu música en un clic*\n\n🎵 *Título:* ${title || "No disponible"}\n🎤 *Artista:* ${artists || "Desconocido"}\n⭐ *Popularidad:* ${popularity || "No disponible"}\n🔗 *Spotify Link:* ${trackUrl}\n\n🟢 *Descargando tu canción...*`;
+    const description = `🎧 *August-Ai: Tu música en un clic*\n\n🎵 *Título:* ${title || "No disponible"}\n🎤 *Artista:* ${artists || "Desconocido"}\n⭐ *Popularidad:* ${popularity || "No disponible"}\n🔗 *Spotify Link:* ${trackUrl}\n\n🟢 *Descargando tu canción...*`;
 
     // Enviar mensaje con la información del track
     await conn.sendMessage(m.chat, { text: description });
