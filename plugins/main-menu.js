@@ -51,20 +51,20 @@ const defaultMenu = {
 Hola *%name* soy *August-Ai*
 
 ╔══════ •『 𝑪𝑹𝑬𝑨𝑫𝑶𝑹 』
-║  ♛ Agust
+║  🖥️ Agust
 ╚═════ ♢.✰.♢ ══════
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑩𝑶𝑻 』
-║  ✎ Cliente: %name
-║  ✎ Exp: %exp
-║  ✎ Nivel: %level
+║  👤 Cliente: %name
+║  ⭐ Exp: %exp
+║  ⚡ Nivel: %level
 ╚═════ ♢.✰.♢ ═══════
 
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑼𝑺𝑬𝑹』
-║  ✎ Bot: ©Bot-Agust-Ai®
-║  ✎ Modo Público
-║  ✎ Baileys: Multi Device
-║  ✎ Tiempo Activo: %muptime
-║  ✎ Usuarios: %totalreg 
+║  🤖 Bot: ©Bot-Agust-Ai®
+║  💎 Modo Público
+║  💨 Baileys: Multi Device
+║  🪄 Tiempo Activo: %muptime
+║  🎩 Usuarios: %totalreg 
 ╚═════ ♢.✰.♢ ════════
 
 *─ׄ─ׄ─⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ─⭒─ׄ─ׄ─⭒─ׄ─ׅ─*
@@ -72,7 +72,7 @@ Hola *%name* soy *August-Ai*
 \t\t\t⚙️_*𝐋𝐈𝐒𝐓𝐀 𝐃𝐄 𝐂𝐎𝐌𝐀𝐍𝐃𝐎𝐒*_ 🚀
 `.trimStart(),
   header: '*╭╍╍╍╍❖【 *%category* 】',
-  body: '┋✎›【 %cmd %islimit %isPremium\n',
+  body: '┋💎›【 %cmd %islimit %isPremium\n',
   footer: '*╰╍╍╍╍❖•ೋ° °ೋ•❖╍╍╍╍╯*',
   after: `© ${textbot}`,
 }
