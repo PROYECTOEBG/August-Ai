@@ -21,10 +21,9 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   user.registered = true
   let sn = createHash('md5').update(m.sender).digest('hex')
   let img = await (await fetch(`https://qu.ax/llZLr.jpg`)).buffer()
-  let txt = ` –  *𝐑 𝐄 𝐆 𝐈 𝐒 𝐓 𝐑 𝐎  -  𝐁 𝐀 𝐑 𝐁*\n\n`
+  let txt = ` –  *Registro - Completado *\n\n`
       txt += `╔  👤  *NOMBRE* : ${name}\n`
       txt += `╠  💎  *EDAD* : ${age} años\n`
-      txt += `╚𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀 𝐁𝐀𝐑𝐁𝐎𝐙𝐀-𝐁𝐎𝐓☁️`
 await conn.sendAi(m.chat, botname, textbot, txt, img, img, canal, m)
 await m.react('✅')
 }
