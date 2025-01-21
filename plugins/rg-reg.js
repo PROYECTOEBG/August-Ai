@@ -20,15 +20,15 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   user.regTime = + new Date
   user.registered = true
   let sn = createHash('md5').update(m.sender).digest('hex')
-  let img = await (await fetch(`https://d.uguu.se/xDeYGmlk.jpg`)).buffer()
-  let txt = ` –  *R E G I S T R O - A U G U S T-AI*\n\n`
+  let img = await (await fetch(`https://qu.ax/llZLr.jpg`)).buffer()
+  let txt = ` –  *𝐑 𝐄 𝐆 𝐈 𝐒 𝐓 𝐑 𝐎  -  𝐁 𝐀 𝐑 𝐁*\n\n`
       txt += `╔  👤  *NOMBRE* : ${name}\n`
       txt += `╠  💎  *EDAD* : ${age} años\n`
-      txt += `╚*Bienvenido A August-Ai*☁️`
+      txt += `╚𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀 𝐁𝐀𝐑𝐁𝐎𝐙𝐀-𝐁𝐎𝐓☁️`
 await conn.sendAi(m.chat, botname, textbot, txt, img, img, canal, m)
 await m.react('✅')
 }
-handler.help = ['reg'].map(v => v + nombre.edad>*')
+handler.help = ['reg'].map(v => v + ' *<nombre.edad>*')
 handler.tags = ['rg']
 
 handler.command = ['verify', 'reg', 'register', 'registrar'] 
