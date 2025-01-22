@@ -4,7 +4,7 @@ import qs from 'qs';
 
 let handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    return m.reply(`Ejemplo de uso: *${usedPrefix + command} nose como paso *`);
+    return m.reply(`Ejemplo de uso: *${usedPrefix + command} Joji - Ew*`);
   }
 
   const appleMusic = {
@@ -170,6 +170,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.help = ['play'];
 handler.tags = ['downloader'];
+handler.limit = 3;
 handler.command = 'play',/^(applemusicplay|play|song)$/i;
 
 export default handler;
