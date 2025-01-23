@@ -83,7 +83,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
     // Formato del mensaje de información
     const videoInfo = `
-⌘━─━─[BarbozaBot-Ai]─━─━⌘
+⌘━─━─[August-Bot]─━─━⌘
 
 ➷ *Título⤿:* ${apiTitle}
 ➷ *Subido⤿:* ${ago}
