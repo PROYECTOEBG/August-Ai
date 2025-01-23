@@ -7,7 +7,7 @@ let user = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted.sender
 let owr = m.chat.split`-`[0]
 await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
 m.reply(`🚩 Usuario eliminado.`)
-m.reply(`Lo siento, acabas de ser eliminado del grupo.`, user)
+// Se eliminó la notificación al usuario eliminado
 }
 
 handler.help = ['kick *@user*']
