@@ -1,4 +1,3 @@
-
 let handler = async (m, { isPrems, conn }) => {
     let time = global.db.data.users[m.sender].lastcofre + 86400000; // 86400000 24 Horas
     if (new Date() - global.db.data.users[m.sender].lastcofre < 0) {
