@@ -5,9 +5,12 @@ import fetch from "node-fetch";
 
 let handler = async (m, {text, usedPrefix, command, conn}) => {
   if (!text) throw `*[❕] Ingrese el nombre de una película*\n\n*❍ EJEMPLO: ${usedPrefix + command} Batman*`;
-  
+
   let a = await fetch(`https://www.omdbapi.com/?t=${text}&apikey=caba8d6f`);
   let x = await a.json();
+
+  // Verificar si hay un error en la respuesta de la API
+  if (x.Response === "False") throw `*[❕] No se encontró la película: ${text}*`;
 
   // Definiendo las variables 'comienzo' y 'fin'
   const comienzo = "🎬"; // Puedes cambiar esto por lo que desees
