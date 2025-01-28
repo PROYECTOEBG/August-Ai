@@ -4,27 +4,24 @@ let img = 'https://files.catbox.moe/16bm7g.jpg'
 let texto = `• 𝐌𝐄𝐍𝐔 +10 •
 「 🔞 *COMANDOS NOPOR* 🔞 」
 
+║➤ ❤️‍🔥 _.tetas_ (@tag)
+║➤ ❤️‍🔥 _.pussy_(@tag)
+║➤ ❤️‍🔥 _.pechos_ (@tag)
 ║➤ ❤️‍🔥 _.xnxxsearch_ (texto)
 ║➤ ❤️‍🔥 _.xnxxdl_ (link)
 ║➤ ❤️‍🔥 _.phsearch_ (texto)
 ║➤ ❤️‍🔥 _.rule34_ (texto)
 ║➤ ❤️‍🔥 _.xvideosearch_ (texto)
 ║➤ ❤️‍🔥 _.xvideosdl_ (link)
-║➤ ❤️‍🔥 _.fuck_ (@tag)
-║➤ ❤️‍🔥 _.fuck2_ (@tag)
 ║➤ ❤️‍🔥 _.cum_ (@tag)
 ║➤ ❤️‍🔥 _.follar_ (@tag)
 ║➤ ❤️‍🔥 _.penetrar_ (@tag)
-║➤ ❤️‍🔥 _.horny_ (@tag)
-║➤ ❤️‍🔥 _.violar_ (@tag)
-║➤ ❤️‍🔥 _.sixnine_ (@tag)`
-
+║➤ ❤️‍🔥 _.violar_ (@tag) 
 const fkontak = {
         "key": {
-    "participants":"0@s.whatsapp.net",
-                "remoteJid": "status@broadcast",
+    "participants":"0@s.wh                "remoteJid": "status@broadcast",
                 "fromMe": false,
-                "id": "Halo"
+                 "id": "Halo"
         },
         "message": {
                 "contactMessage": {
