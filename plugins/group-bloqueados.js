@@ -1,13 +1,34 @@
-
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn }) => {
+    // Definimos las variables de los grupos y las imágenes
+    let soporteGB = "";
+    let grupo1 = "https://chat.whatsapp.com/EGuK8Gaetbg83bhEh2LAej";
+    let grupo2 = "https://chat.whatsapp.com/EGuK8Gaetbg83bhEh2LAej";
+    let grupo3 = "https://chat.whatsapp.com/EGuK8Gaetbg83bhEh2LAej";
+    let grupo4 = "https://chat.whatsapp.com/EGuK8Gaetbg83bhEh2LAej";
+    let grupo5 = "https://chat.whatsapp.com/EGuK8Gaetbg83bhEh2LAej";
+
     let grupos = [soporteGB, grupo1, grupo2, grupo3, grupo4, grupo5];
+
+    let img5 = "https://qu.ax/LJEVX.jpg";
+    let img6 = "https://qu.ax/LJEVX.jpg";
+    let img7 = "https://qu.ax/LJEVX.jpg";
+    let img8 = "https://qu.ax/LJEVX.jpg";
+    let img9 = "https://qu.ax/LJEVX.jpg";
+
     let gata = [img5, img6, img7, img8, img9];
+
+    let wm = "Super Bot";
+    let yt = "https://youtube.com/@SuperBot";
+    let vs = "1.0.0";
+    let rg = "🚫";
+    let Bot = "🤖 Super Bot";
+    global.img = "https://qu.ax/LJEVX.jpg"; // Imagen por defecto
 
     let fkontak = {
         "key": {
-            "participants": "0@s.whatsapp.net",
+            "participant": "0@s.whatsapp.net",
             "remoteJid": "status@broadcast",
             "fromMe": false,
             "id": "Halo"
@@ -23,8 +44,8 @@ let handler = async (m, { conn }) => {
     let enlace = {
         contextInfo: {
             externalAdReply: {
-                title: `${wm} 🐈`,
-                body: 'support group',
+                title: `${wm} 🔥`,
+                body: 'Support Group',
                 sourceUrl: grupos[Math.floor(Math.random() * grupos.length)],
                 thumbnail: await (await fetch(gata[Math.floor(Math.random() * gata.length)])).buffer()
             }
@@ -39,7 +60,7 @@ let handler = async (m, { conn }) => {
                 mediaType: 'VIDEO',
                 description: '',
                 title: wm,
-                body: '😻 𝗦𝘂𝗽𝗲𝗿 𝗚𝗮𝘁𝗮𝗕𝗼𝘁-𝗠𝗗 - 𝗪𝗵𝗮𝘁𝘀𝗔𝗽𝗽 ',
+                body: '🔥 Super Bot Barboza',
                 thumbnailUrl: await (await fetch(global.img)).buffer(),
                 sourceUrl: yt
             }
@@ -55,12 +76,12 @@ let handler = async (m, { conn }) => {
             txt += `┃🚫 @${i.split("@")[0]}\n`;
         }
 
-        txt += "╰━━━━━━━⬣\n\n*Por favor no llame para evitar ser Bloqueado, Gracias.*\n\n*Please do not call to avoid being Blocked, Thank you.*";
+        txt += "╰━━━━━━━⬣\n\n*Por favor no llame para evitar ser bloqueado, gracias.*\n\n*Please do not call to avoid being blocked, thank you.*";
 
         return conn.reply(m.chat, txt, fkontak, m, { mentions: await conn.parseMention(txt) });
     }).catch(err => {
         console.log(err);
-        return conn.reply(m.chat, `${rg}𝙉𝘼𝘿𝙄𝙀 𝙃𝘼 𝙎𝙄𝘿𝙊 𝘽𝙇𝙊𝙌𝙐𝙀𝘼𝘿𝙊\n\n𝙉𝙊 𝙊𝙉𝙀 𝙃𝘼𝙎`, gata, m);
+        return conn.reply(m.chat, `${rg}𝙉𝘼𝘿𝙄𝙀 𝙃𝘼 𝙎𝙄𝘿𝙊 𝘽𝙇𝙊𝙌𝙐𝙀𝘼𝘿𝙊\n\n𝙉𝙊 𝙊𝙉𝙀 𝙃𝘼𝙎`, Bot, m);
     });
 };
 
