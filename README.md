@@ -1,3 +1,3 @@
-### `BOT EN DESARROLLO`
-> **Version Beta**
-![Menu Principa](https://i.ibb.co/S5GDzcd/file.jpg)
+### `BOT DESSAROLLADO POR BARBOZA`
+> *Version 2.0🔥*
+![Menu Principa](https://qu.ax/LJEVX.jpg)
