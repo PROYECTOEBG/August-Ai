@@ -1,39 +1,34 @@
-import { googleImage } from '@bochilteam/scraper';
+/* Imagen Search By WillZek 
+- Free Codes Titan 
+- https://whatsapp.com/channel/0029ValMlRS6buMFL9d0iQ0S
+*/
 
-const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `*🚩 Uso Correcto: ${usedPrefix + command} Inosuke*`;
+import fetch from 'node-fetch';
 
-  // Define otras variables necesarias
-  const packname = 'Nombre del paquete'; // Define tu packname
-  const wm = 'Watermark'; // Define tu marca de agua
-  const channel = 'https://example.com/your-channel'; // Define el enlace del canal
-  const textbot = 'Texto del bot'; // Define el texto que quieras usar
-  const rcanal = null; // Ajusta según lo que esperes usar
+let handler = async(m, { conn, text, usedPrefix, command }) => {
 
-  conn.reply(m.chat, '🚩 *Descargando su imagen...*', m, {
-    contextInfo: {
-      externalAdReply: {
-        mediaUrl: null,
-        mediaType: 1,
-        showAdAttribution: true,
-        title: packname,
-        body: wm,
-        previewType: 0,
-        sourceUrl: channel,
-      },
-    },
-  });
+if (!text) return m.reply('🍭 Ingrese Un Texto Para Buscar Una Imagen');
 
-  const res = await googleImage(text);
-  const image = await res.getRandom();
-  const link = image;
+try {
+let api = `https://api.dorratz.com/v3/ai-image?prompt=${text}`;
+let response = await fetch(api);
+let json = await response.json();
+let res = json.data;
 
-  conn.sendFile(m.chat, link, 'error.jpg', `*🔎 Resultado De: ${text}*\n> ${textbot}`, m, null, rcanal);
-};
+m.react('🕑');
+let txt = `> *Resultado De: ${text}*`;
+let img = res.image_link;
+let link = img;
 
-handler.help = ['imagen <query>'];
-handler.tags = ['buscador', 'tools', 'descargas'];
-handler.command = /^(image|imagen)$/i;
-handler.register = true;
+await conn.sendMessage(m.chat, { image: { url: link }, caption: txt }, {quoted: fkontak});   
+m.react('✅');
+
+} catch (e) {
+m.reply(`Error: ${e.message}`);
+m.react('✖️');
+ }
+}
+
+handler.command = ['imagen', 'image'];
 
 export default handler;
