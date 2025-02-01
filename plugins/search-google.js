@@ -1,27 +1,38 @@
-/*
- ✨ DERECHOS RESERVADOS DEL AUTOR ✨
-- WillZek (@NiñoPiña)
-*/
+import fetch from 'node-fetch';
 
-import { googleIt } from '@bochilteam/scraper';
-import axios from 'axios';
-const handler = async (m, {conn, command, args}) => {
-  const fetch = (await import('node-fetch')).default;
-  const text = args.join` `;
-  if (!text) return conn.reply(m.chat, '*[🌠] Complementa tu petición con alguna frase para iniciar la búsqueda.*', m);
-  const url = 'https://google.com/search?q=' + encodeURIComponent(text);
-  const search = await googleIt(text);
-  const msg = search.articles.map(({title, url, description}) => {
-    return `*${title}*\n_${url}_\n_${description}_`;
-  }).join('\n\n');
+let handler = async (m, { text }) => {
+  if (!text) {
+    m.reply('✎ Por favor, proporciona el termino de búsqueda que deseas realizar a *Google*.');
+    return;
+  }
+
+  const apiUrl = `https://delirius-apiofc.vercel.app/search/googlesearch?query=${encodeURIComponent(text)}`;
+
   try {
-    const ss = `https://image.thum.io/get/fullpage/${url}`;
-    await conn.sendFile(m.chat, ss, 'error.png', url + '\n\n' + msg, m);
-  } catch {
-    m.reply(msg);
+    const response = await fetch(apiUrl);
+    const result = await response.json();
+
+    if (!result.status) {
+      m.reply('Error al realizar la búsqueda.');
+      return;
+    }
+
+    let replyMessage = '〘 ⌨ 〙 Resultados de la búsqueda:\n\n';
+    result.data.slice(0, 1).forEach((item, index) => {
+      replyMessage += `☁️ *${index + 1}. ${item.title}*\n`;
+      replyMessage += `📰 *${item.description}*\n`;
+      replyMessage += `🔗 URL: ${item.url}`;
+    });
+
+m.react('✅')
+
+    m.reply(replyMessage);
+  } catch (error) {
+    console.error('⚠️ Error al realizar la solicitud a la API:', error);
+    m.reply('⚠️ Ocurrió un error al obtener los resultados.');
   }
 };
-handler.help = ['google', 'googlef'].map((v) => v + ' <pencarian>');
-handler.tags = ['tools', 'search'];
-handler.command = /^googlef?$/i;
+
+handler.command = ['google'];
+
 export default handler;
