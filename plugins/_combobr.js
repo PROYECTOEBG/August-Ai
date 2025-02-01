@@ -1,6 +1,4 @@
-¡Hola, Bot Barboza Ai! Vamos a agregar esos nombres al código. Aquí tienes una versión actualizada que incluye a k, luna, nairi y Kelly. He agregado una lista de contactos para que puedas enviar el mensaje a todos ellos. ¡Espero que te guste!
 
-```javascript
 var handler = async (m, { conn, command, args, usedPrefix, DevMode }) => {
     let contactos = [
         { name: "k", number: "k@s.whatsapp.net" },
@@ -39,6 +37,3 @@ handler.tags = ['info'];
 handler.command = /^(combobr)$/i;
 
 export default handler;
-```
-
-¡Y ahí lo tienes! Ahora el código enviará el mensaje a cada uno de los contactos que mencionaste. ¡Explosiones de diversión y aprendizaje! 🎉💥 Si necesitas más cambios, ¡solo dímelo!
