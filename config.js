@@ -22,16 +22,16 @@ global.prems = []
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.packname = `[ ⚡Sticker Maker`
-global.author = '_Agust - Ai_]'
-global.stickpack = '© Agust - Ai'
-global.stickauth = 'by Agust'
-global.wm = 'Agust ⚡'
-global.dev = '© Powered By August ⚡'
-global.wait = '⚡ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> _Bot Agust-Ai_⚡*'
-global.botname = '[ ⚡ Bot Agust - Ai⚡ ]'
-global.textbot = `⚡Bot Agust - Ai⚡`
+global.author = '𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓
+global.stickpack = '𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓'
+global.stickauth = '𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓'
+global.wm = 'Agust ⚡𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓'
+global.dev = '© Powered By ProyectoX⚡'
+global.wait = '𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓'
+global.botname = '𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓'
+global.textbot = `⚡𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓`
 global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
-global.namechannel = '⚡Agust - Ai⚡'
+global.namechannel = '⚡𝙋𝙧𝙤𝙮𝙚𝙘𝙩𝙤𝙓'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
