@@ -37,9 +37,9 @@ let user = global.db.data.users[who]
 let pushname = m.pushName || 'Sin nombre'
 
 //creador y otros
-global.creador = 'Wa.me/584120346669'
+global.creador = 'Wa.me/593993370003'
 global.ofcbot = `${conn.user.jid.split('@')[0]}`
-global.asistencia = 'Wa.me/584120346669'
+global.asistencia = 'Wa.me/593993370003'
 global.namechannel = '♡⃝🚀𝑻𝒆𝒄𝒏𝒐-𝑩𝒐𝒕ᚐ҉ᚐ'
 global.namechannel2 = '✫𝚃𝙴𝙰𝙼  乂 𝚂𝚃𝙰𝚁𝙲𝙾𝚁𝙴✫'
 global.namegrupo = '♡⃝𝓨𝓾𝓴𝓲 𝓢𝓾𝓸𝓾 𝓑𝓸𝓽 𝓞𝓯𝓲𝓬𝓲𝓪𝓵ᚐ҉'
@@ -49,8 +49,8 @@ global.colab2 = 'Niño Piña'
 global.colab3 = 'Legendary'
 
 //Ids channel
-global.idchannel = '120363365444927738@newsletter'
-global.canalIdM = ["120363365444927738@newsletter", "120363365444927738@newsletter"]
+global.idchannel = '120363357113516650@newsletter'
+global.canalIdM = ["120363357113516650@newsletter", "120363357113516650@newsletter"]
 global.canalNombreM = [" 𝑻𝒆𝒄𝒏𝒐-𝑩𝒐𝒚ᚐ", "✧┊┋◟🚀𝑻𝒆𝒄𝒏𝒐-𝑩𝒐𝒕🚀◞┊┋✧"]
 global.channelRD = await getRandomChannel()
 
